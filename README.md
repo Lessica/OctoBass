@@ -1,9 +1,6 @@
 # OctoBass
 
-[![CI Status](https://img.shields.io/travis/i_82/OctoBass.svg?style=flat)](https://travis-ci.org/i_82/OctoBass)
-[![Version](https://img.shields.io/cocoapods/v/OctoBass.svg?style=flat)](https://cocoapods.org/pods/OctoBass)
-[![License](https://img.shields.io/cocoapods/l/OctoBass.svg?style=flat)](https://cocoapods.org/pods/OctoBass)
-[![Platform](https://img.shields.io/cocoapods/p/OctoBass.svg?style=flat)](https://cocoapods.org/pods/OctoBass)
+This is a private Pod (experiment).
 
 ## Example
 
@@ -17,12 +14,12 @@ OctoBass is available through [CocoaPods](https://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'OctoBass'
+pod 'OctoBass', :path => '../OctoBass/'
 ```
 
 ## Author
 
-i_82, 5410705+Lessica@users.noreply.github.com
+Lessica, 5410705+Lessica@users.noreply.github.com
 
 ## License
 
