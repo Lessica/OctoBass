@@ -21,14 +21,14 @@ Pod::Spec.new do |s|
 TODO: Add long description of the pod here.
                        DESC
 
-  s.homepage         = 'https://github.com/i_82/OctoBass'
+  s.homepage         = 'https://github.com/Lessica/OctoBass'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'i_82' => '5410705+Lessica@users.noreply.github.com' }
-  s.source           = { :git => 'https://github.com/i_82/OctoBass.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+  s.author           = { 'Lessica' => '5410705+Lessica@users.noreply.github.com' }
+  s.source           = { :git => 'https://github.com/Lessica/OctoBass.git', :tag => s.version.to_s }
+  s.social_media_url = 'https://twitter.com/82Flex'
 
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '9.0'
 
   s.source_files = 'OctoBass/Classes/**/*'
   

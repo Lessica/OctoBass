@@ -1,0 +1,16 @@
+PODS:
+  - OctoBass (0.1.0)
+
+DEPENDENCIES:
+  - OctoBass (from `../`)
+
+EXTERNAL SOURCES:
+  OctoBass:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  OctoBass: 4ed233446270e634aa9fa0e3e00333676fc0dded
+
+PODFILE CHECKSUM: 801f40e568cd9a82a716c42bbfdaeeef2b05913c
+
+COCOAPODS: 1.9.1

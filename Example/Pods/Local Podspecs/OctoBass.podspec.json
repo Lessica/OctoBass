@@ -1,0 +1,23 @@
+{
+  "name": "OctoBass",
+  "version": "0.1.0",
+  "summary": "A short description of OctoBass.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/Lessica/OctoBass",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "Lessica": "5410705+Lessica@users.noreply.github.com"
+  },
+  "source": {
+    "git": "https://github.com/Lessica/OctoBass.git",
+    "tag": "0.1.0"
+  },
+  "social_media_url": "https://twitter.com/82Flex",
+  "platforms": {
+    "ios": "9.0"
+  },
+  "source_files": "OctoBass/Classes/**/*"
+}

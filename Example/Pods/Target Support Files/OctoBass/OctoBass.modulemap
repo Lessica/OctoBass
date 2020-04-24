@@ -1,0 +1,6 @@
+framework module OctoBass {
+  umbrella header "OctoBass-umbrella.h"
+
+  export *
+  module * { export * }
+}
