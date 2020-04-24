@@ -1,0 +1,6 @@
+use_frameworks!
+target 'OctoBass_Tests' do
+  pod 'OctoBass', :path => '../'
+  
+  
+end
