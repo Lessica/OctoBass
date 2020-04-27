@@ -98,6 +98,15 @@ static NSMutableArray <UITouch *> *_$allTouches = nil;
 }
 
 
++ (NSInteger)tapAtPoint:(CGPoint)point
+{
+    NSInteger finger = [self availableFinger];
+    [self touchWithFinger:finger atPoint:point withPhase:UITouchPhaseBegan];
+    [self touchWithFinger:finger atPoint:point withPhase:UITouchPhaseEnded];
+    return finger;
+}
+
+
 #pragma mark - Private
 
 

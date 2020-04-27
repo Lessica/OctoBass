@@ -30,12 +30,6 @@
 
 - (void)hostApplicationDidBecomeActive:(UIApplication *)application {
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        NSInteger fingerID = [OBTouchRocket availableFinger];
-        [OBTouchRocket touchWithFinger:fingerID atPoint:CGPointMake(204, 415.5) withPhase:UITouchPhaseBegan];
-        [OBTouchRocket touchWithFinger:fingerID atPoint:CGPointMake(204, 415.5) withPhase:UITouchPhaseEnded];
-    });
-    
 }
 
 @end

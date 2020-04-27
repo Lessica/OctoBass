@@ -9,6 +9,7 @@
 @interface OBTouchRocket : NSObject
 
 + (NSInteger)touchWithFinger:(NSInteger)pointId atPoint:(CGPoint)point withPhase:(UITouchPhase)phase;
++ (NSInteger)tapAtPoint:(CGPoint)point;
 + (NSInteger)availableFinger;
 
 @end
