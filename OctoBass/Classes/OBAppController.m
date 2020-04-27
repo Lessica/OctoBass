@@ -2,45 +2,39 @@
 //  OBAppController.m
 //  OctoBass
 //
-//  Created by Darwin on 4/25/20.
-//
 
 #import "OBAppController.h"
-#import "OBClassHierarchyDetector.h"
-#import <WebKit/WebKit.h>
+#import "OBViewInjector.h"
+#import "OBTouchRocket.h"
 
 
 @interface OBAppController ()
 
-@property (nonatomic, strong) OBClassHierarchyDetector *clsDetector;
+@property (nonatomic, strong) OBViewInjector *viewInjector;
 
 @end
 
 
 @implementation OBAppController
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        
+        // Initialize new view injectors.
+        _viewInjector = [[OBViewInjector alloc] init];
+        
+    }
+    return self;
+}
+
 - (void)hostApplicationDidBecomeActive:(UIApplication *)application {
     
-    static dispatch_once_t launchedToken;
-    dispatch_once(&launchedToken, ^{
-        
-        // Returns an array of all of the application’s bundles that represent frameworks.
-        NSMutableArray <NSBundle *> *allowedBundles = [NSMutableArray arrayWithObject:[NSBundle mainBundle]];
-        [allowedBundles addObjectsFromArray:[NSBundle allFrameworks]];
-        [allowedBundles filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSBundle *evaluatedBundle, NSDictionary *bindings) {
-            NSString *bundlePath = [evaluatedBundle bundlePath];
-            return [bundlePath hasPrefix:@"/var/"] || [bundlePath hasPrefix:@"/private/var/"];
-        }]];
-        
-        // New class hierarchy detector, which caches all objc classes.
-        OBClassHierarchyDetector *detector = [[OBClassHierarchyDetector alloc] initWithBundles:allowedBundles];
-        _clsDetector = detector;
-        
-        [detector printHierarchyOfClass:[UIView class] formatterBlock:^NSString *(OBClassRepresentation *clsRepr) { return [NSString stringWithFormat:@"* %@", clsRepr.name]; } indentationString:@"|---"];
-        
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSInteger fingerID = [OBTouchRocket availableFinger];
+        [OBTouchRocket touchWithFinger:fingerID atPoint:CGPointMake(204, 415.5) withPhase:UITouchPhaseBegan];
+        [OBTouchRocket touchWithFinger:fingerID atPoint:CGPointMake(204, 415.5) withPhase:UITouchPhaseEnded];
     });
-    
-    // app did become active
     
 }
 

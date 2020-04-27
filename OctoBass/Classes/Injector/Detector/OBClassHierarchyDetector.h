@@ -1,8 +1,6 @@
 //
 //  OBClassHierarchyDetector.h
-//
-//  Created by Sebastian Venditti on 9/3/14.
-//  Copyright (c) 2014. All rights reserved.
+//  OctoBass
 //
 
 #import <Foundation/Foundation.h>
@@ -65,6 +63,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface OBClassRepresentation : NSObject
 
 @property (nonatomic, strong) NSString *name;
+@property (nonatomic, assign) BOOL isIncluded;
 @property (nonatomic, strong) NSArray <OBClassRepresentation *> *subclassesRepresentations;
 
 @end

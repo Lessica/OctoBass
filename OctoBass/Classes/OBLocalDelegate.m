@@ -2,8 +2,6 @@
 //  OBLocalDelegate.m
 //  OctoBass
 //
-//  Created by Darwin on 4/24/20.
-//
 
 #import "OBLocalDelegate.h"
 #import <UIKit/UIKit.h>

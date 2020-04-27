@@ -2,8 +2,6 @@
 //  OBAppEventHandler.h
 //  OctoBass
 //
-//  Created by Darwin on 4/24/20.
-//
 
 #ifndef OBAppEventHandler_h
 #define OBAppEventHandler_h

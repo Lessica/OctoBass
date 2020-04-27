@@ -2,8 +2,6 @@
 //  OBLocalDelegate.h
 //  OctoBass
 //
-//  Created by Darwin on 4/24/20.
-//
 
 #import <Foundation/Foundation.h>
 #import "OBAppController.h"

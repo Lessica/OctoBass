@@ -2,8 +2,6 @@
 //  OBAppController.h
 //  OctoBass
 //
-//  Created by Darwin on 4/25/20.
-//
 
 #import <Foundation/Foundation.h>
 #import "OBAppEventHandler.h"

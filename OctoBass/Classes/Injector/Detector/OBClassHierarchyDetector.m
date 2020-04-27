@@ -1,8 +1,6 @@
 //
 //  OBClassHierarchyDetector.m
-//
-//  Created by Sebastian Venditti on 9/3/14.
-//  Copyright (c) 2014. All rights reserved.
+//  OctoBass
 //
 
 #import "OBClassHierarchyDetector.h"
@@ -80,6 +78,7 @@
     OBClassRepresentation *repr = [[OBClassRepresentation alloc] init];
 
     repr.name = NSStringFromClass(class);
+    repr.isIncluded = YES;
 
     // Add the representation of the subclasses
     NSMutableArray *subclassesArray = [NSMutableArray array];
@@ -93,9 +92,12 @@
         }
     }
     
-    if (subclassesArray.count == 0) {
-        if (![allowedBundles containsObject:[NSBundle bundleForClass:class]]) {
+    if (![allowedBundles containsObject:[NSBundle bundleForClass:class]]) {
+        if (subclassesArray.count == 0) {
             return nil;
+        }
+        else {
+            repr.isIncluded = NO;
         }
     }
     
