@@ -22,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  * Initialize a class hierarchy detector with allowed bundles. Classes are restricted to provided bundles.
+ *
  * @param bundles allowed bundles.
  */
 - (instancetype)initWithBundles:(NSArray <NSBundle *> *)bundles;
@@ -63,7 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface OBClassRepresentation : NSObject
 
 @property (nonatomic, strong) NSString *name;
-@property (nonatomic, assign) BOOL isIncluded;
+@property (nonatomic, assign) BOOL isBundled;
 @property (nonatomic, strong) NSArray <OBClassRepresentation *> *subclassesRepresentations;
 
 @end

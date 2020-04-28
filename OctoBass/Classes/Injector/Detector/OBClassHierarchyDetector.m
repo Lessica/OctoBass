@@ -78,7 +78,7 @@
     OBClassRepresentation *repr = [[OBClassRepresentation alloc] init];
 
     repr.name = NSStringFromClass(class);
-    repr.isIncluded = YES;
+    repr.isBundled = YES;
 
     // Add the representation of the subclasses
     NSMutableArray *subclassesArray = [NSMutableArray array];
@@ -97,7 +97,7 @@
             return nil;
         }
         else {
-            repr.isIncluded = NO;
+            repr.isBundled = NO;
         }
     }
     

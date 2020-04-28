@@ -12,6 +12,11 @@
 #import "OBClassHierarchyDetector.h"
 #import "OBTouchRocket.h"
 
+#import "UIView+Hierarchy.h"
+#import "UIWindow+Hierarchy.h"
+#import "UIWebView+Description.h"
+#import "WKWebView+Description.h"
+
 
 @implementation OBViewInjector
 
@@ -25,112 +30,91 @@ static NSMutableSet <NSString *> *_$clsNames = nil;
 
 
 /**
- * The same as -[UIView didMoveToSuperview].
- * Creates and adds outline views to views we concerned.
+ * - [UIView didMoveToSuperview]
  */
 static void (*orig_UIView_didMoveToSuperview)(UIView *, SEL);
 static void repl_UIView_didMoveToSuperview(UIView *self, SEL _cmd)
 {
     
+    // self class name
     NSString *clsName = NSStringFromClass([self class]);
-    if ([_$clsNames containsObject:clsName]) {
+    
+    // self.superview class name
+    NSString *supClsName = nil;
+    if (self.superview != nil) {
+        supClsName = NSStringFromClass([self.superview class]);
+    }
+    
+    // SDK views only
+    if ((clsName != nil && [_$clsNames containsObject:clsName]) ||
+        (supClsName != nil && [_$clsNames containsObject:supClsName])
+        )
+    {
         
-        if (self.superview != nil) {
+        // added to superview
+        if (supClsName != nil) {
             
-            // moved to superview
-            NSString *supClsName = NSStringFromClass([self.superview class]);
             MyLog(@"%@ moved to %@", clsName, supClsName);
             
-            if ([clsName isEqualToString:@"BUNativeExpressAdView"]) {
+            // skip empty views
+            if (!CGRectIsEmpty(self.bounds)) {
                 
-                // tap its center after 3 seconds
+                CGPoint center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+                CGPoint pointInWindow = [self convertPoint:center toView:nil];
                 
-                // BUNativeExpressAdView <- BUWKWebViewClient
-                //             UnityView <- BUNativeExpressAdView
+#if DEBUG
+                [OBViewInjector printViewHierarchyAtPoint:pointInWindow];
+#endif
                 
-                CGPoint center = [self convertPoint:CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds)) toView:nil];
-                [OBViewInjector tapAtPoint:center afterInterval:3.0 simpleValidation:YES];
                 
-            }
-            
-            else if ([clsName isEqualToString:@"GADWebAdView"]) {  /* UIWebView */
-                
-                // tap (627, 150) after (video playing)
-                
-                // GADWebAdView <- GADVideoPlayerView
-                // GADWebAdView <- GADTestLabel
-                //       UIView <- GADWebAdView
-                //       UIView <- GADCloseButton
-                
-                [[NSNotificationCenter defaultCenter] addObserverForName:AVPlayerItemDidPlayToEndTimeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-                    [OBViewInjector tapAtPoint:CGPointMake(315, 75) afterInterval:1.0 simpleValidation:YES];
-                    [OBViewInjector tapAtPoint:CGPointMake(233.5, 149) afterInterval:1.0 simpleValidation:YES];
-                }];
                 
             }
             
-            else if ([clsName isEqualToString:@"SupersonicAdsView"]) {  /* WKWebView */
-                
-                // tap (394, 898) after (video playing)
-                
-                // SupersonicAdsView <- SSWVWKWebView
-                //         UnityView <- SupersonicAdsView
-                
-                CGPoint point2 = CGPointMake(200, 450);
-                [OBViewInjector tapAtPoint:point2 afterInterval:5.0 simpleValidation:YES];
-                
-            }
+        }
+        
+        // removed from superview
+        else {
             
-            else if ([clsName isEqualToString:@"BU_ZFPlayerView"]) {
-                
-                // BUNativeExpressRewardedVideoAdView <- BUWKWebViewClient
-                // UIView <- BURewardedVideoWebDefaultView
-                
-                // UIView <- BUWKWebViewClient
-                // BUWKWebViewClient <- BUWebViewProgressView
-                
-                // UIView <- BUVideoTopMask
-                // UIView <- BUVideoBottomMask
-                // UIView <- BURewardedVideoTopBarView
-                
-                // UIView <- BU_ZFPlayerView
-                // BU_ZFPlayerView <- BU_ZFPlayerControlView
-                // BU_ZFPlayerControlView <- BU_MMMaterialDesignSpinner
-                
-                // UIImageView <- BU_ASValueTrackingSlider
-                // BU_ASValueTrackingSlider <- BU_ASValuePopUpView
-                
-                CGPoint point3 = CGPointMake(200, 587);
-                [OBViewInjector tapAtPoint:point3 afterInterval:2.0 simpleValidation:YES];
-                
-            }
-            
-            // UIWindow <- GADMainWindowView
-            // UIWindow <- SSWVWKWebView
-            
-        } else {
-            
-            // removed from superview
             MyLog(@"%@ removed from its superview", clsName);
-            
-            if ([clsName isEqualToString:@"GADWebAdView"]) {  /* UIWebView */
-                [[NSNotificationCenter defaultCenter] removeObserver:self];
-            }
             
         }
         
     }
     
     orig_UIView_didMoveToSuperview(self, _cmd);
+    
 }
 
 
+#if DEBUG
+/**
+ * - [UIApplication sendEvent:]
+ */
 static void (*orig_UIApplication_sendEvent_)(UIApplication *, SEL, UIEvent *);
 static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent *event)
 {
-    MyLog(@"%@", event);
+    
+    // Only detects single touch object.
+    if (event.allTouches.count == 1) {
+        
+        // Get the only touch object.
+        UITouch *touchObj = [event.allTouches anyObject];
+        
+        // tap: began -> ended
+        if (touchObj.phase == UITouchPhaseEnded) {
+            
+            // Get location in its window coordinate.
+            CGPoint locInWindow = [touchObj locationInView:nil];
+            MyLog(@"tapped at point (%d, %d)", (int)floor(locInWindow.x), (int)floor(locInWindow.y));
+            
+        }
+        
+    }
+    
     orig_UIApplication_sendEvent_(self, _cmd, event);
+    
 }
+#endif
 
 
 #pragma mark - Injection Initializers
@@ -157,7 +141,9 @@ static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent
         
         // Hook view methods.
         MyHookMessage([UIView class], @selector(didMoveToSuperview), (IMP)repl_UIView_didMoveToSuperview, (IMP *)&orig_UIView_didMoveToSuperview);
+#if DEBUG
         MyHookMessage([UIApplication class], @selector(sendEvent:), (IMP)repl_UIApplication_sendEvent_, (IMP *)&orig_UIApplication_sendEvent_);
+#endif
         
     }
     return self;
@@ -172,36 +158,45 @@ static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent
  * @param clsRepr the class representation to be prepared.
  */
 - (void)prepareOBClassRepresentation:(OBClassRepresentation *)clsRepr {
-    if (clsRepr.isIncluded) {
+    
+    if (clsRepr.isBundled) {
         [_$clsNames addObject:clsRepr.name];
     }
+    
     for (OBClassRepresentation *subRepr in clsRepr.subclassesRepresentations) {
         [self prepareOBClassRepresentation:subRepr];
     }
+    
 }
 
 
-#pragma mark - Validation
+#pragma mark - Private
 
 
-+ (void)tapAtPoint:(CGPoint)point afterInterval:(NSTimeInterval)interval simpleValidation:(BOOL)validation
-{
++ (void)printViewHierarchyAtPoint:(CGPoint)point {
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
-        UIView *targetView = validation ? [keyWindow hitTest:point withEvent:nil] : nil;
+    UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
+    UIView *topView = [keyWindow ob_viewAtPoint:point];
+    
+    NSMutableString *hierarchyLogs = [NSMutableString stringWithString:@"\n[\n"];
+    
+    for (UIView *view in [topView ob_superviews]) {
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(interval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            if (validation) {
-                UIView *currentView = [keyWindow hitTest:point withEvent:nil];
-                if (currentView == targetView) {
-                    [OBTouchRocket tapAtPoint:point];
-                }
-            } else {
-                [OBTouchRocket tapAtPoint:point];
-            }
-        });
-    });
+        NSString *log = nil;
+        if ([view respondsToSelector:@selector(ob_description)]) {
+            log = [view performSelector:@selector(ob_description)];
+        } else {
+            log = [view description];
+        }
+        
+        if (log) {
+            [hierarchyLogs appendFormat:@"    \"%@\",\n", log];
+        }
+        
+    }
+    
+    [hierarchyLogs appendString:@"]"];
+    MyLog(@"%@", hierarchyLogs);
     
 }
 
