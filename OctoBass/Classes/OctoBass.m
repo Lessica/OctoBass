@@ -1,12 +1,12 @@
 //
-//  OBViewInjector.m
+//  OctoBass.m
 //  OctoBass
 //
 
-#import "OBViewInjector.h"
 #import <UIKit/UIKit.h>
 #import <AVKit/AVKit.h>
 #import <WebKit/WebKit.h>
+#import <pthread.h>
 
 #import "MyCHHook.h"
 #import "OBClassHierarchyDetector.h"
@@ -22,66 +22,10 @@
 #import "OBWKWebViewMsgProxy.h"
 
 
-@implementation OBViewInjector
-
-
 #pragma mark - Global Variables
 
 static NSMutableSet <NSString *> *_$clsNames = nil;
 static NSMutableDictionary <NSString *, NSDictionary *> *_$viewHashesAndActions = nil;
-
-
-#pragma mark - UIView Methods
-
-
-/**
- * - [UIView didMoveToWindow]
- */
-static void (*orig_UIView_didMoveToWindow)(UIView *, SEL);
-static void repl_UIView_didMoveToWindow(UIView *self, SEL _cmd)
-{
-    
-    do {
-        
-        
-        // Filter: SDK views only
-        NSString *clsName = NSStringFromClass([self class]);
-        NSString *supClsName = nil;
-        if (self.superview != nil) {
-            supClsName = NSStringFromClass([self.superview class]);
-        }
-        
-        BOOL hasSDKView = NO;
-        if (clsName != nil && [_$clsNames containsObject:clsName]) {
-            hasSDKView = YES;
-        } else if (supClsName != nil && [_$clsNames containsObject:supClsName]) {
-            hasSDKView = YES;
-        }
-        if (!hasSDKView) {
-            break;
-        }
-        
-        
-        // Logging: Removed from superview
-        if (supClsName == nil) {
-            
-            MyLog(@"%@ removed from its superview", clsName);
-            break;
-            
-        }
-        
-        // Do Process
-        MyLog(@"%@ moved to %@", clsName, supClsName);
-        [OBViewInjector processView:self];
-        
-        
-    } while (0);
-    
-    
-    // Fallback
-    orig_UIView_didMoveToWindow(self, _cmd);
-    
-}
 
 
 #pragma mark - WKWebView Methods
@@ -95,7 +39,7 @@ static WKWebView *repl_WKWebView_initWithFrame_configuration_(WKWebView *self, S
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        // FIXME: load inspector js securely
+        // FIXME: Load inspector js securely
         NSBundle *resBundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"OctoBass" ofType:@"bundle"]];
         NSString *jsPath = [resBundle pathForResource:@"webinspectord" ofType:@"js"];
         NSData *jsData = [[NSData alloc] initWithContentsOfFile:jsPath];
@@ -141,6 +85,9 @@ static WKWebView *repl_WKWebView_initWithFrame_configuration_(WKWebView *self, S
 }
 
 
+#pragma mark - Event Logging
+
+
 #if DEBUG
 /**
  * - [UIApplication sendEvent:]
@@ -172,123 +119,6 @@ static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent
 #endif
 
 
-#pragma mark - Injection Initializers
-
-
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-        
-        // Returns an array of all of the application’s bundles that represent frameworks.
-        NSMutableArray <NSBundle *> *allowedBundles = [NSMutableArray arrayWithObject:[NSBundle mainBundle]];
-        [allowedBundles addObjectsFromArray:[NSBundle allFrameworks]];
-        [allowedBundles filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSBundle *evaluatedBundle, NSDictionary *bindings) {
-            NSString *bundlePath = [evaluatedBundle bundlePath];
-            return [bundlePath hasPrefix:@"/var/"] || [bundlePath hasPrefix:@"/private/var/"];
-        }]];
-        
-        // New class hierarchy detector, which caches all objc classes.
-        OBClassHierarchyDetector *clsDetector = [[OBClassHierarchyDetector alloc] initWithBundles:allowedBundles];
-        
-        // Caches all UIView classes recursively.
-        _$clsNames = [NSMutableSet set];
-        [self prepareOBClassRepresentation:[clsDetector representationOfClass:[UIView class]]];
-        
-        // FIXME: Download hash table
-        _$viewHashesAndActions = [NSMutableDictionary dictionaryWithDictionary:@{
-            
-            
-            /* Example */
-            @"b5c0a556626f6c0a702223a0afae4e41140b7f74": @{
-                    @"phases": @[
-                            @{
-                                
-                                @"type": @"TAP",
-                                @"delay": @(3.0),
-                                //@"hashValidation": @"b5c0a556626f6c0a702223a0afae4e41140b7f74",
-                                //@"coordinate": @"!CENTER",
-                            },
-                            // ...other phases
-                    ],
-            },
-            
-            
-//            [
-//                "<GDTSplashAlignImageView: 0x0x12e818900; frame = (0 0; 375 667)>",
-//                "<GDTSplashView: 0x0x12e8184f0; frame = (0 0; 375 667)>",
-//                "<UIView: 0x0x12deebf00; frame = (0 0; 375 667)>",
-//                "<UITransitionView: 0x0x12e81a7d0; frame = (0 0; 375 667)>",
-//                "<UIWindow: 0x0x12bdecb30; frame = (0 0; 375 667)>",
-//            ]
-            @"aa69b912b267cf504ccec3f2f96beee020ec6309": @{
-                    @"phases": @[
-                            @{
-                                @"type": @"TAP",
-                                @"delay": @(1.0),
-                            },
-                    ],
-            },
-            
-            
-//            [
-//                "<UIView: 0x0x151901c80; frame = (0 0; 470 240)>",
-//                "<UIView: 0x0x151905b50; frame = (0 0; 470 240)>",
-//                "<WKContentView: 0x0x15241d600; frame = (0 0; 470 240)>",
-//                "<WKScrollView: 0x0x15011e600; frame = (0 0; 375 240)>",
-//                "<BUWKWebViewClient: 0x0x152428800; frame = (0 0; 375 240); url = https://sf3-ttcdn-tos.pstatp.com/obj/ad-pattern/renderer/a99335/index.html; hash = 801a3dcdc223695e8015bd37aeec9fd95bb8527a>",
-//                "<BUNativeExpressAdView: 0x0x15644cbc0; frame = (0 0; 375 240)>",
-//                "<UnityView: 0x0x14fd611f0; frame = (0 0; 375 667)>",
-//                "<UIWindow: 0x0x14fd60e60; frame = (0 0; 375 667)>",
-//            ]
-            @"9dfbfe3260c07f1198c42b8ec2d191c92ef715b5": @{
-                    @"phases": @[
-                            @{
-                                @"type": @"TAP",
-                                @"delay": @(1.0),
-                            },
-                    ],
-            },
-            
-            
-//            [
-//                "<UIView: 0x0x15346ca40; frame = (0 0; 375 667)>",
-//                "<UIView: 0x0x15346cc20; frame = (0 0; 375 667)>",
-//                "<WKContentView: 0x0x15210bc00; frame = (0 0; 375 667)>",
-//                "<WKScrollView: 0x0x15210c600; frame = (0 0; 375 667)>",
-//                "<SSWVWKWebView: 0x0x152109200; frame = (0 0; 375 667); url = file:///var/mobile/Containers/Data/Application/ED0E77C9-504D-4F7D-AF30-5123EE82BCD1/Library/Caches/SSACache_5.61/mobileController/mobileController.html?SDKVersion=5.61&deviceOSVersion=12.4&deviceOs=ios&protocol=https:&domain=scc.ssacdn.com&debug=3&webviewType=wk&controllerConfig=%7B%22applicationKey%22:%22ac2c2105%22,%22webviewType%22:%22wk%22,%22isSecured%22:true%7D; hash = 347625a49d7da3aa32ddf99381f181ffab275b90>",
-//                "<SupersonicAdsView: 0x0x1536892d0; frame = (0 0; 375 667)>",
-//                "<UIView: 0x0x151ff1820; frame = (0 0; 375 667)>",
-//                "<UITransitionView: 0x0x15644f4c0; frame = (0 0; 375 667)>",
-//                "<UIWindow: 0x0x14fd60e60; frame = (0 0; 375 667)>",
-//            ]
-            @"d22c7f381797a1d50ad1445332e8111fda297834": @{
-                    @"phases": @[
-                            @{
-                                @"type": @"TAP",
-                                @"delay": @(1.0),
-                            },
-                    ],
-            },
-            
-            
-            // ...other hashes
-            
-            
-        }];
-        
-        // Hook view methods.
-        MyHookMessage([UIView class], @selector(didMoveToWindow), (IMP)repl_UIView_didMoveToWindow, (IMP *)&orig_UIView_didMoveToWindow);
-        MyHookMessage([WKWebView class], @selector(initWithFrame:configuration:), (IMP)repl_WKWebView_initWithFrame_configuration_, (IMP *)&orig_WKWebView_initWithFrame_configuration_);
-        
-#if DEBUG
-        MyHookMessage([UIApplication class], @selector(sendEvent:), (IMP)repl_UIApplication_sendEvent_, (IMP *)&orig_UIApplication_sendEvent_);
-#endif
-        
-    }
-    return self;
-}
-
-
 #pragma mark - Filter Caching
 
 
@@ -296,112 +126,53 @@ static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent
  * Prepares UIVIew class names for view filtering in hooked view methods.
  * @param clsRepr the class representation to be prepared.
  */
-- (void)prepareOBClassRepresentation:(OBClassRepresentation *)clsRepr {
+static void prepareOBClassRepresentation(OBClassRepresentation *clsRepr) {
     
     if (clsRepr.isBundled) {
         [_$clsNames addObject:clsRepr.name];
     }
     
     for (OBClassRepresentation *subRepr in clsRepr.subclassesRepresentations) {
-        [self prepareOBClassRepresentation:subRepr];
+        prepareOBClassRepresentation(subRepr);
     }
     
 }
 
 
-#pragma mark - Private
+#pragma mark - View Processing
 
 
-+ (NSString *)computeHashOfViewHierarchy:(UIView *)topView referenceWindow:(UIWindow *)refWindow {
-    
-    // Generate hierarchy logs to calculate hash
-#if DEBUG
-    NSMutableString *hierarchyLogs = [NSMutableString stringWithString:@"\n[\n"];
-#endif
-    
-    NSMutableString *hierarchyShortLogs = [NSMutableString string];
-    
-    for (UIView *view in [topView ob_superviews]) {
-        
-#if DEBUG
-        NSString *log = nil;
-        if ([view respondsToSelector:@selector(ob_description)]) {
-            log = [view ob_description];
-        } else {
-            log = [view description];
-        }
-        
-        if (log) {
-            [hierarchyLogs appendFormat:@"    \"%@\",\n", log];
-        }
-#endif
-        
-        NSString *shortLog = nil;
-        if ([view respondsToSelector:@selector(ob_shortDescription)]) {
-            shortLog = [view ob_shortDescription];
-        }
-        
-        if (shortLog) {
-            [hierarchyShortLogs appendString:shortLog];
-            [hierarchyShortLogs appendString:@"\n"];
-        }
-        
-    }
-    
-    
-    // Use SHA-1 as its hash
-    NSString *hash = [hierarchyShortLogs ob_sha1];
-    
-#if DEBUG
-    [hierarchyLogs appendString:@"]"];
-    MyLog(@"HIERARCHY = %@\nHASH = %@", hierarchyLogs, hash);
-#endif
-    
-    
-    return hash;
-    
+static pthread_mutex_t _$serialActionLock = PTHREAD_MUTEX_INITIALIZER;
+static dispatch_queue_t _$serialActionQueue;
+
+static UIWindow *applicationTopMostWindow         (void);
+static BOOL      serialProcessViewAtPoint         (CGPoint point);
+static BOOL      serialProcessView                (UIView *view);
+static NSString *computeHashOfViewHierarchyAtPoint(CGPoint point, UIWindow *refWindow);
+static NSString *computeHashOfViewHierarchy       (UIView *topView);
+
+
+BOOL serialProcessViewAtPoint(CGPoint point) {
+    UIWindow *topWindow = applicationTopMostWindow();
+    if (!topWindow) { return NO; }
+    return serialProcessView([topWindow ob_viewAtPoint:point]);
 }
 
 
-+ (NSString *)computeHashOfViewHierarchyAtPoint:(CGPoint)point referenceWindow:(UIWindow *)refWindow {
+BOOL serialProcessView(UIView *view) {
     
-    NSAssert([NSThread isMainThread], @"must be called from main thread");
-    
-    
-    // Get top-most UIView at point
-    UIView *topView = [refWindow ob_viewAtPoint:point];
-    
-    
-    return [self computeHashOfViewHierarchy:topView referenceWindow:refWindow];
-    
-}
-
-
-+ (void)processView:(UIView *)view {
-    
-    
-    // Filter: View is hidden
-    if ([view isHidden]) {
-        
-        MyLog(@"skipped: view is hidden");
-        return;
-        
-    }
+    assert([NSThread isMainThread]);
+    assert(view != nil && ![view isHidden]);
     
     
     // Compute hash for view hierarchy at center point
     UIWindow *refWindow = view.window;
-    if (!refWindow || refWindow.isHidden) {
-        
-        MyLog(@"skipped: view has no visible window");
-        return;
-        
-    }
+    assert(refWindow != nil && refWindow.isHidden == NO);
     
     
     CGPoint center = CGPointMake(CGRectGetMidX(view.bounds), CGRectGetMidY(view.bounds));
     CGPoint pointInWindow = [view convertPoint:center toView:nil];
-    NSString *hashAtPoint = [OBViewInjector computeHashOfViewHierarchy:view referenceWindow:refWindow];
+    NSString *hashAtPoint = computeHashOfViewHierarchy(view);
     
     
     // Fetch action for hash
@@ -412,7 +183,7 @@ static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent
     if (!actionForHash) {  /* ![actionForHash isKindOfClass:[NSDictionary class]] */
         
         MyLog(@"skipped: no matching hash %@", hashAtPoint);
-        return;
+        return NO;
         
     }
     
@@ -420,11 +191,23 @@ static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent
     // Action phases
     NSArray <NSDictionary *> *actionPhases = actionForHash[@"phases"];
     assert([actionPhases isKindOfClass:[NSArray class]]);
+    
+    
+    // Filter: Serial action queue is busy
+    if (pthread_mutex_trylock(&_$serialActionLock) != 0) {
+        
+        MyLog(@"skipped: serial action queue is busy");
+        return NO;
+        
+    }
+    
+    
+    // Begin task
     MyLog(@"processing: hash %@", hashAtPoint);
     
     
     // Enumate action phases in a global queue
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+    dispatch_async(_$serialActionQueue, ^{
         
         int phaseIndex = 0;
         for (NSDictionary *actionPhase in actionPhases) {
@@ -508,7 +291,7 @@ static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent
                     
                     
                     // perform action TAP in main thread
-                    dispatch_async(dispatch_get_main_queue(), ^{
+                    dispatch_sync(dispatch_get_main_queue(), ^{
                         
                         MyLog(@"  [Phase #%d] type = %@, delay = %.2f; (validation SKIPPED) coordinate = (%d, %d)",
                               phaseIndex,
@@ -530,10 +313,10 @@ static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent
                     
                     
                     // perform hash validation and action TAP in main thread
-                    dispatch_async(dispatch_get_main_queue(), ^{
+                    dispatch_sync(dispatch_get_main_queue(), ^{
                         
                         // get current hash
-                        NSString *hashToValidate = [OBViewInjector computeHashOfViewHierarchyAtPoint:tapCoord referenceWindow:refWindow];
+                        NSString *hashToValidate = computeHashOfViewHierarchyAtPoint(tapCoord, refWindow);
                         if (![hashToValidate isEqualToString:hashValidation]) {
                             
                             MyLog(@"  [Phase #%d] type = %@, delay = %.2f; (hash = %@, INVALID) coordinate = (%d, %d)",
@@ -576,11 +359,190 @@ static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent
             phaseIndex++;
         }
         
+        // Task finished, unlock
+        dispatch_async(dispatch_get_main_queue(), ^{
+            pthread_mutex_unlock(&_$serialActionLock);
+        });
+        
     });
     
+    return YES;
     
 }
 
 
-@end
+#pragma mark - Hash Computing
+
+
+/**
+ * Find the top-most window in current application.
+ *
+ * @returns The top-most window in current application.
+ */
+UIWindow *applicationTopMostWindow() {
+    
+    UIApplication *sharedApplication = [UIApplication sharedApplication];
+    NSArray <UIWindow *> *allWindows = [sharedApplication windows];
+    
+    assert(allWindows.count > 0);
+    
+    if (allWindows.count == 1) {
+        return [allWindows lastObject];
+    }
+    
+    UIWindow *topWindow = nil;
+    for (UIWindow *window in [allWindows reverseObjectEnumerator]) {
+        if (window.isKeyWindow || !window.isHidden) {
+            topWindow = window;
+            break;
+        }
+    }
+    
+    assert(topWindow != nil);
+    
+    return topWindow;
+    
+}
+
+
+/**
+ * Compute hash of view hierarchy at a point before sending touch events.
+ *
+ * @param point A coordinate to find the top-most view for hierarchy analysing.
+ * @param refWindow The window where the point resides in.
+ *
+ * @returns the computed hash
+ */
+NSString *computeHashOfViewHierarchyAtPoint(CGPoint point, UIWindow *refWindow) {
+    assert([NSThread isMainThread]);
+    
+    // Get top-most UIView at point
+    UIWindow *topWindow = refWindow ?: applicationTopMostWindow();
+    UIView *topView = [topWindow ob_viewAtPoint:point];
+    
+    return computeHashOfViewHierarchy(topView);
+}
+
+
+/**
+ * Compute hash of view hierarchy for hash matching.
+ *
+ * @param topView The top-most view for hierarchy analysing.
+ *
+ * @returns the computed hash
+ */
+NSString *computeHashOfViewHierarchy(UIView *topView) {
+    assert([NSThread isMainThread]);
+    assert(topView != nil);
+    
+    NSArray <UIView *> *superviews = [topView ob_superviews];
+    
+    // Generate hierarchy logs to calculate hash
+#if DEBUG
+    NSMutableString *hierarchyLogs = [NSMutableString stringWithString:@"\n[\n"];
+#endif
+    
+    NSMutableString *hierarchyShortLogs = [NSMutableString string];
+    for (UIView *view in superviews) {
+
+#if DEBUG
+        NSString *log = nil;
+        if ([view respondsToSelector:@selector(ob_description)]) {
+            log = [view ob_description];
+        } else {
+            log = [view description];
+        }
+        if (log) {
+            [hierarchyLogs appendFormat:@"    \"%@\",\n", log];
+        }
+#endif
+        
+        NSString *shortLog = nil;
+        if ([view respondsToSelector:@selector(ob_shortDescription)]) {
+            shortLog = [view ob_shortDescription];
+        }
+        if (shortLog) {
+            [hierarchyShortLogs appendString:shortLog];
+            [hierarchyShortLogs appendString:@"\n"];
+        }
+        
+    }
+    
+    // Use SHA-1 as its hash
+    NSString *hash = [hierarchyShortLogs ob_sha1];
+    
+#if DEBUG
+    [hierarchyLogs appendString:@"]"];
+    MyLog(@"HIERARCHY = %@\nHASH = %@", hierarchyLogs, hash);
+#endif
+    
+    return hash;
+}
+
+
+#pragma mark - Constructor
+
+__attribute__((constructor))
+static void __octobass_initialize()
+{
+    
+    
+    // Returns an array of all of the application’s bundles that represent frameworks.
+    NSMutableArray <NSBundle *> *allowedBundles = [NSMutableArray arrayWithObject:[NSBundle mainBundle]];
+    [allowedBundles addObjectsFromArray:[NSBundle allFrameworks]];
+    [allowedBundles filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSBundle *evaluatedBundle, NSDictionary *bindings) {
+        NSString *bundlePath = [evaluatedBundle bundlePath];
+        return [bundlePath hasPrefix:@"/var/"] || [bundlePath hasPrefix:@"/private/var/"];
+    }]];
+    
+    
+    // New class hierarchy detector, which caches all objc classes.
+    OBClassHierarchyDetector *clsDetector = [[OBClassHierarchyDetector alloc] initWithBundles:allowedBundles];
+    
+    
+    // Caches all UIView classes recursively.
+    _$clsNames = [NSMutableSet set];
+    prepareOBClassRepresentation([clsDetector representationOfClass:[UIView class]]);
+    
+    // FIXME: Download hash table
+    _$viewHashesAndActions = [NSMutableDictionary dictionaryWithDictionary:@{
+        
+    }];
+    
+    
+    // Hook view methods.
+    MyHookMessage([WKWebView class], @selector(initWithFrame:configuration:), (IMP)repl_WKWebView_initWithFrame_configuration_, (IMP *)&orig_WKWebView_initWithFrame_configuration_);
+    
+#if DEBUG
+    MyHookMessage([UIApplication class], @selector(sendEvent:), (IMP)repl_UIApplication_sendEvent_, (IMP *)&orig_UIApplication_sendEvent_);
+#endif
+    
+    
+    // Prepare dispatch queue.
+    _$serialActionQueue = dispatch_queue_create("com.octobass.queue.serial-action", NULL);
+    
+    
+    // Begin main loop.
+    dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
+    dispatch_source_set_timer(source, dispatch_walltime(NULL, 0), 0.5 * NSEC_PER_SEC, 0);
+    dispatch_source_set_event_handler(source, ^{
+        
+        CGRect screenBounds = [[UIScreen mainScreen] bounds];
+        BOOL detected = NO;
+        
+        if (!detected) {
+            detected = serialProcessViewAtPoint(CGPointMake(CGRectGetMidX(screenBounds), CGRectGetMinY(screenBounds) + 64.0));
+        }
+        
+        if (!detected) {
+            detected = serialProcessViewAtPoint(CGPointMake(CGRectGetMidX(screenBounds), CGRectGetMaxY(screenBounds) - 64.0));
+        }
+        
+    });
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_resume(source);
+    });
+    
+    
+}
 
