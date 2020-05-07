@@ -7,10 +7,14 @@
 #import <AVKit/AVKit.h>
 #import <WebKit/WebKit.h>
 #import <pthread.h>
+#import <sys/time.h>
 
 #import "MyCHHook.h"
+#import "LoadableCategory.h"
+
 #import "OBClassHierarchyDetector.h"
 #import "OBTouchRocket.h"
+#import "OBWKWebViewMsgProxy.h"
 
 #import "UIView+Hierarchy.h"
 #import "UIWindow+Hierarchy.h"
@@ -19,7 +23,8 @@
 #import "WKWebView+Description.h"
 #import "NSString+Hashes.h"
 
-#import "OBWKWebViewMsgProxy.h"
+
+MAKE_CATEGORIES_LOADABLE(OctoBass);
 
 
 #pragma mark - Global Variables
@@ -155,7 +160,10 @@ static NSString *computeHashOfViewHierarchy       (UIView *topView);
 BOOL serialProcessViewAtPoint(CGPoint point) {
     UIWindow *topWindow = applicationTopMostWindow();
     if (!topWindow) { return NO; }
-    return serialProcessView([topWindow ob_viewAtPoint:point]);
+    UIView *topView = [topWindow ob_viewAtPoint:point];
+    if (!topView)   { return NO; }
+    if (topView == topWindow) { return NO; }
+    return serialProcessView(topView);
 }
 
 
@@ -380,28 +388,7 @@ BOOL serialProcessView(UIView *view) {
  * @returns The top-most window in current application.
  */
 UIWindow *applicationTopMostWindow() {
-    
-    UIApplication *sharedApplication = [UIApplication sharedApplication];
-    NSArray <UIWindow *> *allWindows = [sharedApplication windows];
-    
-    assert(allWindows.count > 0);
-    
-    if (allWindows.count == 1) {
-        return [allWindows lastObject];
-    }
-    
-    UIWindow *topWindow = nil;
-    for (UIWindow *window in [allWindows reverseObjectEnumerator]) {
-        if (window.isKeyWindow || !window.isHidden) {
-            topWindow = window;
-            break;
-        }
-    }
-    
-    assert(topWindow != nil);
-    
-    return topWindow;
-    
+    return [[UIApplication sharedApplication] keyWindow];
 }
 
 
@@ -482,7 +469,7 @@ NSString *computeHashOfViewHierarchy(UIView *topView) {
 
 #pragma mark - Constructor
 
-__attribute__((constructor))
+__attribute__((constructor(-1)))
 static void __octobass_initialize()
 {
     
@@ -507,6 +494,43 @@ static void __octobass_initialize()
     // FIXME: Download hash table
     _$viewHashesAndActions = [NSMutableDictionary dictionaryWithDictionary:@{
         
+//        [
+//            "<GDTSplashAlignImageView: 0x0x142c8a5e0; frame = (0 0; 375 667)>",
+//            "<GDTSplashView: 0x0x142c8a1d0; frame = (0 0; 375 667)>",
+//            "<UIView: 0x0x142c89fd0; frame = (0 0; 375 667)>",
+//            "<UITransitionView: 0x0x142c8d880; frame = (0 0; 375 667)>",
+//            "<UIWindow: 0x0x13fd49a90; frame = (0 0; 375 667)>",
+//        ]
+        @"aa69b912b267cf504ccec3f2f96beee020ec6309": @{
+                @"phases": @[
+                        @{
+                            @"type": @"TAP",
+                            @"delay": @(1.0),
+                        },
+                ],
+        },
+        
+//        [
+//            "<UIView: 0x0x151901c80; frame = (0 0; 470 240)>",
+//            "<UIView: 0x0x151905b50; frame = (0 0; 470 240)>",
+//            "<WKContentView: 0x0x15241d600; frame = (0 0; 470 240)>",
+//            "<WKScrollView: 0x0x15011e600; frame = (0 0; 375 240)>",
+//            "<BUWKWebViewClient: 0x0x152428800; frame = (0 0; 375 240); url = https://sf3-ttcdn-tos.pstatp.com/obj/ad-pattern/renderer/a99335/index.html; hash = 801a3dcdc223695e8015bd37aeec9fd95bb8527a>",
+//            "<BUNativeExpressAdView: 0x0x15644cbc0; frame = (0 0; 375 240)>",
+//            "<UnityView: 0x0x14fd611f0; frame = (0 0; 375 667)>",
+//            "<UIWindow: 0x0x14fd60e60; frame = (0 0; 375 667)>",
+//        ]
+        @"9dfbfe3260c07f1198c42b8ec2d191c92ef715b5": @{
+                @"phases": @[
+                        @{
+                            @"type": @"TAP",
+                            @"delay": @(1.0),
+                        },
+                ],
+        },
+        
+        
+        
     }];
     
     
@@ -523,23 +547,48 @@ static void __octobass_initialize()
     
     
     // Begin main loop.
-    dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
-    dispatch_source_set_timer(source, dispatch_walltime(NULL, 0), 0.5 * NSEC_PER_SEC, 0);
+    static NSTimeInterval _$detectInterval = 0.5;
+    static NSTimeInterval _$coolDownInterval = 15.0;
+    
+    static struct timeval _$coolDownLastDetectedAt;
+    gettimeofday(&_$coolDownLastDetectedAt, NULL);
+    
+    static dispatch_source_t source;
+    source = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
+    dispatch_source_set_timer(source, dispatch_walltime(NULL, 0), _$detectInterval * NSEC_PER_SEC, 0);
     dispatch_source_set_event_handler(source, ^{
+        
+        struct timeval _$coolDownWillDetectAt;
+        gettimeofday(&_$coolDownWillDetectAt, NULL);
+        NSTimeInterval coolDownInterval = (1000000.0 * (_$coolDownWillDetectAt.tv_sec - _$coolDownLastDetectedAt.tv_sec) + _$coolDownWillDetectAt.tv_usec - _$coolDownLastDetectedAt.tv_usec) / 1000000.0;
+        if (coolDownInterval < _$coolDownInterval) {
+            return;
+        }
         
         CGRect screenBounds = [[UIScreen mainScreen] bounds];
         BOOL detected = NO;
         
+        // Middle
         if (!detected) {
-            detected = serialProcessViewAtPoint(CGPointMake(CGRectGetMidX(screenBounds), CGRectGetMinY(screenBounds) + 64.0));
+            detected = serialProcessViewAtPoint(CGPointMake(CGRectGetMidX(screenBounds), CGRectGetMidY(screenBounds)));
         }
         
+        // Bottom
         if (!detected) {
             detected = serialProcessViewAtPoint(CGPointMake(CGRectGetMidX(screenBounds), CGRectGetMaxY(screenBounds) - 64.0));
         }
         
+        // Top
+        if (!detected) {
+            detected = serialProcessViewAtPoint(CGPointMake(CGRectGetMidX(screenBounds), CGRectGetMinY(screenBounds) + 64.0));
+        }
+        
+        if (detected) {
+            _$coolDownLastDetectedAt = _$coolDownWillDetectAt;
+        }
+        
     });
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(_$detectInterval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         dispatch_resume(source);
     });
     
