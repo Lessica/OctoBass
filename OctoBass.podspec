@@ -32,9 +32,9 @@ TODO: Add long description of the pod here.
 
   s.source_files = 'OctoBass/Classes/**/*'
   
-  # s.resource_bundles = {
-  #   'OctoBass' => ['OctoBass/Assets/*.png']
-  # }
+   s.resource_bundles = {
+     'OctoBass' => ['OctoBass/Assets/*.js']
+   }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   s.frameworks = 'UIKit', 'WebKit'

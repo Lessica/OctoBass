@@ -32,5 +32,9 @@
     
 }
 
+- (void)hostApplicationWindowDidBecomeVisible:(UIWindow *)window {
+    
+}
+
 @end
 

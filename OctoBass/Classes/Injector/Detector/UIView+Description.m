@@ -14,5 +14,10 @@
 }
 
 
+- (NSString *)ob_shortDescription {
+    return [NSString stringWithFormat:@"<%@>", NSStringFromClass([self class])];
+}
+
+
 @end
 

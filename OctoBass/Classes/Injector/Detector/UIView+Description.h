@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @returns A string that describes the contents of the receiver.
  */
 - (NSString *)ob_description;
+- (NSString *)ob_shortDescription;
 
 
 @end
