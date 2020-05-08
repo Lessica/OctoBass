@@ -26,10 +26,10 @@
 		6003F5B9195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6003F5BB195388D20070C39A /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
-		915A33AAB5B152738426E070 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		94BDADC4E66BE5E0C0BB4431 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		915A33AAB5B152738426E070 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		94BDADC4E66BE5E0C0BB4431 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		C1F126F696EBDD607FA1A8E2 /* Pods-OctoBass_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OctoBass_Tests.debug.xcconfig"; path = "Target Support Files/Pods-OctoBass_Tests/Pods-OctoBass_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		DE9DAD54C45A854FF6D7BB12 /* OctoBass.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = OctoBass.podspec; path = ../OctoBass.podspec; sourceTree = "<group>"; };
+		DE9DAD54C45A854FF6D7BB12 /* OctoBass.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = OctoBass.podspec; path = ../OctoBass.podspec; sourceTree = "<group>"; };
 		FD49F6242AC91D317CA04445 /* Pods_OctoBass_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OctoBass_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -114,7 +114,6 @@
 				C1F126F696EBDD607FA1A8E2 /* Pods-OctoBass_Tests.debug.xcconfig */,
 				417506C3DCD2863D0FE34A3C /* Pods-OctoBass_Tests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -149,17 +148,13 @@
 				CLASSPREFIX = OB;
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = i_82;
-				TargetAttributes = {
-					6003F5AD195388D20070C39A = {
-						TestTargetID = 6003F589195388D20070C39A;
-					};
-				};
 			};
 			buildConfigurationList = 6003F585195388D10070C39A /* Build configuration list for PBXProject "OctoBass" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -193,12 +188,12 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-OctoBass_Tests/Pods-OctoBass_Tests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/OctoBass/OctoBass.framework",
-				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+				"${BUILT_PRODUCTS_DIR}/Protobuf/protobuf.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OctoBass.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/protobuf.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -344,7 +339,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OctoBass_Example.app/OctoBass_Example";
 				WRAPPER_EXTENSION = xctest;
 			};
 			name = Debug;
@@ -364,7 +358,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OctoBass_Example.app/OctoBass_Example";
 				WRAPPER_EXTENSION = xctest;
 			};
 			name = Release;

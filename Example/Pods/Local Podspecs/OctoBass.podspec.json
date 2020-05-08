@@ -30,8 +30,8 @@
     "WebKit"
   ],
   "dependencies": {
-    "nanopb": [
-      ">= 0.3.9011"
+    "Protobuf": [
+
     ]
   }
 }

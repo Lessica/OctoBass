@@ -107,8 +107,8 @@
         for (let image_DOM of document.images) {
             report += DoJavaHash(
                 'image;.src=' + image_DOM.currentSrc
-                + ';.width=' + image_DOM.width.toString()
-                + ';.height=' + image_DOM.height.toString()
+                + ';.naturalWidth=' + image_DOM.naturalWidth.toString()
+                + ';.naturalHeight=' + image_DOM.naturalHeight.toString()
             ) + ',';
             cnt++;
         }

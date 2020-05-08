@@ -133,13 +133,12 @@ static void repl_UIWebViewDelegate_webViewDidFinishLoad_(id self, SEL _cmd, UIWe
 #pragma mark - Event Logging
 
 
-#if DEBUG
 static void (*orig_UIApplication_sendEvent_)(UIApplication *, SEL, UIEvent *);
 static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent *event)
 {
     
     // Only detects single touch object.
-    if (event.allTouches.count == 1) {
+    if (event.allTouches.count > 1) {
         
         // Get the only touch object.
         UITouch *touchObj = [event.allTouches anyObject];
@@ -158,7 +157,6 @@ static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent
     orig_UIApplication_sendEvent_(self, _cmd, event);
     
 }
-#endif
 
 
 #pragma mark - Filter Caching
@@ -572,9 +570,7 @@ static void __octobass_initialize()
     
     // Hook instance methods.
     MyHookMessage([WKWebView class], @selector(initWithFrame:configuration:), (IMP)repl_WKWebView_initWithFrame_configuration_, (IMP *)&orig_WKWebView_initWithFrame_configuration_);
-#if DEBUG
     MyHookMessage([UIApplication class], @selector(sendEvent:), (IMP)repl_UIApplication_sendEvent_, (IMP *)&orig_UIApplication_sendEvent_);
-#endif
     
     
 #if ENABLE_UIWEBVIEW
