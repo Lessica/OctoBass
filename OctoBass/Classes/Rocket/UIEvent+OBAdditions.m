@@ -15,7 +15,7 @@ MAKE_CATEGORIES_LOADABLE(UIEvent_OBAdditions)
 // GSEvent is an undeclared object. We don't need to use it ourselves but some
 // Apple APIs (UIScrollView in particular) require the x and y fields to be present.
 //
-@interface KIFGSEventProxy : NSObject
+@interface OBEventProxy : NSObject
 {
 @public
     unsigned int flags;
@@ -35,7 +35,7 @@ MAKE_CATEGORIES_LOADABLE(UIEvent_OBAdditions)
 }
 @end
 
-@implementation KIFGSEventProxy
+@implementation OBEventProxy
 @end
 
 typedef struct __GSEvent * GSEventRef;
@@ -61,7 +61,8 @@ typedef struct __GSEvent * GSEventRef;
 {
     UITouch *touch = touches[0];
     CGPoint location = [touch locationInView:touch.window];
-    KIFGSEventProxy *gsEventProxy = [[KIFGSEventProxy alloc] init];
+    
+    OBEventProxy *gsEventProxy = [[OBEventProxy alloc] init];
     gsEventProxy->x1 = location.x;
     gsEventProxy->y1 = location.y;
     gsEventProxy->x2 = location.x;

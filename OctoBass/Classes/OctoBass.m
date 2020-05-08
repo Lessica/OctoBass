@@ -18,12 +18,14 @@
 
 #import "UIView+Hierarchy.h"
 #import "UIWindow+Hierarchy.h"
+#import "UIWebView+Inspector.h"
 #import "UIView+Description.h"
 #import "UIWebView+Description.h"
 #import "WKWebView+Description.h"
 #import "NSString+Hashes.h"
 
 
+#define ENABLE_UIWEBVIEW 1
 MAKE_CATEGORIES_LOADABLE(OctoBass);
 
 
@@ -90,13 +92,48 @@ static WKWebView *repl_WKWebView_initWithFrame_configuration_(WKWebView *self, S
 }
 
 
+#pragma mark - UIWebView Methods
+
+#if ENABLE_UIWEBVIEW
+static void (*orig_UIWebViewDelegate_webViewDidFinishLoad_)(id, SEL, UIWebView *);
+static void repl_UIWebViewDelegate_webViewDidFinishLoad_(id self, SEL _cmd, UIWebView *webView)
+{
+    
+    static NSString *inspectorJS = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        
+        // FIXME: Load inspector js securely
+        NSBundle *resBundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"OctoBass" ofType:@"bundle"]];
+        NSString *jsPath = [resBundle pathForResource:@"webinspectord" ofType:@"js"];
+        NSData *jsData = [[NSData alloc] initWithContentsOfFile:jsPath];
+        inspectorJS = [[NSString alloc] initWithData:jsData encoding:NSUTF8StringEncoding];
+        
+    });
+    
+    if (!inspectorJS) {
+        orig_UIWebViewDelegate_webViewDidFinishLoad_(self, _cmd, webView);
+        return;
+    }
+    
+    NSString *evaluatedResult = [webView stringByEvaluatingJavaScriptFromString:inspectorJS];
+    if (evaluatedResult.length) {
+        
+        // Save reported hash directly to UIWebView instance
+        [webView ob_setInspectorReportedHash:evaluatedResult];
+        
+    }
+    
+    orig_UIWebViewDelegate_webViewDidFinishLoad_(self, _cmd, webView);
+    
+}
+#endif
+
+
 #pragma mark - Event Logging
 
 
 #if DEBUG
-/**
- * - [UIApplication sendEvent:]
- */
 static void (*orig_UIApplication_sendEvent_)(UIApplication *, SEL, UIEvent *);
 static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent *event)
 {
@@ -161,8 +198,7 @@ BOOL serialProcessViewAtPoint(CGPoint point) {
     UIWindow *topWindow = applicationTopMostWindow();
     if (!topWindow) { return NO; }
     UIView *topView = [topWindow ob_viewAtPoint:point];
-    if (!topView)   { return NO; }
-    if (topView == topWindow) { return NO; }
+    if (!topView || topView == topWindow) { return NO; }
     return serialProcessView(topView);
 }
 
@@ -534,11 +570,30 @@ static void __octobass_initialize()
     }];
     
     
-    // Hook view methods.
+    // Hook instance methods.
     MyHookMessage([WKWebView class], @selector(initWithFrame:configuration:), (IMP)repl_WKWebView_initWithFrame_configuration_, (IMP *)&orig_WKWebView_initWithFrame_configuration_);
-    
 #if DEBUG
     MyHookMessage([UIApplication class], @selector(sendEvent:), (IMP)repl_UIApplication_sendEvent_, (IMP *)&orig_UIApplication_sendEvent_);
+#endif
+    
+    
+#if ENABLE_UIWEBVIEW
+    // Hook delegate methods
+    int numClasses = 0, newNumClasses = objc_getClassList(NULL, 0);
+    Class *classes = NULL;
+    while (numClasses < newNumClasses) {
+        numClasses = newNumClasses;
+        classes = (Class *)realloc(classes, sizeof(Class) * numClasses);
+        newNumClasses = objc_getClassList(classes, numClasses);
+        for (int i = 0; i < numClasses; i++) {
+            Class clazz = classes[i];
+            Protocol *locationManagerDelegate = NSProtocolFromString([NSString stringWithFormat:@"UI%@Delegate", @"WebView"]);
+            if (class_conformsToProtocol(clazz, locationManagerDelegate)) {
+                MyHookMessage(clazz, @selector(webViewDidFinishLoad:), (IMP)repl_UIWebViewDelegate_webViewDidFinishLoad_, (IMP *)&orig_UIWebViewDelegate_webViewDidFinishLoad_);
+            }
+        }
+    }
+    free(classes);
 #endif
     
     

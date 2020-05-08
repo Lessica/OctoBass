@@ -19,8 +19,13 @@
         return;
     }
     
-    // Save reported hash to user content controller
-    [userContentController ob_setInspectorReportedHash:(NSString *)message.body];
+    NSString *evaluatedResult = (NSString *)message.body;
+    if ([evaluatedResult isKindOfClass:[NSString class]] && evaluatedResult.length) {
+        
+        // Save reported hash to user content controller
+        [userContentController ob_setInspectorReportedHash:evaluatedResult];
+        
+    }
     
 }
 
