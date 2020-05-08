@@ -193,10 +193,12 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-OctoBass_Tests/Pods-OctoBass_Tests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/OctoBass/OctoBass.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OctoBass.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

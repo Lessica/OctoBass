@@ -1,15 +1,26 @@
 PODS:
-  - OctoBass (0.1.0)
+  - nanopb (0.3.9011):
+    - nanopb/decode (= 0.3.9011)
+    - nanopb/encode (= 0.3.9011)
+  - nanopb/decode (0.3.9011)
+  - nanopb/encode (0.3.9011)
+  - OctoBass (0.1.0):
+    - nanopb (>= 0.3.9011)
 
 DEPENDENCIES:
   - OctoBass (from `../`)
+
+SPEC REPOS:
+  trunk:
+    - nanopb
 
 EXTERNAL SOURCES:
   OctoBass:
     :path: "../"
 
 SPEC CHECKSUMS:
-  OctoBass: 4ed233446270e634aa9fa0e3e00333676fc0dded
+  nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
+  OctoBass: 919d9c02bd63c7a60372f09425441ec116f8f80d
 
 PODFILE CHECKSUM: 801f40e568cd9a82a716c42bbfdaeeef2b05913c
 

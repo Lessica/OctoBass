@@ -144,7 +144,7 @@ static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent
         // Get the only touch object.
         UITouch *touchObj = [event.allTouches anyObject];
         
-        // tap: began -> ended
+        // TAP: began -> ended
         if (touchObj.phase == UITouchPhaseEnded) {
             
             // Get location in its window coordinate.
