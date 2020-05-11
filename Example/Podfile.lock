@@ -1,5 +1,9 @@
 PODS:
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
   - OctoBass (0.1.0):
+    - FMDB (~> 2.7.5)
     - Protobuf (>= 3.11.1)
   - Protobuf (3.11.1)
 
@@ -8,6 +12,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - FMDB
     - Protobuf
 
 EXTERNAL SOURCES:
@@ -15,7 +20,8 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  OctoBass: d66d7b4f7dfb88b129d83b016b2a6236053c1ebf
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  OctoBass: 1ed017d29586f61d1129d59165776ee63eba721d
   Protobuf: 20d79da7f20b5928b80043b05080b816e802659e
 
 PODFILE CHECKSUM: ae2189c334bf0d93080b9f042bdd5dac20ec2adf

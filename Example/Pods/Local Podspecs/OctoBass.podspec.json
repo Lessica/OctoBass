@@ -33,6 +33,9 @@
   "dependencies": {
     "Protobuf": [
       ">= 3.11.1"
+    ],
+    "FMDB": [
+      "~> 2.7.5"
     ]
   }
 }

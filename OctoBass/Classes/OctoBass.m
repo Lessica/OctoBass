@@ -524,46 +524,7 @@ static void __octobass_initialize()
     prepareOBClassRepresentation([clsDetector representationOfClass:[UIView class]]);
     
     // FIXME: Download hash table
-    _$viewHashesAndActions = [NSMutableDictionary dictionaryWithDictionary:@{
-        
-//        [
-//            "<GDTSplashAlignImageView: 0x0x142c8a5e0; frame = (0 0; 375 667)>",
-//            "<GDTSplashView: 0x0x142c8a1d0; frame = (0 0; 375 667)>",
-//            "<UIView: 0x0x142c89fd0; frame = (0 0; 375 667)>",
-//            "<UITransitionView: 0x0x142c8d880; frame = (0 0; 375 667)>",
-//            "<UIWindow: 0x0x13fd49a90; frame = (0 0; 375 667)>",
-//        ]
-        @"aa69b912b267cf504ccec3f2f96beee020ec6309": @{
-                @"phases": @[
-                        @{
-                            @"type": @"TAP",
-                            @"delay": @(1.0),
-                        },
-                ],
-        },
-        
-//        [
-//            "<UIView: 0x0x151901c80; frame = (0 0; 470 240)>",
-//            "<UIView: 0x0x151905b50; frame = (0 0; 470 240)>",
-//            "<WKContentView: 0x0x15241d600; frame = (0 0; 470 240)>",
-//            "<WKScrollView: 0x0x15011e600; frame = (0 0; 375 240)>",
-//            "<BUWKWebViewClient: 0x0x152428800; frame = (0 0; 375 240); url = https://sf3-ttcdn-tos.pstatp.com/obj/ad-pattern/renderer/a99335/index.html; hash = 801a3dcdc223695e8015bd37aeec9fd95bb8527a>",
-//            "<BUNativeExpressAdView: 0x0x15644cbc0; frame = (0 0; 375 240)>",
-//            "<UnityView: 0x0x14fd611f0; frame = (0 0; 375 667)>",
-//            "<UIWindow: 0x0x14fd60e60; frame = (0 0; 375 667)>",
-//        ]
-        @"9dfbfe3260c07f1198c42b8ec2d191c92ef715b5": @{
-                @"phases": @[
-                        @{
-                            @"type": @"TAP",
-                            @"delay": @(1.0),
-                        },
-                ],
-        },
-        
-        
-        
-    }];
+    _$viewHashesAndActions = [NSMutableDictionary dictionaryWithDictionary:@{}];
     
     
     // Hook instance methods.

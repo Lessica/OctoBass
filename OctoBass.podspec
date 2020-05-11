@@ -31,12 +31,12 @@ DESC
   s.ios.deployment_target = '9.0'
 
   s.source_files = 'OctoBass/Classes/**/*'
-  
   s.resource_bundles = {
     'OctoBass' => ['OctoBass/Assets/*.js']
   }
-
   s.private_header_files = 'OctoBass/Classes/**/*.h'
   s.frameworks = 'UIKit', 'WebKit'
+
   s.dependency 'Protobuf', '>= 3.11.1'
+  s.dependency 'FMDB', '~> 2.7.5'
 end
