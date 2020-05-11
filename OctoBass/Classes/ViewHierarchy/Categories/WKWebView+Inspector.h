@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param point A location where the element locates at.
  * @returns The DOM selector of the located element.
  */
-- (nullable NSString *)ob_getElementSelectorByViewPortPoint:(CGPoint)point;
+- (nullable NSString *)ob_getElementSelectorByViewPortPoint:(CGPoint)point shouldHighlight:(BOOL)highlight;
 
 
 /**
@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param elementSelector The DOM selector of the target element.
  * @returns The view-port rect of the target element.
  */
-- (CGRect)ob_getViewPortRectByElementSelector:(NSString *)elementSelector;
+- (CGRect)ob_getViewPortRectByElementSelector:(NSString *)elementSelector shouldScrollTo:(BOOL)scrollTo;
 
 
 @end

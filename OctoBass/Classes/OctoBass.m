@@ -208,14 +208,14 @@ static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent
                 do {
                     
                     // Coordinate -> DOM selector.
-                    NSString *elementSelector = [wkWebView ob_getElementSelectorByViewPortPoint:locInView];
+                    NSString *elementSelector = [wkWebView ob_getElementSelectorByViewPortPoint:locInView shouldHighlight:YES];
                     if (!elementSelector) {
                         break;
                     }
                     MyLog(@"    - DOM selector = %@", elementSelector);
                     
                     // DOM selector -> Rect.
-                    CGRect rectInView = [wkWebView ob_getViewPortRectByElementSelector:elementSelector];
+                    CGRect rectInView = [wkWebView ob_getViewPortRectByElementSelector:elementSelector shouldScrollTo:YES];
                     if (CGRectIsNull(rectInView)) {
                         break;
                     }

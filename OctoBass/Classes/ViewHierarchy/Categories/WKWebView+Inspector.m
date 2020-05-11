@@ -24,33 +24,36 @@
 @implementation WKWebView (Inspector)
 
 
-- (nullable NSString *)ob_getElementSelectorByViewPortPoint:(CGPoint)point
+- (nullable NSString *)ob_getElementSelectorByViewPortPoint:(CGPoint)point shouldHighlight:(BOOL)highlight
 {
-#if DEBUG
-    NSString *payload = [NSString stringWithFormat:@"window._$getSelectorByPoint(%f, %f, true)", point.x, point.y];
-#else
-    NSString *payload = [NSString stringWithFormat:@"window._$getSelectorByPoint(%f, %f)", point.x, point.y];
-#endif
+    
+    NSString *payload = [NSString stringWithFormat:@"var el = document.elementFromPoint(%f, %f); var sel = window._$getElementSelector(el); %@ sel;", point.x, point.y, (highlight ? @"window._$highlightElement(el);" : @"")];
+    
     NSString *result = [self ob_evaluateJavaScript:payload];
     if (![result isKindOfClass:[NSString class]]) {
         return nil;
     }
+    
     return result;
+    
 }
 
 
-- (CGRect)ob_getViewPortRectByElementSelector:(NSString *)elementSelector
+- (CGRect)ob_getViewPortRectByElementSelector:(NSString *)elementSelector shouldScrollTo:(BOOL)scrollTo
 {
-    NSString *payload = [NSString stringWithFormat:@"window._$getElementRectBySelector(\"%@\")", [elementSelector ob_javaScriptEscapedString]];
+    
+    NSString *payload = [NSString stringWithFormat:@"var el = document.querySelector(\"%@\"); %@ var rect = window._$getElementRect(el); rect;", [elementSelector ob_javaScriptEscapedString], (scrollTo ? @"window._$scrollToElement(el);" : @"")];
     NSArray <NSNumber *> *result = [self ob_evaluateJavaScript:payload];
     if (![result isKindOfClass:[NSArray class]] || result.count != 4) {
         return CGRectNull;
     }
+    
 #if defined(__LP64__) && __LP64__
     return CGRectMake([result[0] doubleValue], [result[1] doubleValue], [result[2] doubleValue], [result[3] doubleValue]);
 #else
     return CGRectMake([result[0] floatValue], [result[1] floatValue], [result[2] floatValue], [result[3] floatValue]);
 #endif
+    
 }
 
 

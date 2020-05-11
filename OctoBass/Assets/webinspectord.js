@@ -17,7 +17,7 @@
         'use strict';
 
 
-        // A simple hash function from Java.
+        /* A simple hash function from Java. */
         function DoJavaHash(str) {
             var hash = 0, i, chr;
             for (i = 0; i < str.length; i++) {
@@ -29,7 +29,7 @@
         }
 
 
-        // The WebKit report function.
+        /* The WebKit report function. */
         function DoWebKitReport(obj) {
             window.webkit.messageHandlers._$webinspectord_report.postMessage(obj);
         }
@@ -42,22 +42,24 @@
         console.debug('document ready');
 
 
-        // Some helper functions.
+        /* Some helper functions. */
         var theWindow = typeof(unsafeWindow) !== 'undefined' ? unsafeWindow : window;
 
-        function getElementRectBySelector(sel) {
+        /* Get element by selector */
+        //document.querySelector(selector)
 
-            var el = document.querySelector(sel);
+        /* Get element by point (x, y) */
+        //document.elementFromPoint(x, y)
+
+        /**
+         * Highlight DOM element with random color.
+         * @param el The element to be highlighted.
+         */
+        function highlightElement(el) {
+
             if (el === null) {
-                return null;
+                return;
             }
-
-            var rect = el.getBoundingClientRect();
-            return [rect.x, rect.y, rect.width, rect.height];
-
-        }
-
-        function getSelectorByPoint(x, y, highlight = false) {
 
             function getRandomColor() {
                 var letters = '0123456789ABCDEF';
@@ -68,33 +70,67 @@
                 return color;
             }
 
-            var el = document.elementFromPoint(x, y);
+            var shouldHighlight = true;
+
+            if (typeof highlightElement.highlightedElement !== 'undefined') {
+                var prevEl = highlightElement.highlightedElement;
+                if (prevEl !== el) {
+                    prevEl.style.outline = '';
+                    prevEl.style.backgroundColor = '';
+                } else {
+                    shouldHighlight = false;
+                }
+            }
+
+            if (shouldHighlight) {
+                highlightElement.highlightedElement = el;
+
+                var color = getRandomColor();
+                el.style.outline = color + ' solid 1px';
+                el.style.backgroundColor = color + '45';
+            }
+
+        }
+
+        /**
+         * Scroll a DOM element to visible area.
+         * @param el The element to be scrolled.
+         */
+        function scrollToElement(el) {
+
+            if (el === null) {
+                return;
+            }
+
+            el.scrollIntoView(true); // experimental
+
+        }
+
+        /**
+         * Get the rect of a DOM element.
+         * @param el An element.
+         * @returns The rect of the element.
+         */
+        function getElementRect(el) {
+
             if (el === null) {
                 return null;
             }
 
-            if (highlight) {
+            var rect = el.getBoundingClientRect();
+            return [rect.x, rect.y, rect.width, rect.height];
 
-                var shouldHighlight = true;
+        }
 
-                if (typeof getSelectorByPoint.highlightedElement !== 'undefined') {
-                    var prevEl = getSelectorByPoint.highlightedElement;
-                    if (prevEl !== el) {
-                        prevEl.style.outline = '';
-                        prevEl.style.backgroundColor = '';
-                    } else {
-                        shouldHighlight = false;
-                    }
-                }
+        /**
+         * Get the selector of a DOM element.
+         * @param el An element.
+         * @returns The selector of the element.
+         */
+        function getElementSelector(el) {
 
-                if (shouldHighlight) {
-                    getSelectorByPoint.highlightedElement = el;
-
-                    var color = getRandomColor();
-                    el.style.outline = color + ' solid 1px';
-                    el.style.backgroundColor = color + '65';
-                }
-
+            if (el === null) {
+                return null;
             }
 
             var stack = [];
@@ -119,19 +155,22 @@
                 }
                 el = el.parentNode;
             }
+
             return stack.slice(1).join(' > '); // removes the html element
 
         }
 
-        theWindow._$getElementRectBySelector = getElementRectBySelector;
-        theWindow._$getSelectorByPoint = getSelectorByPoint;
+        theWindow._$highlightElement = highlightElement;
+        theWindow._$scrollToElement = scrollToElement;
+        theWindow._$getElementRect = getElementRect;
+        theWindow._$getElementSelector = getElementSelector;
 
 
-        // Performance begin
+        /* Performance begin */
         const t0 = performance.now();
 
 
-        // Build report
+        /* Build report */
         var cnt = 0;
         var report = '';
         report += '13,';
@@ -146,12 +185,12 @@
         cnt += 8;
 
 
-        // DOM count
+        /* DOM count */
         report += document.all.length.toString() + ',';
         cnt++;
 
 
-        // Page URL (no arguments)
+        /* Page URL (no arguments) */
         const page_prot = window.location.protocol;
         if (page_prot == 'http:' || page_prot == 'https:') {
             report += DoJavaHash('origin='
@@ -165,18 +204,18 @@
         cnt += 2;
 
 
-        // Document title (< 64 bytes)
+        /* Document title (< 64 bytes) */
         report += DoJavaHash('title='
                              + document.title.slice(0, 64)) + ',';
         cnt++;
 
 
-        // Inner Text (< 256 bytes)
+        /* Inner Text (< 256 bytes) */
         report += DoJavaHash('innerText=' + document.body.innerText.slice(0, 256)) + ',';
         cnt++;
 
 
-        // Video detection
+        /* Video detection */
         for (let video_DOM of video_DOMs) {
             report += DoJavaHash(
                 'video;.src=' + video_DOM.currentSrc
@@ -188,7 +227,7 @@
         }
 
 
-        // Image detection
+        /* Image detection */
         for (let image_DOM of document.images) {
             report += DoJavaHash(
                 'image;.src=' + image_DOM.currentSrc
@@ -199,7 +238,7 @@
         }
 
 
-        // Embeds
+        /* Embeds */
         for (let embed_DOM of document.embeds) {
             report += DoJavaHash(
                 'embed;.src=' + embed_DOM.src
@@ -211,7 +250,7 @@
         }
 
 
-        // Stylesheets
+        /* Stylesheets */
         for (let style_DOM of document.styleSheets) {
             if (style_DOM.href === null) {
                 report += DoJavaHash('stylesheet;.href=null;.count(.rules)=' + style_DOM.rules.length.toString()) + ',';
@@ -223,7 +262,7 @@
         }
 
 
-        // Scripts
+        /* Scripts */
         for (let script_DOM of document.scripts) {
             if (script_DOM.src === null || script_DOM.src.length === 0) {
                 report += DoJavaHash('script;.src=null') + ',';
@@ -234,7 +273,7 @@
         }
 
 
-        // Links
+        /* Links */
         for (let link_DOM of document.links) {
             report += DoJavaHash(
                 'link;.href=' + link_DOM.href
@@ -246,7 +285,7 @@
         }
 
 
-        // Forms
+        /* Forms */
         for (let form_DOM of document.forms) {
 
             const count_elements = form_DOM.elements.length;
@@ -273,16 +312,16 @@
         }
 
 
-        // Termination
+        /* Termination */
         report = (cnt + 2).toString() + ',' + report + '0';
 
 
-        // Performance end
+        /* Performance end */
         const t1 = performance.now();
         console.debug(`took ${t1 - t0} ms.`);
 
 
-        // Print report
+        /* Print report */
         console.debug(report);
         if (window.webkit !== undefined) {
             DoWebKitReport(report);
