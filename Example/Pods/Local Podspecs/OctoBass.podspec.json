@@ -25,13 +25,14 @@
       "OctoBass/Assets/*.js"
     ]
   },
+  "private_header_files": "OctoBass/Classes/**/*.h",
   "frameworks": [
     "UIKit",
     "WebKit"
   ],
   "dependencies": {
     "Protobuf": [
-
+      ">= 3.11.1"
     ]
   }
 }

@@ -1,6 +1,6 @@
 PODS:
   - OctoBass (0.1.0):
-    - Protobuf
+    - Protobuf (>= 3.11.1)
   - Protobuf (3.11.1)
 
 DEPENDENCIES:
@@ -15,7 +15,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  OctoBass: e48b6c59c388daa1531cbb0e63eb3865086723dd
+  OctoBass: d66d7b4f7dfb88b129d83b016b2a6236053c1ebf
   Protobuf: 20d79da7f20b5928b80043b05080b816e802659e
 
 PODFILE CHECKSUM: 801f40e568cd9a82a716c42bbfdaeeef2b05913c

@@ -46,7 +46,6 @@ static WKWebView *repl_WKWebView_initWithFrame_configuration_(WKWebView *self, S
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        // FIXME: Load inspector js securely
         NSBundle *resBundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"OctoBass" ofType:@"bundle"]];
         NSString *jsPath = [resBundle pathForResource:@"webinspectord" ofType:@"js"];
         NSData *jsData = [[NSData alloc] initWithContentsOfFile:jsPath];
@@ -103,7 +102,6 @@ static void repl_UIWebViewDelegate_webViewDidFinishLoad_(id self, SEL _cmd, UIWe
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        // FIXME: Load inspector js securely
         NSBundle *resBundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"OctoBass" ofType:@"bundle"]];
         NSString *jsPath = [resBundle pathForResource:@"webinspectord" ofType:@"js"];
         NSData *jsData = [[NSData alloc] initWithContentsOfFile:jsPath];
@@ -574,7 +572,7 @@ static void __octobass_initialize()
     
     
 #if ENABLE_UIWEBVIEW
-    // Hook delegate methods
+    // Hook delegate methods.
     int numClasses = 0, newNumClasses = objc_getClassList(NULL, 0);
     Class *classes = NULL;
     while (numClasses < newNumClasses) {
@@ -593,22 +591,35 @@ static void __octobass_initialize()
 #endif
     
     
-    // Prepare dispatch queue.
+    // Setup dispatch queue.
     _$serialActionQueue = dispatch_queue_create("com.octobass.queue.serial-action", NULL);
     
     
-    // Begin main loop.
+    // Setup constants.
     static NSTimeInterval _$detectInterval = 0.5;
     static NSTimeInterval _$coolDownInterval = 15.0;
     
+    // Setup major points.
+    static NSArray <NSValue *> *_$majorPoints = nil;
+    _$majorPoints = @[
+        [NSValue valueWithCGPoint:CGPointMake(CGRectGetMidX(screenBounds), CGRectGetMidY(screenBounds))],
+        [NSValue valueWithCGPoint:CGPointMake(CGRectGetMidX(screenBounds), CGRectGetMaxY(screenBounds) - 64.0)],
+        [NSValue valueWithCGPoint:CGPointMake(CGRectGetMidX(screenBounds), CGRectGetMinY(screenBounds) + 64.0)],
+    ];
+    
+    // Setup cool-down interval.
     static struct timeval _$coolDownLastDetectedAt;
     gettimeofday(&_$coolDownLastDetectedAt, NULL);
     
+    // Setup main timer source.
     static dispatch_source_t source;
     source = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
     dispatch_source_set_timer(source, dispatch_walltime(NULL, 0), _$detectInterval * NSEC_PER_SEC, 0);
+    
+    // Setup main timer block.
     dispatch_source_set_event_handler(source, ^{
         
+        // Check cool-down interval.
         struct timeval _$coolDownWillDetectAt;
         gettimeofday(&_$coolDownWillDetectAt, NULL);
         NSTimeInterval coolDownInterval = (1000000.0 * (_$coolDownWillDetectAt.tv_sec - _$coolDownLastDetectedAt.tv_sec) + _$coolDownWillDetectAt.tv_usec - _$coolDownLastDetectedAt.tv_usec) / 1000000.0;
@@ -616,22 +627,15 @@ static void __octobass_initialize()
             return;
         }
         
+        // Begin serial process on major points.
         CGRect screenBounds = [[UIScreen mainScreen] bounds];
         BOOL detected = NO;
         
-        // Middle
-        if (!detected) {
-            detected = serialProcessViewAtPoint(CGPointMake(CGRectGetMidX(screenBounds), CGRectGetMidY(screenBounds)));
-        }
-        
-        // Bottom
-        if (!detected) {
-            detected = serialProcessViewAtPoint(CGPointMake(CGRectGetMidX(screenBounds), CGRectGetMaxY(screenBounds) - 64.0));
-        }
-        
-        // Top
-        if (!detected) {
-            detected = serialProcessViewAtPoint(CGPointMake(CGRectGetMidX(screenBounds), CGRectGetMinY(screenBounds) + 64.0));
+        for (NSValue *point in _$majorPoints) {
+            detected = serialProcessViewAtPoint([point CGPointValue]);
+            if (detected) {
+                break;
+            }
         }
         
         if (detected) {
@@ -639,6 +643,8 @@ static void __octobass_initialize()
         }
         
     });
+    
+    // Fire main timer.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(_$detectInterval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         dispatch_resume(source);
     });

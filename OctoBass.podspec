@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
 
   s.description      = <<-DESC
 TODO: Add long description of the pod here.
-                       DESC
+DESC
 
   s.homepage         = 'https://github.com/Lessica/OctoBass'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
@@ -32,11 +32,11 @@ TODO: Add long description of the pod here.
 
   s.source_files = 'OctoBass/Classes/**/*'
   
-   s.resource_bundles = {
-     'OctoBass' => ['OctoBass/Assets/*.js']
-   }
+  s.resource_bundles = {
+    'OctoBass' => ['OctoBass/Assets/*.js']
+  }
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
+  s.private_header_files = 'OctoBass/Classes/**/*.h'
   s.frameworks = 'UIKit', 'WebKit'
   s.dependency 'Protobuf', '>= 3.11.1'
 end
