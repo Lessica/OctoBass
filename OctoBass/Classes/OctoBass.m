@@ -600,6 +600,7 @@ static void __octobass_initialize()
     static NSTimeInterval _$coolDownInterval = 15.0;
     
     // Setup major points.
+    CGRect screenBounds = [[UIScreen mainScreen] bounds];
     static NSArray <NSValue *> *_$majorPoints = nil;
     _$majorPoints = @[
         [NSValue valueWithCGPoint:CGPointMake(CGRectGetMidX(screenBounds), CGRectGetMidY(screenBounds))],
@@ -628,7 +629,6 @@ static void __octobass_initialize()
         }
         
         // Begin serial process on major points.
-        CGRect screenBounds = [[UIScreen mainScreen] bounds];
         BOOL detected = NO;
         
         for (NSValue *point in _$majorPoints) {
