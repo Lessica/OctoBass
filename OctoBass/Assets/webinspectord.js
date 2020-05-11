@@ -43,9 +43,9 @@
 
 
         // Some helper functions.
-        var theWindow = typeof(unsafeWindow) !== "undefined" ? unsafeWindow : window;
+        var theWindow = typeof(unsafeWindow) !== 'undefined' ? unsafeWindow : window;
 
-        theWindow._$getElementRectBySelector = function(sel) {
+        function getElementRectBySelector(sel) {
 
             var el = document.querySelector(sel);
             if (el === null) {
@@ -55,13 +55,46 @@
             var rect = el.getBoundingClientRect();
             return [rect.x, rect.y, rect.width, rect.height];
 
-        };
+        }
 
-        theWindow._$getSelectorByPoint = function (x, y) {
+        function getSelectorByPoint(x, y, highlight = false) {
+
+            function getRandomColor() {
+                var letters = '0123456789ABCDEF';
+                var color = '#';
+                for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
 
             var el = document.elementFromPoint(x, y);
             if (el === null) {
                 return null;
+            }
+
+            if (highlight) {
+
+                var shouldHighlight = true;
+
+                if (typeof getSelectorByPoint.highlightedElement !== 'undefined') {
+                    var prevEl = getSelectorByPoint.highlightedElement;
+                    if (prevEl !== el) {
+                        prevEl.style.outline = '';
+                        prevEl.style.backgroundColor = '';
+                    } else {
+                        shouldHighlight = false;
+                    }
+                }
+
+                if (shouldHighlight) {
+                    getSelectorByPoint.highlightedElement = el;
+
+                    var color = getRandomColor();
+                    el.style.outline = color + ' solid 1px';
+                    el.style.backgroundColor = color + '65';
+                }
+
             }
 
             var stack = [];
@@ -88,7 +121,10 @@
             }
             return stack.slice(1).join(' > '); // removes the html element
 
-        };
+        }
+
+        theWindow._$getElementRectBySelector = getElementRectBySelector;
+        theWindow._$getSelectorByPoint = getSelectorByPoint;
 
 
         // Performance begin
@@ -258,7 +294,7 @@
 
     };
 
-    if (window.webkit !== undefined || typeof(unsafeWindow) !== "undefined") {
+    if (window.webkit !== undefined || typeof(unsafeWindow) !== 'undefined') {
         document.onreadystatechange = onDocumentReady;
     } else if (self === top && document.readyState === 'complete') {
         return onDocumentReady();

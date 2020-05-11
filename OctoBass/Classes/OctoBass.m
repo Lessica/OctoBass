@@ -19,6 +19,7 @@
 #import "UIView+Hierarchy.h"
 #import "UIWindow+Hierarchy.h"
 #import "UIWebView+Inspector.h"
+#import "WKWebView+Inspector.h"
 #import "UIView+Description.h"
 #import "UIWebView+Description.h"
 #import "WKWebView+Description.h"
@@ -163,8 +164,10 @@ static void (*orig_UIApplication_sendEvent_)(UIApplication *, SEL, UIEvent *);
 static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent *event)
 {
     
+    orig_UIApplication_sendEvent_(self, _cmd, event);
+    
     // Only detects single touch object.
-    if (event.allTouches.count > 1) {
+    if (event.allTouches.count >= 1) {
         
         // Get the only touch object.
         UITouch *touchObj = [event.allTouches anyObject];
@@ -174,13 +177,67 @@ static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent
             
             // Get location in its window coordinate.
             CGPoint locInWindow = [touchObj locationInView:nil];
-            MyLog(@"TAPPED coordinate = (%d, %d)", (int)locInWindow.x, (int)locInWindow.y);
+            MyLog(@"[TAPPED] coordinate = (%d, %d)", (int)locInWindow.x, (int)locInWindow.y);
+            
+#if DEBUG
+            
+            // Tests of WebView.
+            UIView *tappedView = [touchObj.window ob_viewAtPoint:locInWindow];
+            NSArray <UIView *> *tappedSuperviews = [tappedView ob_superviews];
+            
+            UIView *theWebView = nil;
+            for (UIView *theView in tappedSuperviews) {
+                if ([theView isKindOfClass:[WKWebView class]]) {
+                    theWebView = theView;
+                    break;
+                }
+#if ENABLE_UIWEBVIEW
+                else if ([theView isKindOfClass:[UIWebView class]]) {
+                    theWebView = theView;
+                    break;
+                }
+#endif
+            }
+            
+            // Get location in the view's coordinate.
+            CGPoint locInView = [theWebView convertPoint:locInWindow fromView:nil];
+            
+            if ([theWebView isKindOfClass:[WKWebView class]]) {
+                WKWebView *wkWebView = (WKWebView *)theWebView;
+                
+                do {
+                    
+                    // Coordinate -> DOM selector.
+                    NSString *elementSelector = [wkWebView ob_getElementSelectorByViewPortPoint:locInView];
+                    if (!elementSelector) {
+                        break;
+                    }
+                    MyLog(@"    - DOM selector = %@", elementSelector);
+                    
+                    // DOM selector -> Rect.
+                    CGRect rectInView = [wkWebView ob_getViewPortRectByElementSelector:elementSelector];
+                    if (CGRectIsNull(rectInView)) {
+                        break;
+                    }
+                    CGRect rectInWindow = [wkWebView convertRect:rectInView toView:nil];
+                    MyLog(@"    - DOM rect = %@", [NSValue valueWithCGRect:rectInWindow]);
+                    
+                } while (0);
+                
+                
+            }
+#if ENABLE_UIWEBVIEW
+            else if ([theWebView isKindOfClass:[UIWebView class]]) {
+                
+            }
+#endif
+            
+#endif
+            
             
         }
         
     }
-    
-    orig_UIApplication_sendEvent_(self, _cmd, event);
     
 }
 
