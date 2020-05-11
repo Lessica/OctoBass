@@ -37,23 +37,40 @@ static NSMutableDictionary <NSString *, NSDictionary *> *_$viewHashesAndActions 
 #pragma mark - WKWebView Methods
 
 
-static WKWebView *(*orig_WKWebView_initWithFrame_configuration_)(WKWebView *, SEL, CGRect, WKWebViewConfiguration *);
-static WKWebView *repl_WKWebView_initWithFrame_configuration_(WKWebView *self, SEL _cmd, CGRect frame, WKWebViewConfiguration *configuration)
+NS_INLINE void modifyWKWebViewConfiguration(WKWebViewConfiguration *configuration)
 {
-    
     static NSString *inspectorJS = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        NSBundle *resBundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"OctoBass" ofType:@"bundle"]];
+        NSBundle *resBundle = nil;
+        
+        // Static linking
+        if (!resBundle) {
+            resBundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"OctoBass" ofType:@"bundle"]];
+        }
+        
+        // Dynamic linking
+        if (!resBundle) {
+            resBundle = [NSBundle bundleWithPath:[[NSBundle bundleForClass:[OBClassHierarchyDetector class]] pathForResource:@"OctoBass" ofType:@"bundle"]];
+        }
+        
         NSString *jsPath = [resBundle pathForResource:@"webinspectord" ofType:@"js"];
+        if (!jsPath) {
+            return;
+        }
+        
         NSData *jsData = [[NSData alloc] initWithContentsOfFile:jsPath];
+        if (!jsData) {
+            return;
+        }
+        
         inspectorJS = [[NSString alloc] initWithData:jsData encoding:NSUTF8StringEncoding];
         
     });
     
-    if (!inspectorJS) {
-        return orig_WKWebView_initWithFrame_configuration_(self, _cmd, frame, configuration);
+    if (!inspectorJS.length) {
+        return;
     }
     
     
@@ -82,11 +99,23 @@ static WKWebView *repl_WKWebView_initWithFrame_configuration_(WKWebView *self, S
         WKUserScript *userScript = [[WKUserScript alloc] initWithSource:inspectorJS injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
         [userContentController addUserScript:userScript];
     }
-    
-    
-    // Call original initializer.
+}
+
+
+static WKWebView *(*orig_WKWebView_initWithCoder_)(WKWebView *, SEL, NSCoder *);
+static WKWebView *repl_WKWebView_initWithCoder_(WKWebView *self, SEL _cmd, NSCoder *coder)
+{
+    WKWebView *obj = orig_WKWebView_initWithCoder_(self, _cmd, coder);
+    modifyWKWebViewConfiguration(self.configuration);
+    return obj;
+}
+
+
+static WKWebView *(*orig_WKWebView_initWithFrame_configuration_)(WKWebView *, SEL, CGRect, WKWebViewConfiguration *);
+static WKWebView *repl_WKWebView_initWithFrame_configuration_(WKWebView *self, SEL _cmd, CGRect frame, WKWebViewConfiguration *configuration)
+{
+    modifyWKWebViewConfiguration(configuration);
     return orig_WKWebView_initWithFrame_configuration_(self, _cmd, frame, configuration);
-    
 }
 
 
@@ -528,6 +557,7 @@ static void __octobass_initialize()
     
     // Hook instance methods.
     MyHookMessage([WKWebView class], @selector(initWithFrame:configuration:), (IMP)repl_WKWebView_initWithFrame_configuration_, (IMP *)&orig_WKWebView_initWithFrame_configuration_);
+    MyHookMessage([WKWebView class], @selector(initWithCoder:), (IMP)repl_WKWebView_initWithCoder_, (IMP *)&orig_WKWebView_initWithCoder_);
     MyHookMessage([UIApplication class], @selector(sendEvent:), (IMP)repl_UIApplication_sendEvent_, (IMP *)&orig_UIApplication_sendEvent_);
     
     
@@ -556,8 +586,13 @@ static void __octobass_initialize()
     
     
     // Setup constants.
+#if DEBUG
+    static NSTimeInterval _$detectInterval = 60.0;
+    static NSTimeInterval _$coolDownInterval = 300.0;
+#else
     static NSTimeInterval _$detectInterval = 0.5;
     static NSTimeInterval _$coolDownInterval = 15.0;
+#endif
     
     // Setup major points.
     CGRect screenBounds = [[UIScreen mainScreen] bounds];

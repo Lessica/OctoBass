@@ -14,6 +14,7 @@
 		D6E82454246944230029802B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D6E82453246944230029802B /* Assets.xcassets */; };
 		D6E82457246944230029802B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D6E82455246944230029802B /* LaunchScreen.storyboard */; };
 		D6E8245A246944230029802B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E82459246944230029802B /* main.m */; };
+		D6E8246E24696C080029802B /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E8246D24696C080029802B /* WebViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,8 @@
 		D6E82456246944230029802B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D6E82458246944230029802B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D6E82459246944230029802B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		D6E8246C24696C080029802B /* WebViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
+		D6E8246D24696C080029802B /* WebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
 		DE9DAD54C45A854FF6D7BB12 /* OctoBass.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = OctoBass.podspec; path = ../OctoBass.podspec; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -97,6 +100,8 @@
 				D6E82448246944220029802B /* AppDelegate.m */,
 				D6E8244D246944220029802B /* ViewController.h */,
 				D6E8244E246944220029802B /* ViewController.m */,
+				D6E8246C24696C080029802B /* WebViewController.h */,
+				D6E8246D24696C080029802B /* WebViewController.m */,
 				D6E82450246944220029802B /* Main.storyboard */,
 				D6E82453246944230029802B /* Assets.xcassets */,
 				D6E82455246944230029802B /* LaunchScreen.storyboard */,
@@ -241,6 +246,7 @@
 				D6E8244F246944220029802B /* ViewController.m in Sources */,
 				D6E82449246944220029802B /* AppDelegate.m in Sources */,
 				D6E8245A246944230029802B /* main.m in Sources */,
+				D6E8246E24696C080029802B /* WebViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -368,7 +374,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = OctoBassTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -408,7 +414,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = OctoBassTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;

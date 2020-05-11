@@ -5,13 +5,13 @@
 // @description  Try to take over the world!
 // @author       But who cares?
 // @match        https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo/related
-// @grant        none
+// @grant        unsafeWindow
 // ==/UserScript==
 
 
 (function () {
 
-    const computeHash = function () {
+    const onDocumentReady = function () {
 
 
         'use strict';
@@ -40,6 +40,55 @@
             return;
         }
         console.debug('document ready');
+
+
+        // Some helper functions.
+        var theWindow = typeof(unsafeWindow) !== "undefined" ? unsafeWindow : window;
+
+        theWindow._$getElementRectBySelector = function(sel) {
+
+            var el = document.querySelector(sel);
+            if (el === null) {
+                return null;
+            }
+
+            var rect = el.getBoundingClientRect();
+            return [rect.x, rect.y, rect.width, rect.height];
+
+        };
+
+        theWindow._$getSelectorByPoint = function (x, y) {
+
+            var el = document.elementFromPoint(x, y);
+            if (el === null) {
+                return null;
+            }
+
+            var stack = [];
+            while (el.parentNode != null) {
+                var sibCount = 0;
+                var sibIndex = 0;
+                for (var i = 0; i < el.parentNode.childNodes.length; i++) {
+                    var sib = el.parentNode.childNodes[i];
+                    if (sib.nodeName == el.nodeName) {
+                        if (sib === el) {
+                            sibIndex = sibCount;
+                        }
+                        sibCount++;
+                    }
+                }
+                if (el.hasAttribute('id') && el.id != '') {
+                    stack.unshift(el.nodeName.toLowerCase() + '#' + el.id);
+                } else if (sibCount > 1) {
+                    stack.unshift(el.nodeName.toLowerCase() + ':nth-of-type(' + (sibIndex + 1) + ')');
+                } else {
+                    stack.unshift(el.nodeName.toLowerCase());
+                }
+                el = el.parentNode;
+            }
+            return stack.slice(1).join(' > '); // removes the html element
+
+        };
 
 
         // Performance begin
@@ -209,10 +258,10 @@
 
     };
 
-    if (window.webkit !== undefined) {
-        document.onreadystatechange = computeHash;
+    if (window.webkit !== undefined || typeof(unsafeWindow) !== "undefined") {
+        document.onreadystatechange = onDocumentReady;
     } else if (self === top && document.readyState === 'complete') {
-        return computeHash();
+        return onDocumentReady();
     }
 
 })();
