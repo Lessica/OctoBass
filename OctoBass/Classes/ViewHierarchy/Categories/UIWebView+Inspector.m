@@ -3,6 +3,8 @@
 //  OctoBass
 //
 
+#if ENABLE_UIWEBVIEW
+
 #import "UIWebView+Inspector.h"
 #import "CaptainHook.h"
 
@@ -24,4 +26,6 @@ CHDeclareProperty(WKUserContentController, inspectorReportedHash);
 
 
 @end
+
+#endif
 

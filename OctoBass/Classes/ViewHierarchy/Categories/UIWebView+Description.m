@@ -3,6 +3,8 @@
 //  OctoBass
 //
 
+#if ENABLE_UIWEBVIEW
+
 #import "UIWebView+Description.h"
 #import "UIView+Description.h"
 #import "UIWebView+Inspector.h"
@@ -35,3 +37,4 @@
 
 @end
 
+#endif

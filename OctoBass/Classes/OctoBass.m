@@ -25,7 +25,6 @@
 #import "NSString+Hashes.h"
 
 
-#define ENABLE_UIWEBVIEW 1
 MAKE_CATEGORIES_LOADABLE(OctoBass);
 
 
