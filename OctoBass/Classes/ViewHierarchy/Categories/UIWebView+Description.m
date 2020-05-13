@@ -26,10 +26,6 @@
 
 #pragma mark - Private
 
-- (NSString *)ob_inspectorReportedHash {
-    return [self ob_inspectorReportedHash];
-}
-
 - (NSString *)ob_inspectorHash {
     return [[self ob_inspectorReportedHash] ob_sha1];
 }

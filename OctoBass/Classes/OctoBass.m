@@ -27,6 +27,7 @@
 
 
 MAKE_CATEGORIES_LOADABLE(OctoBass);
+#define STRINGIFY_METHOD(clazz, selector) ([NSString stringWithFormat:@"- [%@ %@]", NSStringFromClass(clazz), NSStringFromSelector(selector)])
 
 
 #pragma mark - Global Variables
@@ -114,6 +115,20 @@ NS_INLINE void modifyWKWebViewConfiguration(WKWebViewConfiguration *configuratio
         WKUserScript *userScript = [[WKUserScript alloc] initWithSource:payload injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
         [userContentController addUserScript:userScript];
     }
+    
+    
+#if DEBUG
+    configuration.allowsInlineMediaPlayback = YES;
+    if (@available(iOS 10.0, *)) {
+        configuration.mediaTypesRequiringUserActionForPlayback = NO;
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        configuration.mediaPlaybackRequiresUserAction = NO;
+#pragma clang diagnostic pop
+    }
+#endif  // DEBUG
+    
 }
 
 
@@ -138,9 +153,14 @@ static WKWebView *repl_WKWebView_initWithFrame_configuration_(WKWebView *self, S
 
 #if ENABLE_UIWEBVIEW
 
-static void (*orig_UIWebViewDelegate_webViewDidFinishLoad_)(id, SEL, UIWebView *);
+typedef void (*UIWebViewDelegate_webViewDidFinishLoad_)(id, SEL, UIWebView *);
+static NSMutableDictionary <NSString *, NSValue *> *_$originalDelegateMethods = nil;
+
 static void repl_UIWebViewDelegate_webViewDidFinishLoad_(id self, SEL _cmd, UIWebView *webView)
 {
+    
+    // Get stored original delegate method.
+    UIWebViewDelegate_webViewDidFinishLoad_ orig_UIWebViewDelegate_webViewDidFinishLoad_ = [(NSValue *)_$originalDelegateMethods[STRINGIFY_METHOD([self class], _cmd)] pointerValue];
     
     NSString *payload = ob_webViewPayloadJavaScript();
     if (!payload.length) {
@@ -194,6 +214,12 @@ static UIWebView *repl_UIWebView_initWithFrame_(UIWebView *self, SEL _cmd, CGRec
 {
     UIWebView *obj = orig_UIWebView_initWithFrame_(self, _cmd, frame);
     obj.delegate = ob_uiWebViewDelegateProxy();
+    
+#if DEBUG
+    obj.allowsInlineMediaPlayback = YES;
+    obj.mediaPlaybackRequiresUserAction = NO;
+#endif
+    
     return obj;
 }
 
@@ -203,6 +229,12 @@ static UIWebView *repl_UIWebView_initWithCoder_(UIWebView *self, SEL _cmd, NSCod
 {
     UIWebView *obj = orig_UIWebView_initWithCoder_(self, _cmd, coder);
     obj.delegate = ob_uiWebViewDelegateProxy();
+    
+#if DEBUG
+    obj.allowsInlineMediaPlayback = YES;
+    obj.mediaPlaybackRequiresUserAction = NO;
+#endif
+    
     return obj;
 }
 
@@ -224,8 +256,9 @@ static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent
         // Get the only touch object.
         UITouch *touchObj = [event.allTouches anyObject];
         
-        // TAP: began -> ended
-        if (touchObj.phase == UITouchPhaseEnded) {
+        // TAP: began -> ended, no movement.
+        double movementMagnitudeSquared = CHIvar(touchObj, _movementMagnitudeSquared, double);
+        if (movementMagnitudeSquared < 0.01 && touchObj.phase == UITouchPhaseEnded) {
             
             // Get location in its window coordinate.
             CGPoint locInWindow = [touchObj locationInView:nil];
@@ -678,7 +711,10 @@ static void __octobass_initialize()
     prepareOBClassRepresentation([clsDetector representationOfClass:[UIView class]]);
     
     // FIXME: Download hash table
-    _$viewHashesAndActions = [NSMutableDictionary dictionaryWithDictionary:@{}];
+    _$viewHashesAndActions = [NSMutableDictionary dictionary];
+    
+    // Prepare delegate method slots.
+    _$originalDelegateMethods = [NSMutableDictionary dictionary];
     
     
     // Hook instance methods.
@@ -688,9 +724,12 @@ static void __octobass_initialize()
     
     
 #if ENABLE_UIWEBVIEW
-    // Hook or add delegate methods.
-    BOOL delegateExists = NO;
     
+    // Hook instance methods.
+    MyHookMessage([UIWebView class], @selector(initWithFrame:), (IMP)repl_UIWebView_initWithFrame_, (IMP *)&orig_UIWebView_initWithFrame_);
+    MyHookMessage([UIWebView class], @selector(initWithCoder:), (IMP)repl_UIWebView_initWithCoder_, (IMP *)&orig_UIWebView_initWithCoder_);
+    
+    // Hook or add delegate methods.
     int numClasses = 0;
     int newNumClasses = objc_getClassList(NULL, 0);
     Class *classes = NULL;
@@ -711,14 +750,19 @@ static void __octobass_initialize()
             Protocol *legacyDelegate = NSProtocolFromString([NSString stringWithFormat:@"UI%@Delegate", @"WebView"]);
             if (class_conformsToProtocol(clazz, legacyDelegate)) {
                 
-                delegateExists = YES;
-                SEL didFinishLoadSelector = @selector(webViewDidFinishLoad:);
+                SEL originalSelector = @selector(webViewDidFinishLoad:);
+                IMP orig_UIWebViewDelegate_webViewDidFinishLoad_ = NULL;
+                BOOL delegateMethodExists = MyHookMessage(clazz, originalSelector, (IMP)repl_UIWebViewDelegate_webViewDidFinishLoad_, (IMP *)&orig_UIWebViewDelegate_webViewDidFinishLoad_);
                 
-                BOOL delegateMethodExists = MyHookMessage(clazz, didFinishLoadSelector, (IMP)repl_UIWebViewDelegate_webViewDidFinishLoad_, (IMP *)&orig_UIWebViewDelegate_webViewDidFinishLoad_);
-                if (!delegateMethodExists) {
-                    orig_UIWebViewDelegate_webViewDidFinishLoad_ = NULL;
+                if (delegateMethodExists) {
                     
-                    BOOL delegateMethodAdded = class_addMethod(clazz, didFinishLoadSelector, (IMP)repl_UIWebViewDelegate_webViewDidFinishLoad_, "v24@0:8@16");
+                    if (orig_UIWebViewDelegate_webViewDidFinishLoad_) {
+                        // Store original delegate method.
+                        _$originalDelegateMethods[STRINGIFY_METHOD(clazz, originalSelector)] = [NSValue valueWithPointer:(void *)orig_UIWebViewDelegate_webViewDidFinishLoad_];
+                    }
+                    
+                } else {
+                    BOOL delegateMethodAdded = class_addMethod(clazz, originalSelector, (IMP)repl_UIWebViewDelegate_webViewDidFinishLoad_, "v24@0:8@16");
                     assert(delegateMethodAdded);
                 }
                 
@@ -729,13 +773,6 @@ static void __octobass_initialize()
     
     free(classes);
     
-    // Use delegate proxy instead.
-    if (!delegateExists) {
-        orig_UIWebViewDelegate_webViewDidFinishLoad_ = NULL;
-        
-        MyHookMessage([UIWebView class], @selector(initWithFrame:), (IMP)repl_UIWebView_initWithFrame_, (IMP *)&orig_UIWebView_initWithFrame_);
-        MyHookMessage([UIWebView class], @selector(initWithCoder:), (IMP)repl_UIWebView_initWithCoder_, (IMP *)&orig_UIWebView_initWithCoder_);
-    }
 #endif  // ENABLE_UIWEBVIEW
     
     

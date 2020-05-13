@@ -252,6 +252,8 @@
 
         /* Video detection */
         for (let video_DOM of video_DOMs) {
+            video_DOM.setAttribute('autoplay', true);
+            video_DOM.setAttribute('playsinline', true);
             report += DoJavaHash(
                 'video;.src=' + video_DOM.currentSrc
                 + ';.videoWidth=' + video_DOM.videoWidth.toString()

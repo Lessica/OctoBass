@@ -48,12 +48,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="139" y="138"/>
+            <point key="canvasLocation" x="-130" y="138"/>
         </scene>
-        <!--Web View Controller-->
+        <!--WKWebView-->
         <scene sceneID="osI-Of-CSk">
             <objects>
-                <viewController id="31C-n1-y72" customClass="WebViewController" sceneMemberID="viewController">
+                <viewController title="WKWebView" id="31C-n1-y72" customClass="WebViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="2BQ-7V-Vf8">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -61,8 +61,9 @@
                             <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ed8-hQ-4Ay">
                                 <rect key="frame" x="0.0" y="56" width="414" height="752"/>
                                 <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <wkWebViewConfiguration key="configuration" allowsInlineMediaPlayback="YES">
-                                    <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" audio="YES" video="YES"/>
+                                <wkWebViewConfiguration key="configuration" allowsAirPlayForMediaPlayback="NO" allowsInlineMediaPlayback="YES" allowsPictureInPictureMediaPlayback="NO">
+                                    <dataDetectorTypes key="dataDetectorTypes"/>
+                                    <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
                                     <wkPreferences key="preferences"/>
                                 </wkWebViewConfiguration>
                             </wkWebView>
@@ -76,10 +77,15 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="57M-NN-z55"/>
                     </view>
-                    <navigationItem key="navigationItem" id="QF4-sC-uV7">
+                    <navigationItem key="navigationItem" title="WKWebView" id="QF4-sC-uV7">
                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="9f5-Dh-pse">
                             <connections>
                                 <segue destination="Aot-kU-1mi" kind="unwind" unwindAction="myUnwindAction:" id="5ed-sz-xRd"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="MWM-6M-LtG">
+                            <connections>
+                                <action selector="reload" destination="1Dx-3l-N7s" id="wUG-mf-RIx"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -108,17 +114,21 @@
             </objects>
             <point key="canvasLocation" x="958" y="138"/>
         </scene>
-        <!--Web View Controller-->
+        <!--UIWebView-->
         <scene sceneID="bL6-2d-Bg8">
             <objects>
-                <viewController id="fGv-yj-huh" customClass="UIWebViewController" sceneMemberID="viewController">
+                <viewController title="UIWebView" id="fGv-yj-huh" customClass="UIWebViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="cK2-bD-r8N">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zCX-6h-P9R">
+                            <webView contentMode="scaleToFill" mediaPlaybackRequiresUserAction="NO" mediaPlaybackAllowsAirPlay="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zCX-6h-P9R">
                                 <rect key="frame" x="0.0" y="56" width="414" height="752"/>
                                 <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <dataDetectorType key="dataDetectorTypes"/>
+                                <connections>
+                                    <outlet property="delegate" destination="fGv-yj-huh" id="Y31-gX-Z16"/>
+                                </connections>
                             </webView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
@@ -130,10 +140,15 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="8TF-SC-DaK"/>
                     </view>
-                    <navigationItem key="navigationItem" id="kX1-0h-Ifj">
+                    <navigationItem key="navigationItem" title="UIWebView (Deprecated)" id="kX1-0h-Ifj">
                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="4va-as-0YB">
                             <connections>
                                 <segue destination="6Q9-SO-XsT" kind="unwind" unwindAction="myUnwindAction:" id="lTH-FY-8x1"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="O4v-Jv-f3M">
+                            <connections>
+                                <action selector="reload" destination="zCX-6h-P9R" id="hPt-FR-VtK"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -144,7 +159,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dJx-AB-mHd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <exit id="6Q9-SO-XsT" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1742" y="812"/>
+            <point key="canvasLocation" x="1742" y="901"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="L0c-mn-W4E">
@@ -160,7 +175,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PAc-2r-GBR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="958" y="812"/>
+            <point key="canvasLocation" x="958" y="902"/>
         </scene>
     </scenes>
 </document>

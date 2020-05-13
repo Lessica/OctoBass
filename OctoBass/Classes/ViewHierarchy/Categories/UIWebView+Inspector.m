@@ -70,6 +70,13 @@ CHDeclareProperty(WKUserContentController, inspectorReportedHash);
 #pragma mark - Private
 
 
+/**
+ * Evaluate JavaScript in UIWebView synchronously.
+ *
+ * @param payload The script to be evaluated.
+ * @param parse Since -stringByEvaluatingJavaScriptFromString: does not support types of return value other than string, you may pass YES to this argument to parse its return value from JSON format.
+ * @returns Returned or parsed representatin of JavaScript object in Objective-C.
+ */
 - (nullable id)ob_evaluateJavaScript:(NSString *)payload shouldParseJSON:(BOOL)parse
 {
     

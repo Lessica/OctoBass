@@ -54,6 +54,12 @@
 #pragma mark - Private
 
 
+/**
+ * Evaluate JavaScript in WKWebView synchronously.
+ *
+ * @param payload The script to be evaluated.
+ * @returns Returned or parsed representatin of JavaScript object in Objective-C.
+ */
 - (nullable id)ob_evaluateJavaScript:(NSString *)payload
 {
     
