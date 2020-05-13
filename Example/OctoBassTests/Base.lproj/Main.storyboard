@@ -16,18 +16,32 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EHg-rp-MND">
-                                <rect key="frame" x="142.5" y="433" width="129" height="30"/>
-                                <state key="normal" title="Show WKWebView"/>
-                                <connections>
-                                    <segue destination="PQS-Jk-xl9" kind="presentation" id="pLg-0c-mQw"/>
-                                </connections>
-                            </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="uny-RZ-9l3">
+                                <rect key="frame" x="16" y="418" width="382" height="60"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EHg-rp-MND">
+                                        <rect key="frame" x="0.0" y="0.0" width="382" height="30"/>
+                                        <state key="normal" title="Show WKWebView"/>
+                                        <connections>
+                                            <segue destination="PQS-Jk-xl9" kind="presentation" id="pLg-0c-mQw"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kck-WG-SNj">
+                                        <rect key="frame" x="0.0" y="30" width="382" height="30"/>
+                                        <state key="normal" title="Show UIWebView (Deprecated)"/>
+                                        <connections>
+                                            <segue destination="RY2-GC-2rW" kind="presentation" id="l0Z-0i-eO5"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="EHg-rp-MND" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="E8K-Kc-BF4"/>
-                            <constraint firstItem="EHg-rp-MND" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="W34-1o-6g2"/>
+                            <constraint firstItem="uny-RZ-9l3" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="8kv-9Z-4EF"/>
+                            <constraint firstItem="uny-RZ-9l3" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="h4x-9f-k4g"/>
+                            <constraint firstItem="uny-RZ-9l3" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="lcp-7Z-UlL"/>
+                            <constraint firstItem="uny-RZ-9l3" firstAttribute="top" relation="greaterThanOrEqual" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="16" id="p91-DV-jvG"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -93,6 +107,60 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zGF-xK-ud9" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="958" y="138"/>
+        </scene>
+        <!--Web View Controller-->
+        <scene sceneID="bL6-2d-Bg8">
+            <objects>
+                <viewController id="fGv-yj-huh" customClass="UIWebViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="cK2-bD-r8N">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zCX-6h-P9R">
+                                <rect key="frame" x="0.0" y="56" width="414" height="752"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </webView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="8TF-SC-DaK" firstAttribute="bottom" secondItem="zCX-6h-P9R" secondAttribute="bottom" id="01k-zX-bRX"/>
+                            <constraint firstItem="8TF-SC-DaK" firstAttribute="trailing" secondItem="zCX-6h-P9R" secondAttribute="trailing" id="Bh7-mA-ffc"/>
+                            <constraint firstItem="zCX-6h-P9R" firstAttribute="top" secondItem="8TF-SC-DaK" secondAttribute="top" id="Lad-aE-Uip"/>
+                            <constraint firstItem="zCX-6h-P9R" firstAttribute="leading" secondItem="8TF-SC-DaK" secondAttribute="leading" id="qSQ-Oi-NIW"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="8TF-SC-DaK"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="kX1-0h-Ifj">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="4va-as-0YB">
+                            <connections>
+                                <segue destination="6Q9-SO-XsT" kind="unwind" unwindAction="myUnwindAction:" id="lTH-FY-8x1"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="webView" destination="zCX-6h-P9R" id="Kkd-WT-BFK"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dJx-AB-mHd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="6Q9-SO-XsT" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="1742" y="812"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="L0c-mn-W4E">
+            <objects>
+                <navigationController id="RY2-GC-2rW" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="NlG-mz-FOk">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="56"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="fGv-yj-huh" kind="relationship" relationship="rootViewController" id="nsO-Ei-UWq"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="PAc-2r-GBR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="958" y="812"/>
         </scene>
     </scenes>
 </document>

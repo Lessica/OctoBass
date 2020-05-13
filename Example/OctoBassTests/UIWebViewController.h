@@ -1,5 +1,5 @@
 //
-//  WebViewController.h
+//  UIWebViewController.h
 //  OctoBassTests
 //
 
@@ -7,7 +7,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface WebViewController : UIViewController
+@interface UIWebViewController : UIViewController
 
 @end
 

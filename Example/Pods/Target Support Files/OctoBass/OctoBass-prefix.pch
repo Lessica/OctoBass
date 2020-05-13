@@ -10,3 +10,5 @@
 #endif
 #endif
 
+#define ENABLE_UIWEBVIEW 1
+

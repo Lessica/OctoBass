@@ -4,21 +4,7 @@
 //
 
 #import "WKWebView+Inspector.h"
-
-
-@interface NSString (JavaScriptEscape)
-- (NSString *)ob_javaScriptEscapedString;
-@end
-
-@implementation NSString (JavaScriptEscape)
-- (NSString *)ob_javaScriptEscapedString {
-    // valid JSON object need to be an array or dictionary
-    NSArray *arrayForEncoding = @[self];
-    NSString *jsonString = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:arrayForEncoding options:0 error:nil] encoding:NSUTF8StringEncoding];
-    NSString *escapedString = [jsonString substringWithRange:NSMakeRange(2, jsonString.length - 4)];
-    return escapedString;
-}
-@end
+#import "NSString+JavaScriptEscape.h"
 
 
 @implementation WKWebView (Inspector)
@@ -27,10 +13,14 @@
 - (nullable NSString *)ob_getElementSelectorByViewPortPoint:(CGPoint)point shouldHighlight:(BOOL)highlight
 {
     
+    if ([self isLoading]) {
+        return nil;
+    }
+    
     NSString *payload = [NSString stringWithFormat:@"var el = document.elementFromPoint(%f, %f); var sel = window._$getElementSelector(el); %@ sel;", point.x, point.y, (highlight ? @"window._$highlightElement(el);" : @"")];
     
     NSString *result = [self ob_evaluateJavaScript:payload];
-    if (![result isKindOfClass:[NSString class]]) {
+    if (![result isKindOfClass:[NSString class]] || !result.length) {
         return nil;
     }
     
@@ -41,6 +31,10 @@
 
 - (CGRect)ob_getViewPortRectByElementSelector:(NSString *)elementSelector shouldScrollTo:(BOOL)scrollTo
 {
+    
+    if ([self isLoading]) {
+        return CGRectNull;
+    }
     
     NSString *payload = [NSString stringWithFormat:@"var el = document.querySelector(\"%@\"); %@ var rect = window._$getElementRect(el); rect;", [elementSelector ob_javaScriptEscapedString], (scrollTo ? @"window._$scrollToElement(el);" : @"")];
     NSArray <NSNumber *> *result = [self ob_evaluateJavaScript:payload];
@@ -60,7 +54,7 @@
 #pragma mark - Private
 
 
-- (id)ob_evaluateJavaScript:(NSString *)payload
+- (nullable id)ob_evaluateJavaScript:(NSString *)payload
 {
     
     dispatch_semaphore_t sema = dispatch_semaphore_create(0);

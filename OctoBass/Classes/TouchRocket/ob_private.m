@@ -14,7 +14,7 @@
 typedef double IOHIDFloat;
 #else
 typedef float IOHIDFloat;
-#endif
+#endif  // __LP64__
 
 typedef UInt32 IOOptionBits;
 typedef uint32_t IOHIDDigitizerTransducerType;

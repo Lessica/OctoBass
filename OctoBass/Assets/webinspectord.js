@@ -31,10 +31,12 @@
 
         /* The WebKit report function. */
         function DoWebKitReport(obj) {
+            // https://developer.apple.com/documentation/webkit/wkusercontentcontroller/1537172-addscriptmessagehandler?language=objc
             window.webkit.messageHandlers._$webinspectord_report.postMessage(obj);
         }
 
 
+        /* Only works when the document is ready. */
         if (document.readyState !== 'complete') {
             console.debug('document not ready');
             return;
@@ -43,12 +45,14 @@
 
 
         /* Some helper functions. */
-        var theWindow = typeof(unsafeWindow) !== 'undefined' ? unsafeWindow : window;
+        const theWindow = typeof(unsafeWindow) !== 'undefined' ? unsafeWindow : window;
 
         /* Get element by selector */
+        // https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector
         //document.querySelector(selector)
 
         /* Get element by point (x, y) */
+        // https://developer.mozilla.org/en-US/docs/Web/API/DocumentOrShadowRoot/elementFromPoint
         //document.elementFromPoint(x, y)
 
         /**
@@ -62,7 +66,7 @@
             }
 
             function getRandomColor() {
-                var letters = '0123456789ABCDEF';
+                const letters = '0123456789ABCDEF';
                 var color = '#';
                 for (var i = 0; i < 6; i++) {
                     color += letters[Math.floor(Math.random() * 16)];
@@ -73,7 +77,7 @@
             var shouldHighlight = true;
 
             if (typeof highlightElement.highlightedElement !== 'undefined') {
-                var prevEl = highlightElement.highlightedElement;
+                const prevEl = highlightElement.highlightedElement;
                 if (prevEl !== el) {
                     prevEl.style.outline = '';
                     prevEl.style.backgroundColor = '';
@@ -85,7 +89,7 @@
             if (shouldHighlight) {
                 highlightElement.highlightedElement = el;
 
-                var color = getRandomColor();
+                const color = getRandomColor();
                 el.style.outline = color + ' solid 1px';
                 el.style.backgroundColor = color + '45';
             }
@@ -98,11 +102,40 @@
          */
         function scrollToElement(el) {
 
+            // Non-standard: https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoViewIfNeeded
+            if (typeof el.scrollIntoViewIfNeeded === 'function') {
+                el.scrollIntoViewIfNeeded();
+                return;
+            }
+
+            /**
+             * Check if an element is visible in current view-port.
+             * @param el The element to be tested.
+             * @returns A boolean value indicates the visible status.
+             */
+            function isInViewport(el) {
+                const bounding = el.getBoundingClientRect();
+                return (
+                    bounding.top >= 0 &&
+                    bounding.left >= 0 &&
+                    bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                    bounding.right <= (window.innerWidth || document.documentElement.clientWidth)
+                );
+            }
+
             if (el === null) {
                 return;
             }
 
-            el.scrollIntoView(true); // experimental
+            if (isInViewport(el)) {
+                return;
+            }
+
+            // Experimental: https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
+            el.scrollIntoView({
+                'block': 'nearest',
+                'inline': 'nearest',
+            }); // experimental
 
         }
 
@@ -117,7 +150,8 @@
                 return null;
             }
 
-            var rect = el.getBoundingClientRect();
+            // https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
+            const rect = el.getBoundingClientRect();
             return [rect.x, rect.y, rect.width, rect.height];
 
         }
@@ -167,6 +201,7 @@
 
 
         /* Performance begin */
+        // https://developer.mozilla.org/en-US/docs/Web/API/Performance/now
         const t0 = performance.now();
 
 

@@ -35,13 +35,15 @@ static NSMutableSet <NSString *> *_$clsNames = nil;
 static NSMutableDictionary <NSString *, NSDictionary *> *_$viewHashesAndActions = nil;
 
 
-#pragma mark - WKWebView Methods
+#pragma mark - WebView Payload
 
 
-NS_INLINE void modifyWKWebViewConfiguration(WKWebViewConfiguration *configuration)
+NS_INLINE NSString *ob_webViewPayloadJavaScript()
 {
-    static NSString *inspectorJS = nil;
+    
+    static NSString *payloadJS = nil;
     static dispatch_once_t onceToken;
+    
     dispatch_once(&onceToken, ^{
         
         NSBundle *resBundle = nil;
@@ -66,11 +68,23 @@ NS_INLINE void modifyWKWebViewConfiguration(WKWebViewConfiguration *configuratio
             return;
         }
         
-        inspectorJS = [[NSString alloc] initWithData:jsData encoding:NSUTF8StringEncoding];
+        payloadJS = [[NSString alloc] initWithData:jsData encoding:NSUTF8StringEncoding];
         
     });
     
-    if (!inspectorJS.length) {
+    return payloadJS;
+    
+}
+
+
+#pragma mark - WKWebView Methods
+
+
+NS_INLINE void modifyWKWebViewConfiguration(WKWebViewConfiguration *configuration)
+{
+    
+    NSString *payload = ob_webViewPayloadJavaScript();
+    if (!payload.length) {
         return;
     }
     
@@ -88,7 +102,7 @@ NS_INLINE void modifyWKWebViewConfiguration(WKWebViewConfiguration *configuratio
     // Check if it's already injected.
     BOOL alreadyInjected = NO;
     for (WKUserScript *script in userContentController.userScripts) {
-        if ([script.source isEqualToString:inspectorJS]) {
+        if ([script.source isEqualToString:payload]) {
             alreadyInjected = YES;
             break;
         }
@@ -97,7 +111,7 @@ NS_INLINE void modifyWKWebViewConfiguration(WKWebViewConfiguration *configuratio
     
     // Inject if needed.
     if (!alreadyInjected) {
-        WKUserScript *userScript = [[WKUserScript alloc] initWithSource:inspectorJS injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
+        WKUserScript *userScript = [[WKUserScript alloc] initWithSource:payload injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
         [userContentController addUserScript:userScript];
     }
 }
@@ -123,27 +137,20 @@ static WKWebView *repl_WKWebView_initWithFrame_configuration_(WKWebView *self, S
 #pragma mark - UIWebView Methods
 
 #if ENABLE_UIWEBVIEW
+
 static void (*orig_UIWebViewDelegate_webViewDidFinishLoad_)(id, SEL, UIWebView *);
 static void repl_UIWebViewDelegate_webViewDidFinishLoad_(id self, SEL _cmd, UIWebView *webView)
 {
     
-    static NSString *inspectorJS = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        
-        NSBundle *resBundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"OctoBass" ofType:@"bundle"]];
-        NSString *jsPath = [resBundle pathForResource:@"webinspectord" ofType:@"js"];
-        NSData *jsData = [[NSData alloc] initWithContentsOfFile:jsPath];
-        inspectorJS = [[NSString alloc] initWithData:jsData encoding:NSUTF8StringEncoding];
-        
-    });
-    
-    if (!inspectorJS) {
-        orig_UIWebViewDelegate_webViewDidFinishLoad_(self, _cmd, webView);
+    NSString *payload = ob_webViewPayloadJavaScript();
+    if (!payload.length) {
+        if (orig_UIWebViewDelegate_webViewDidFinishLoad_) {
+            orig_UIWebViewDelegate_webViewDidFinishLoad_(self, _cmd, webView);
+        }
         return;
     }
     
-    NSString *evaluatedResult = [webView stringByEvaluatingJavaScriptFromString:inspectorJS];
+    NSString *evaluatedResult = [webView stringByEvaluatingJavaScriptFromString:payload];
     if (evaluatedResult.length) {
         
         // Save reported hash directly to UIWebView instance
@@ -151,10 +158,55 @@ static void repl_UIWebViewDelegate_webViewDidFinishLoad_(id self, SEL _cmd, UIWe
         
     }
     
-    orig_UIWebViewDelegate_webViewDidFinishLoad_(self, _cmd, webView);
+    if (orig_UIWebViewDelegate_webViewDidFinishLoad_) {
+        orig_UIWebViewDelegate_webViewDidFinishLoad_(self, _cmd, webView);
+    }
     
 }
-#endif
+
+
+@interface OBUIWebViewDelegateProxy : NSObject <UIWebViewDelegate>
+@end
+@implementation OBUIWebViewDelegateProxy
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+    repl_UIWebViewDelegate_webViewDidFinishLoad_(self, _cmd, webView);
+}
+@end
+
+
+NS_INLINE OBUIWebViewDelegateProxy *ob_uiWebViewDelegateProxy()
+{
+    
+    static OBUIWebViewDelegateProxy *proxy = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        proxy = [[OBUIWebViewDelegateProxy alloc] init];
+    });
+    
+    return proxy;
+    
+}
+
+
+static UIWebView *(*orig_UIWebView_initWithFrame_)(UIWebView *, SEL, CGRect);
+static UIWebView *repl_UIWebView_initWithFrame_(UIWebView *self, SEL _cmd, CGRect frame)
+{
+    UIWebView *obj = orig_UIWebView_initWithFrame_(self, _cmd, frame);
+    obj.delegate = ob_uiWebViewDelegateProxy();
+    return obj;
+}
+
+
+static UIWebView *(*orig_UIWebView_initWithCoder_)(UIWebView *, SEL, NSCoder *);
+static UIWebView *repl_UIWebView_initWithCoder_(UIWebView *self, SEL _cmd, NSCoder *coder)
+{
+    UIWebView *obj = orig_UIWebView_initWithCoder_(self, _cmd, coder);
+    obj.delegate = ob_uiWebViewDelegateProxy();
+    return obj;
+}
+
+#endif  // ENABLE_UIWEBVIEW
 
 
 #pragma mark - Event Logging
@@ -196,7 +248,7 @@ static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent
                     theWebView = theView;
                     break;
                 }
-#endif
+#endif  // ENABLE_UIWEBVIEW
             }
             
             // Get location in the view's coordinate.
@@ -223,16 +275,33 @@ static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent
                     MyLog(@"    - DOM rect = %@", [NSValue valueWithCGRect:rectInWindow]);
                     
                 } while (0);
-                
-                
             }
 #if ENABLE_UIWEBVIEW
             else if ([theWebView isKindOfClass:[UIWebView class]]) {
+                UIWebView *uiWebView = (UIWebView *)theWebView;
                 
+                do {
+                    
+                    // Coordinate -> DOM selector.
+                    NSString *elementSelector = [uiWebView ob_getElementSelectorByViewPortPoint:locInView shouldHighlight:YES];
+                    if (!elementSelector) {
+                        break;
+                    }
+                    MyLog(@"    - DOM selector = %@", elementSelector);
+                    
+                    // DOM selector -> Rect.
+                    CGRect rectInView = [uiWebView ob_getViewPortRectByElementSelector:elementSelector shouldScrollTo:YES];
+                    if (CGRectIsNull(rectInView)) {
+                        break;
+                    }
+                    CGRect rectInWindow = [uiWebView convertRect:rectInView toView:nil];
+                    MyLog(@"    - DOM rect = %@", [NSValue valueWithCGRect:rectInWindow]);
+                    
+                } while (0);
             }
-#endif
+#endif  // ENABLE_UIWEBVIEW
             
-#endif
+#endif  // DEBUG
             
             
         }
@@ -544,7 +613,7 @@ NSString *computeHashOfViewHierarchy(UIView *topView) {
     // Generate hierarchy logs to calculate hash
 #if DEBUG
     NSMutableString *hierarchyLogs = [NSMutableString stringWithString:@"\n[\n"];
-#endif
+#endif  // DEBUG
     
     NSMutableString *hierarchyShortLogs = [NSMutableString string];
     for (UIView *view in superviews) {
@@ -559,7 +628,7 @@ NSString *computeHashOfViewHierarchy(UIView *topView) {
         if (log) {
             [hierarchyLogs appendFormat:@"    \"%@\",\n", log];
         }
-#endif
+#endif  // DEBUG
         
         NSString *shortLog = nil;
         if ([view respondsToSelector:@selector(ob_shortDescription)]) {
@@ -578,7 +647,7 @@ NSString *computeHashOfViewHierarchy(UIView *topView) {
 #if DEBUG
     [hierarchyLogs appendString:@"]"];
     MyLog(@"HIERARCHY = %@\nHASH = %@", hierarchyLogs, hash);
-#endif
+#endif  // DEBUG
     
     return hash;
 }
@@ -619,23 +688,55 @@ static void __octobass_initialize()
     
     
 #if ENABLE_UIWEBVIEW
-    // Hook delegate methods.
-    int numClasses = 0, newNumClasses = objc_getClassList(NULL, 0);
+    // Hook or add delegate methods.
+    BOOL delegateExists = NO;
+    
+    int numClasses = 0;
+    int newNumClasses = objc_getClassList(NULL, 0);
     Class *classes = NULL;
+    
     while (numClasses < newNumClasses) {
+        
         numClasses = newNumClasses;
         classes = (Class *)realloc(classes, sizeof(Class) * numClasses);
         newNumClasses = objc_getClassList(classes, numClasses);
+        
         for (int i = 0; i < numClasses; i++) {
+            
             Class clazz = classes[i];
-            Protocol *locationManagerDelegate = NSProtocolFromString([NSString stringWithFormat:@"UI%@Delegate", @"WebView"]);
-            if (class_conformsToProtocol(clazz, locationManagerDelegate)) {
-                MyHookMessage(clazz, @selector(webViewDidFinishLoad:), (IMP)repl_UIWebViewDelegate_webViewDidFinishLoad_, (IMP *)&orig_UIWebViewDelegate_webViewDidFinishLoad_);
+            if (clazz == [OBUIWebViewDelegateProxy class]) {
+                continue;
+            }
+            
+            Protocol *legacyDelegate = NSProtocolFromString([NSString stringWithFormat:@"UI%@Delegate", @"WebView"]);
+            if (class_conformsToProtocol(clazz, legacyDelegate)) {
+                
+                delegateExists = YES;
+                SEL didFinishLoadSelector = @selector(webViewDidFinishLoad:);
+                
+                BOOL delegateMethodExists = MyHookMessage(clazz, didFinishLoadSelector, (IMP)repl_UIWebViewDelegate_webViewDidFinishLoad_, (IMP *)&orig_UIWebViewDelegate_webViewDidFinishLoad_);
+                if (!delegateMethodExists) {
+                    orig_UIWebViewDelegate_webViewDidFinishLoad_ = NULL;
+                    
+                    BOOL delegateMethodAdded = class_addMethod(clazz, didFinishLoadSelector, (IMP)repl_UIWebViewDelegate_webViewDidFinishLoad_, "v24@0:8@16");
+                    assert(delegateMethodAdded);
+                }
+                
             }
         }
+        
     }
+    
     free(classes);
-#endif
+    
+    // Use delegate proxy instead.
+    if (!delegateExists) {
+        orig_UIWebViewDelegate_webViewDidFinishLoad_ = NULL;
+        
+        MyHookMessage([UIWebView class], @selector(initWithFrame:), (IMP)repl_UIWebView_initWithFrame_, (IMP *)&orig_UIWebView_initWithFrame_);
+        MyHookMessage([UIWebView class], @selector(initWithCoder:), (IMP)repl_UIWebView_initWithCoder_, (IMP *)&orig_UIWebView_initWithCoder_);
+    }
+#endif  // ENABLE_UIWEBVIEW
     
     
     // Setup dispatch queue.
@@ -649,7 +750,7 @@ static void __octobass_initialize()
 #else
     static NSTimeInterval _$detectInterval = 0.5;
     static NSTimeInterval _$coolDownInterval = 15.0;
-#endif
+#endif  // DEBUG
     
     // Setup major points.
     CGRect screenBounds = [[UIScreen mainScreen] bounds];

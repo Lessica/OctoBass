@@ -1,17 +1,16 @@
 //
-//  WebViewController.m
+//  UIWebViewController.m
 //  OctoBassTests
 //
 
-#import "WebViewController.h"
-#import <WebKit/WebKit.h>
+#import "UIWebViewController.h"
 
-@interface WebViewController ()
-@property (nonatomic, weak) IBOutlet WKWebView *webView;
+@interface UIWebViewController ()
+@property (nonatomic, weak) IBOutlet UIWebView *webView;
 
 @end
 
-@implementation WebViewController
+@implementation UIWebViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
