@@ -22,6 +22,9 @@
 		16D4315F09BFE9A29BBE023657A30493 /* UITouch+OBAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A20499A2299C3F019212671411B9DCF /* UITouch+OBAdditions.m */; };
 		1719272031EDCAFFC00B53C1BFB415E9 /* UIWindow+Hierarchy.h in Headers */ = {isa = PBXBuildFile; fileRef = 293AF4CFA1D82E6D1448B07E87C86C4F /* UIWindow+Hierarchy.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		171C30D1CF663BB36E63E5CC46D2EAE4 /* WKUserContentController+Inspector.h in Headers */ = {isa = PBXBuildFile; fileRef = 4D4FDF79076932066DE9689F1379A653 /* WKUserContentController+Inspector.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		18904C55246C3709009FF292 /* OBViewEvents.h in Headers */ = {isa = PBXBuildFile; fileRef = 18904C54246C3709009FF292 /* OBViewEvents.h */; };
+		18904C58246C518A009FF292 /* NSURL+QueryDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 18904C56246C5189009FF292 /* NSURL+QueryDictionary.h */; };
+		18904C59246C518A009FF292 /* NSURL+QueryDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 18904C57246C518A009FF292 /* NSURL+QueryDictionary.m */; };
 		19FCA478DDD8F5C871BE2FF154AF48C0 /* UIView+Description.h in Headers */ = {isa = PBXBuildFile; fileRef = 0063D67EC29C5EC6E5C5A2285A6E483B /* UIView+Description.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1CB0C6D55A2D7ECCC8384899C80BC9B9 /* webinspectord.js in Resources */ = {isa = PBXBuildFile; fileRef = 96A8E6D251435EC953FDC9E01E4F2949 /* webinspectord.js */; };
 		2059C6C72B5783568A91ADD07E95B1C3 /* FMDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 763D4647C07C4017495E0DDF2031B604 /* FMDB.framework */; };
@@ -195,6 +198,9 @@
 		119E780BD5291EE0D6DCE95D1D284101 /* Type.pbobjc.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Type.pbobjc.h; path = objectivec/google/protobuf/Type.pbobjc.h; sourceTree = "<group>"; };
 		14CE6D644F85264CBDDB5F829374C95F /* Protobuf.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = Protobuf.modulemap; sourceTree = "<group>"; };
 		1522FCF059ECAD7CA350BA154D12CF0F /* FieldMask.pbobjc.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = FieldMask.pbobjc.m; path = objectivec/google/protobuf/FieldMask.pbobjc.m; sourceTree = "<group>"; };
+		18904C54246C3709009FF292 /* OBViewEvents.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OBViewEvents.h; sourceTree = "<group>"; };
+		18904C56246C5189009FF292 /* NSURL+QueryDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+QueryDictionary.h"; sourceTree = "<group>"; };
+		18904C57246C518A009FF292 /* NSURL+QueryDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+QueryDictionary.m"; sourceTree = "<group>"; };
 		194D49105B321A711C10CF4F91AE7506 /* LoadableCategory.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = LoadableCategory.h; sourceTree = "<group>"; };
 		1CD6E85A6B1C80458DC35476F85A37C2 /* UIWebView+Inspector.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+Inspector.m"; sourceTree = "<group>"; };
 		1D5B27F0D03E03743374FB6C9A52D859 /* UIView+Hierarchy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "UIView+Hierarchy.m"; sourceTree = "<group>"; };
@@ -441,6 +447,7 @@
 		277EE59E86E7607C1BC53608CF59E6A1 /* ViewHierarchy */ = {
 			isa = PBXGroup;
 			children = (
+				18904C54246C3709009FF292 /* OBViewEvents.h */,
 				6BF332EA238AF188FA38FDDA186FFD39 /* OBWKWebViewMsgProxy.h */,
 				4CDECED69FA6AED7B1E53825E79845A3 /* OBWKWebViewMsgProxy.m */,
 				B7B4DE17E57F26D5903AE8FB8B6C8D56 /* Categories */,
@@ -591,6 +598,8 @@
 		B7B4DE17E57F26D5903AE8FB8B6C8D56 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				18904C56246C5189009FF292 /* NSURL+QueryDictionary.h */,
+				18904C57246C518A009FF292 /* NSURL+QueryDictionary.m */,
 				E1BFF50B1CBA9DD2243456731CAFB2F0 /* NSString+Hashes.h */,
 				657E520A2845AF73E9AA8CE9B2C0373D /* NSString+Hashes.m */,
 				D6E8246F246BA04C0029802B /* NSString+JavaScriptEscape.h */,
@@ -726,6 +735,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D6E82471246BA04C0029802B /* NSString+JavaScriptEscape.h in Headers */,
+				18904C55246C3709009FF292 /* OBViewEvents.h in Headers */,
 				5FD691D0A65EA923DA6157C187DB51D0 /* CaptainHook.h in Headers */,
 				F6E8AD6F3D00AA0608B330EF1BFAE700 /* LoadableCategory.h in Headers */,
 				CF4AA2CA9918932E3AF2489D3664D781 /* MyCHHook.h in Headers */,
@@ -741,6 +751,7 @@
 				19FCA478DDD8F5C871BE2FF154AF48C0 /* UIView+Description.h in Headers */,
 				15CB622357D326A10857D8CE2F6E2F9E /* UIView+Hierarchy.h in Headers */,
 				FAF1F4B9C461E39D81A8E09B04BA58EE /* UIWebView+Description.h in Headers */,
+				18904C58246C518A009FF292 /* NSURL+QueryDictionary.h in Headers */,
 				870DAD8A42A08554EF6FA60140BEFE25 /* UIWebView+Inspector.h in Headers */,
 				1719272031EDCAFFC00B53C1BFB415E9 /* UIWindow+Hierarchy.h in Headers */,
 				171C30D1CF663BB36E63E5CC46D2EAE4 /* WKUserContentController+Inspector.h in Headers */,
@@ -1028,6 +1039,7 @@
 				C9A0E1B06C3D1A58022CA9D2EB0079EB /* UIWindow+Hierarchy.m in Sources */,
 				D8F314FC80C2649A55F9DD7EED3CEB0B /* WKUserContentController+Inspector.m in Sources */,
 				7509C24B8705D2A804377D735F47DC4B /* WKWebView+Description.m in Sources */,
+				18904C59246C518A009FF292 /* NSURL+QueryDictionary.m in Sources */,
 				008970C31E143101E63D2DDD98FCB78B /* WKWebView+Inspector.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

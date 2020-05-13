@@ -7,19 +7,31 @@
 #import "CaptainHook.h"
 
 
-// Declare a property for WKUserContentController
+// Declare properties for WKUserContentController
 CHDeclareProperty(WKUserContentController, inspectorReportedHash);
+CHDeclareProperty(WKUserContentController, lastMediaStatusDictionary);
 
 
 @implementation WKUserContentController (Inspector)
 
 
-- (NSString *)ob_inspectorReportedHash {
+#pragma mark - CHProperties
+
+
+- (nullable NSString *)ob_inspectorReportedHash {
     return CHPropertyGetValue(WKUserContentController, inspectorReportedHash);
 }
 
-- (void)ob_setInspectorReportedHash:(NSString *)hash {
+- (void)ob_setInspectorReportedHash:(nullable NSString *)hash {
     CHPropertySetValue(WKUserContentController, inspectorReportedHash, hash, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (nullable NSDictionary *)ob_lastMediaStatusDictionary {
+    return CHPropertyGetValue(WKUserContentController, lastMediaStatusDictionary);
+}
+
+- (void)ob_setLastMediaStatusDictionary:(nullable NSDictionary *)dict {
+    CHPropertySetValue(WKUserContentController, lastMediaStatusDictionary, dict, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 

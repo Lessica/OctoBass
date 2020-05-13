@@ -55,6 +55,8 @@ static BOOL MyHookMessage(Class cls, SEL sel, IMP repl_imp, IMP *orig_imp_export
 	if (cls != nil) {
 		Method orig_method = class_getInstanceMethod(cls, sel);
 		if (orig_method != nil) {
+            //const char *typeEncoding = method_getTypeEncoding(orig_method);
+            //printf("%s\n", typeEncoding);
 			IMP orig_imp = method_getImplementation(orig_method);
 			if (orig_imp_export != nil) {
 				*orig_imp_export = orig_imp;

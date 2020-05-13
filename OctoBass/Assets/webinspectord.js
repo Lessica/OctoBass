@@ -11,7 +11,11 @@
 
 (function () {
 
-    const onDocumentReady = function () {
+    function isWKWebView() {
+        return window.webkit !== undefined || typeof(unsafeWindow) !== 'undefined'
+    }
+
+    function onDocumentReady(event) {
 
 
         'use strict';
@@ -33,6 +37,30 @@
         function DoWebKitReport(obj) {
             // https://developer.apple.com/documentation/webkit/wkusercontentcontroller/1537172-addscriptmessagehandler?language=objc
             window.webkit.messageHandlers._$webinspectord_report.postMessage(obj);
+        }
+
+
+        /* The WebKit media notification function. */
+        function DoWebKitNotifyMediaStatus(status) {
+            window.webkit.messageHandlers._$webinspectord_notify_media_status.postMessage({
+                'type': this.tagName.toLowerCase(),
+                'src': this.currentSrc,
+                'paused': this.paused,
+                'ended': this.ended,
+                'currentTime': this.currentTime,
+                'duration': this.duration,
+            });
+        }
+
+
+        /* Legacy media notification function. */
+        function DoLegacyNotifyMediaStatus() {
+            window.location.href = 'webinspectord://notify/media_status?type=' + this.tagName.toLowerCase()
+                + '&src=' + encodeURIComponent(this.currentSrc)
+                + '&paused=' + this.paused.toString()
+                + '&ended=' + this.ended.toString()
+                + '&currentTime=' + this.currentTime.toString()
+                + '&duration=' + this.duration.toString();
         }
 
 
@@ -208,16 +236,18 @@
         /* Build report */
         var cnt = 0;
         var report = '';
-        report += '13,';
+        report += '14,';
         const video_DOMs = document.getElementsByTagName('video');
         report += video_DOMs.length.toString() + ',';
+        const audio_DOMs = document.getElementsByTagName('audio');
+        report += audio_DOMs.length.toString() + ',';
         report += document.images.length.toString() + ',';
         report += document.embeds.length.toString() + ',';
         report += document.styleSheets.length.toString() + ',';
         report += document.scripts.length.toString() + ',';
         report += document.links.length.toString() + ',';
         report += document.forms.length.toString() + ',';
-        cnt += 8;
+        cnt += 9;
 
 
         /* DOM count */
@@ -250,10 +280,21 @@
         cnt++;
 
 
+        /* Video/Audio notification */
+        var notify_func = isWKWebView() ? DoWebKitNotifyMediaStatus : DoLegacyNotifyMediaStatus;
+
+
         /* Video detection */
         for (let video_DOM of video_DOMs) {
+
+            /* Video attributes */
             video_DOM.setAttribute('autoplay', true);
             video_DOM.setAttribute('playsinline', true);
+
+            /* Video notifications */
+            ['play', 'ended'].forEach( (evt) => { video_DOM.addEventListener(evt, notify_func.bind(video_DOM)) } );
+
+            /* Video report */
             report += DoJavaHash(
                 'video;.src=' + video_DOM.currentSrc
                 + ';.videoWidth=' + video_DOM.videoWidth.toString()
@@ -261,6 +302,23 @@
                 + ';.duration=' + Math.round(video_DOM.duration).toString()
             ) + ',';
             cnt++;
+
+        }
+
+
+        /* Audio detection */
+        for (let audio_DOM of audio_DOMs) {
+
+            /* Audio notifications */
+            ['play', 'ended'].forEach( (evt) => { audio_DOM.addEventListener(evt, notify_func.bind(audio_DOM)) } );
+
+            /* Audio report */
+            report += DoJavaHash(
+                'audio;.src=' + audio_DOM.currentSrc
+                + ';.duration=' + Math.round(audio_DOM.duration).toString()
+            ) + ',';
+            cnt++;
+
         }
 
 
@@ -268,8 +326,8 @@
         for (let image_DOM of document.images) {
             report += DoJavaHash(
                 'image;.src=' + image_DOM.currentSrc
-                + ';.naturalWidth=' + image_DOM.naturalWidth.toString()
-                + ';.naturalHeight=' + image_DOM.naturalHeight.toString()
+                + ';.naturalWidth=' + Math.round(image_DOM.naturalWidth).toString()
+                + ';.naturalHeight=' + Math.round(image_DOM.naturalHeight).toString()
             ) + ',';
             cnt++;
         }
@@ -280,8 +338,8 @@
             report += DoJavaHash(
                 'embed;.src=' + embed_DOM.src
                 + ';.type=' + embed_DOM.type
-                + ';.width=' + embed_DOM.width
-                + ';.height=' + embed_DOM.height
+                + ';.width=' + Math.round(embed_DOM.width).toString()
+                + ';.height=' + Math.round(embed_DOM.height).toString()
             ) + ',';
             cnt++;
         }
@@ -339,7 +397,7 @@
 
             for (let element_DOM of form_DOM.elements) {
                 report += DoJavaHash(
-                    element_DOM.tagName + ';.type=' + element_DOM.type
+                    element_DOM.tagName.toLowerCase() + ';.type=' + element_DOM.type
                     + ';.id=' + element_DOM.id
                     + ';.name=' + element_DOM.name
                 ) + ',';
@@ -368,10 +426,10 @@
         return report;
 
 
-    };
+    }
 
-    if (window.webkit !== undefined || typeof(unsafeWindow) !== 'undefined') {
-        document.onreadystatechange = onDocumentReady;
+    if (isWKWebView()) {
+        document.addEventListener('readystatechange', onDocumentReady);
     } else if (self === top && document.readyState === 'complete') {
         return onDocumentReady();
     }

@@ -10,20 +10,35 @@
 #import "NSString+JavaScriptEscape.h"
 
 
-// Declare a property for WKUserContentController
-CHDeclareProperty(WKUserContentController, inspectorReportedHash);
+// Declare properties for UIWebView
+CHDeclareProperty(UIWebView, inspectorReportedHash);
+CHDeclareProperty(UIWebView, lastMediaStatusDictionary);
 
 
 @implementation UIWebView (Inspector)
 
 
+#pragma mark - CHProperties
+
+
 - (NSString *)ob_inspectorReportedHash {
-    return CHPropertyGetValue(WKUserContentController, inspectorReportedHash);
+    return CHPropertyGetValue(UIWebView, inspectorReportedHash);
 }
 
 - (void)ob_setInspectorReportedHash:(NSString *)hash {
-    CHPropertySetValue(WKUserContentController, inspectorReportedHash, hash, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    CHPropertySetValue(UIWebView, inspectorReportedHash, hash, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
+
+- (nullable NSDictionary *)ob_lastMediaStatusDictionary {
+    return CHPropertyGetValue(UIWebView, lastMediaStatusDictionary);
+}
+
+- (void)ob_setLastMediaStatusDictionary:(nullable NSDictionary *)dict {
+    CHPropertySetValue(UIWebView, lastMediaStatusDictionary, dict, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+
+#pragma mark - JavaScript Payloads
 
 
 - (nullable NSString *)ob_getElementSelectorByViewPortPoint:(CGPoint)point shouldHighlight:(BOOL)highlight

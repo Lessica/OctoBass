@@ -9,8 +9,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface WKUserContentController (Inspector)
 
-- (NSString *)ob_inspectorReportedHash;
-- (void)ob_setInspectorReportedHash:(NSString *)hash;
+- (nullable NSString *)ob_inspectorReportedHash;
+- (void)ob_setInspectorReportedHash:(nullable NSString *)hash;
+- (nullable NSDictionary *)ob_lastMediaStatusDictionary;
+- (void)ob_setLastMediaStatusDictionary:(nullable NSDictionary *)dict;
 
 @end
 

@@ -12,6 +12,7 @@
 #import "MyCHHook.h"
 #import "LoadableCategory.h"
 
+#import "OBViewEvents.h"
 #import "OBClassHierarchyDetector.h"
 #import "OBTouchRocket.h"
 #import "OBWKWebViewMsgProxy.h"
@@ -23,7 +24,9 @@
 #import "UIView+Description.h"
 #import "UIWebView+Description.h"
 #import "WKWebView+Description.h"
+
 #import "NSString+Hashes.h"
+#import "NSURL+QueryDictionary.h"
 
 
 MAKE_CATEGORIES_LOADABLE(OctoBass);
@@ -95,9 +98,11 @@ NS_INLINE void modifyWKWebViewConfiguration(WKWebViewConfiguration *configuratio
     
     
     // Add inspector message handlers.
-    static NSString *inspectorMsgHandlerName = @"_$webinspectord_report";
-    [userContentController removeScriptMessageHandlerForName:inspectorMsgHandlerName];
-    [userContentController addScriptMessageHandler:[OBWKWebViewMsgProxy new] name:inspectorMsgHandlerName];
+    OBWKWebViewMsgProxy *msgProxy = [[OBWKWebViewMsgProxy alloc] init];
+    [userContentController removeScriptMessageHandlerForName:_$proxyHandlerNameReport];
+    [userContentController addScriptMessageHandler:msgProxy name:_$proxyHandlerNameReport];
+    [userContentController removeScriptMessageHandlerForName:_$proxyHandlerNameNotifyMediaStatus];
+    [userContentController addScriptMessageHandler:msgProxy name:_$proxyHandlerNameNotifyMediaStatus];
     
     
     // Check if it's already injected.
@@ -124,7 +129,7 @@ NS_INLINE void modifyWKWebViewConfiguration(WKWebViewConfiguration *configuratio
     } else {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        configuration.mediaPlaybackRequiresUserAction = NO;
+        configuration.mediaPlaybackRequiresUserAction = YES;
 #pragma clang diagnostic pop
     }
 #endif  // DEBUG
@@ -153,8 +158,64 @@ static WKWebView *repl_WKWebView_initWithFrame_configuration_(WKWebView *self, S
 
 #if ENABLE_UIWEBVIEW
 
+typedef BOOL (*UIWebViewDelegate_webView_shouldStartLoadWithRequest_navigationType_)(id, SEL, UIWebView *, NSURLRequest *, UIWebViewNavigationType);
 typedef void (*UIWebViewDelegate_webViewDidFinishLoad_)(id, SEL, UIWebView *);
+
 static NSMutableDictionary <NSString *, NSValue *> *_$originalDelegateMethods = nil;
+
+static BOOL repl_UIWebViewDelegate_webView_shouldStartLoadWithRequest_navigationType_(id self, SEL _cmd, UIWebView *webView, NSURLRequest *request, UIWebViewNavigationType navigationType)
+{
+    
+    // Get stored original delegate method.
+    UIWebViewDelegate_webView_shouldStartLoadWithRequest_navigationType_ orig_UIWebViewDelegate_webView_shouldStartLoadWithRequest_navigationType_ = [(NSValue *)_$originalDelegateMethods[STRINGIFY_METHOD([self class], _cmd)] pointerValue];
+    
+    // Process special requests.
+    if ([request.URL.scheme isEqualToString:@"webinspectord"] && [request.URL.host isEqualToString:@"notify"]) {
+        
+        // Media Status
+        if ([request.URL.path isEqualToString:@"/media_status"]) {
+            
+            NSDictionary <NSString *, NSString *> *rawVideoDetail = [request.URL ob_queryDictionary];
+            
+            NSMutableDictionary <NSString *, id> *evaluatedVideoDetail = [NSMutableDictionary dictionaryWithCapacity:rawVideoDetail.count];
+            if ([rawVideoDetail[@"currentTime"] isKindOfClass:[NSString class]]) {
+                evaluatedVideoDetail[@"currentTime"] = @([rawVideoDetail[@"currentTime"] doubleValue]);
+            }
+            if ([rawVideoDetail[@"duration"] isKindOfClass:[NSString class]]) {
+                evaluatedVideoDetail[@"duration"] = @([rawVideoDetail[@"duration"] doubleValue]);
+            }
+            if ([rawVideoDetail[@"ended"] isKindOfClass:[NSString class]]) {
+                evaluatedVideoDetail[@"ended"] = @([rawVideoDetail[@"ended"] boolValue]);
+            }
+            if ([rawVideoDetail[@"paused"] isKindOfClass:[NSString class]]) {
+                evaluatedVideoDetail[@"paused"] = @([rawVideoDetail[@"paused"] boolValue]);
+            }
+            if ([rawVideoDetail[@"src"] isKindOfClass:[NSString class]]) {
+                evaluatedVideoDetail[@"src"] = rawVideoDetail[@"src"];
+            }
+            if ([rawVideoDetail[@"type"] isKindOfClass:[NSString class]]) {
+                evaluatedVideoDetail[@"type"] = rawVideoDetail[@"type"];
+            }
+            
+            // Save reported video detail dictionary to UIWebView instance.
+            [webView ob_setLastMediaStatusDictionary:evaluatedVideoDetail];
+            
+            // Send a global notification.
+            [[NSNotificationCenter defaultCenter] postNotificationName:_$OBNotificationNameMediaStatus object:self userInfo:evaluatedVideoDetail];
+            
+        }
+        
+        return NO;
+    }
+    
+    // Call original method.
+    if (orig_UIWebViewDelegate_webView_shouldStartLoadWithRequest_navigationType_) {
+        return orig_UIWebViewDelegate_webView_shouldStartLoadWithRequest_navigationType_(self, _cmd, webView, request, navigationType);
+    }
+    
+    return NO;
+    
+}
 
 static void repl_UIWebViewDelegate_webViewDidFinishLoad_(id self, SEL _cmd, UIWebView *webView)
 {
@@ -170,14 +231,19 @@ static void repl_UIWebViewDelegate_webViewDidFinishLoad_(id self, SEL _cmd, UIWe
         return;
     }
     
-    NSString *evaluatedResult = [webView stringByEvaluatingJavaScriptFromString:payload];
-    if (evaluatedResult.length) {
+    NSString *evaluatedReport = [webView stringByEvaluatingJavaScriptFromString:payload];
+    if (evaluatedReport.length) {
         
-        // Save reported hash directly to UIWebView instance
-        [webView ob_setInspectorReportedHash:evaluatedResult];
+        // Save reported hash directly to UIWebView instance.
+        [webView ob_setInspectorReportedHash:evaluatedReport];
+        
+#if DEBUG
+        NSLog(@"%@", evaluatedReport);
+#endif  // DEBUG
         
     }
     
+    // Call original method.
     if (orig_UIWebViewDelegate_webViewDidFinishLoad_) {
         orig_UIWebViewDelegate_webViewDidFinishLoad_(self, _cmd, webView);
     }
@@ -187,10 +253,19 @@ static void repl_UIWebViewDelegate_webViewDidFinishLoad_(id self, SEL _cmd, UIWe
 
 @interface OBUIWebViewDelegateProxy : NSObject <UIWebViewDelegate>
 @end
+
 @implementation OBUIWebViewDelegateProxy
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
     repl_UIWebViewDelegate_webViewDidFinishLoad_(self, _cmd, webView);
 }
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+{
+    return repl_UIWebViewDelegate_webView_shouldStartLoadWithRequest_navigationType_(self, _cmd, webView, request, navigationType);
+}
+
 @end
 
 
@@ -217,7 +292,7 @@ static UIWebView *repl_UIWebView_initWithFrame_(UIWebView *self, SEL _cmd, CGRec
     
 #if DEBUG
     obj.allowsInlineMediaPlayback = YES;
-    obj.mediaPlaybackRequiresUserAction = NO;
+    obj.mediaPlaybackRequiresUserAction = YES;
 #endif
     
     return obj;
@@ -232,7 +307,7 @@ static UIWebView *repl_UIWebView_initWithCoder_(UIWebView *self, SEL _cmd, NSCod
     
 #if DEBUG
     obj.allowsInlineMediaPlayback = YES;
-    obj.mediaPlaybackRequiresUserAction = NO;
+    obj.mediaPlaybackRequiresUserAction = YES;
 #endif
     
     return obj;
@@ -257,8 +332,10 @@ static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent
         UITouch *touchObj = [event.allTouches anyObject];
         
         // TAP: began -> ended, no movement.
-        double movementMagnitudeSquared = CHIvar(touchObj, _movementMagnitudeSquared, double);
-        if (movementMagnitudeSquared < 0.01 && touchObj.phase == UITouchPhaseEnded) {
+        double *_movementMagnitudeSquared = CHIvarRef(touchObj, _movementMagnitudeSquared, double);
+        double movementMagnitudeSquared = _movementMagnitudeSquared != NULL ? (*_movementMagnitudeSquared) : 0.0;
+        if (movementMagnitudeSquared < 0.01 && touchObj.phase == UITouchPhaseEnded)
+        {
             
             // Get location in its window coordinate.
             CGPoint locInWindow = [touchObj locationInView:nil];
@@ -710,8 +787,10 @@ static void __octobass_initialize()
     _$clsNames = [NSMutableSet set];
     prepareOBClassRepresentation([clsDetector representationOfClass:[UIView class]]);
     
+    
     // FIXME: Download hash table
     _$viewHashesAndActions = [NSMutableDictionary dictionary];
+    
     
     // Prepare delegate method slots.
     _$originalDelegateMethods = [NSMutableDictionary dictionary];
@@ -750,19 +829,36 @@ static void __octobass_initialize()
             Protocol *legacyDelegate = NSProtocolFromString([NSString stringWithFormat:@"UI%@Delegate", @"WebView"]);
             if (class_conformsToProtocol(clazz, legacyDelegate)) {
                 
-                SEL originalSelector = @selector(webViewDidFinishLoad:);
-                IMP orig_UIWebViewDelegate_webViewDidFinishLoad_ = NULL;
-                BOOL delegateMethodExists = MyHookMessage(clazz, originalSelector, (IMP)repl_UIWebViewDelegate_webViewDidFinishLoad_, (IMP *)&orig_UIWebViewDelegate_webViewDidFinishLoad_);
+                SEL originalSelector;
+                IMP originalIMP;
+                IMP replacedIMP;
+                BOOL delegateMethodExists;
                 
+                originalSelector = @selector(webViewDidFinishLoad:);
+                originalIMP = NULL;
+                replacedIMP = (IMP)repl_UIWebViewDelegate_webViewDidFinishLoad_;
+                delegateMethodExists = MyHookMessage(clazz, originalSelector, replacedIMP, &originalIMP);
                 if (delegateMethodExists) {
-                    
-                    if (orig_UIWebViewDelegate_webViewDidFinishLoad_) {
+                    if (originalIMP) {
                         // Store original delegate method.
-                        _$originalDelegateMethods[STRINGIFY_METHOD(clazz, originalSelector)] = [NSValue valueWithPointer:(void *)orig_UIWebViewDelegate_webViewDidFinishLoad_];
+                        _$originalDelegateMethods[STRINGIFY_METHOD(clazz, originalSelector)] = [NSValue valueWithPointer:(void *)originalIMP];
                     }
-                    
                 } else {
-                    BOOL delegateMethodAdded = class_addMethod(clazz, originalSelector, (IMP)repl_UIWebViewDelegate_webViewDidFinishLoad_, "v24@0:8@16");
+                    BOOL delegateMethodAdded = class_addMethod(clazz, originalSelector, replacedIMP, "v24@0:8@16");
+                    assert(delegateMethodAdded);
+                }
+                
+                originalSelector = @selector(webView:shouldStartLoadWithRequest:navigationType:);
+                originalIMP = NULL;
+                replacedIMP = (IMP)repl_UIWebViewDelegate_webView_shouldStartLoadWithRequest_navigationType_;
+                delegateMethodExists = MyHookMessage(clazz, originalSelector, replacedIMP, &originalIMP);
+                if (delegateMethodExists) {
+                    if (originalIMP) {
+                        // Store original delegate method.
+                        _$originalDelegateMethods[STRINGIFY_METHOD(clazz, originalSelector)] = [NSValue valueWithPointer:(void *)originalIMP];
+                    }
+                } else {
+                    BOOL delegateMethodAdded = class_addMethod(clazz, originalSelector, (IMP)replacedIMP, "B40@0:8@16@24q32");
                     assert(delegateMethodAdded);
                 }
                 
@@ -776,14 +872,43 @@ static void __octobass_initialize()
 #endif  // ENABLE_UIWEBVIEW
     
     
+    // Setup global notification handlers.
+    [[NSNotificationCenter defaultCenter] addObserverForName:_$OBNotificationNameMediaStatus object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+#if DEBUG
+        NSLog(@"%@", note.userInfo);
+        
+        // Find the top-most view controller.
+        UIViewController *topCtrl = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+        while (topCtrl.presentedViewController) {
+            topCtrl = topCtrl.presentedViewController;
+        }
+        
+        // Build an alert for test.
+        UIAlertController *alertCtrl = [UIAlertController alertControllerWithTitle:@"Media Status" message:nil preferredStyle:UIAlertControllerStyleAlert];
+        
+        NSMutableParagraphStyle *paraStyle = [NSMutableParagraphStyle new];
+        paraStyle.alignment = NSTextAlignmentLeft;
+        NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", note.userInfo] attributes:@{
+            NSParagraphStyleAttributeName: paraStyle,
+            NSFontAttributeName: [UIFont systemFontOfSize:13.0],
+        }];
+        [alertCtrl setValue:attrStr forKey:@"attributedMessage"];
+        
+        [alertCtrl addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
+        [topCtrl presentViewController:alertCtrl animated:YES completion:nil];
+        
+#endif
+    }];
+    
+    
     // Setup dispatch queue.
     _$serialActionQueue = dispatch_queue_create("com.octobass.queue.serial-action", NULL);
     
     
     // Setup constants.
 #if DEBUG
-    static NSTimeInterval _$detectInterval = 60.0;
-    static NSTimeInterval _$coolDownInterval = 300.0;
+    static NSTimeInterval _$detectInterval = 0.5;
+    static NSTimeInterval _$coolDownInterval = 15.0;
 #else
     static NSTimeInterval _$detectInterval = 0.5;
     static NSTimeInterval _$coolDownInterval = 15.0;

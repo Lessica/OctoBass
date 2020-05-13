@@ -14,6 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)ob_inspectorReportedHash;
 - (void)ob_setInspectorReportedHash:(NSString *)hash;
+- (nullable NSDictionary *)ob_lastMediaStatusDictionary;
+- (void)ob_setLastMediaStatusDictionary:(nullable NSDictionary *)dict;
 
 
 /**
