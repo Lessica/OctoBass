@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="uSB-cV-OUr">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -8,7 +8,23 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Navigation Controller-->
+        <scene sceneID="0Aq-Ze-0jp">
+            <objects>
+                <navigationController id="uSB-cV-OUr" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="6VG-ig-X8Q">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="ers-MI-VwK"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Gfl-rp-Vni" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-986" y="138"/>
+        </scene>
+        <!--OctoBass Tests-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
@@ -17,17 +33,24 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="uny-RZ-9l3">
-                                <rect key="frame" x="16" y="418" width="382" height="60"/>
+                                <rect key="frame" x="16" y="403" width="382" height="90"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EHg-rp-MND">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AKJ-h5-fxK">
                                         <rect key="frame" x="0.0" y="0.0" width="382" height="30"/>
+                                        <state key="normal" title="Native Views"/>
+                                        <connections>
+                                            <segue destination="trR-mY-bth" kind="presentation" id="szh-Vw-Ntf"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EHg-rp-MND">
+                                        <rect key="frame" x="0.0" y="30" width="382" height="30"/>
                                         <state key="normal" title="Show WKWebView"/>
                                         <connections>
                                             <segue destination="PQS-Jk-xl9" kind="presentation" id="pLg-0c-mQw"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kck-WG-SNj">
-                                        <rect key="frame" x="0.0" y="30" width="382" height="30"/>
+                                        <rect key="frame" x="0.0" y="60" width="382" height="30"/>
                                         <state key="normal" title="Show UIWebView (Deprecated)"/>
                                         <connections>
                                             <segue destination="RY2-GC-2rW" kind="presentation" id="l0Z-0i-eO5"/>
@@ -45,10 +68,50 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <navigationItem key="navigationItem" title="OctoBass Tests" id="jyT-hG-hrA"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-130" y="138"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="DQk-oT-bgL">
+            <objects>
+                <navigationController id="trR-mY-bth" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="iZS-gH-rsb">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="56"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="9ik-7U-VPE" kind="relationship" relationship="rootViewController" id="6aL-lr-EMa"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="L34-tw-1bR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="958" y="-613"/>
+        </scene>
+        <!--Native Views-->
+        <scene sceneID="f2q-P7-U51">
+            <objects>
+                <viewController id="9ik-7U-VPE" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="1qA-Bw-hou">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="283-eG-hUx"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Native Views" id="MrN-2m-cgz">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="INe-Xc-Yov">
+                            <connections>
+                                <segue destination="J6X-EE-Z6R" kind="unwind" unwindAction="myUnwindAction:" id="kfT-1H-4zi"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9No-vR-B1c" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="J6X-EE-Z6R" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="1742" y="-613"/>
         </scene>
         <!--WKWebView-->
         <scene sceneID="osI-Of-CSk">
