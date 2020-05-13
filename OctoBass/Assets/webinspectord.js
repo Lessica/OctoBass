@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name         HTML Inspector
+// @name         OctoBass Analytics
 // @namespace    OctoBass
 // @version      0.1
-// @description  Try to take over the world!
-// @author       But who cares?
+// @description  Mobile advertisement inspector.
+// @author       Who cares?
 // @match        https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo/related
 // @grant        unsafeWindow
 // ==/UserScript==
@@ -135,7 +135,7 @@
             el.scrollIntoView({
                 'block': 'nearest',
                 'inline': 'nearest',
-            }); // experimental
+            }); // the same as: `el.scrollIntoView(true);`
 
         }
 
