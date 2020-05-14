@@ -9,11 +9,11 @@
 @interface UIWebViewController () <UIWebViewDelegate>
 
 @property (nonatomic, weak) IBOutlet UIWebView *webView;
+@property (nonatomic, weak) IBOutlet UIBarButtonItem *reloadItem;
 
 @end
 
 @implementation UIWebViewController
-
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -28,16 +28,19 @@
 
 #pragma mark - UIWebViewDelegate
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
-    NSLog(@"- [%@ webViewDidFinishLoad:%p]", NSStringFromClass([self class]), webView);
+- (void)webViewDidStartLoad:(UIWebView *)webView {
+    [self.reloadItem setEnabled:NO];
 }
 
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+    [self.reloadItem setEnabled:YES];
+    NSLog(@"- [%@ webViewDidFinishLoad:%p]", NSStringFromClass([self class]), webView);
+}
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     NSLog(@"- [%@ webView:%p shouldStartLoadWithRequest:%p navigationType:%ld]", NSStringFromClass([self class]), webView, request, navigationType);
     return YES;
 }
-
 
 @end
 

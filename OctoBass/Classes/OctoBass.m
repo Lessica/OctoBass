@@ -40,7 +40,7 @@ static NSMutableSet <NSString *> *_$clsNames = nil;
 static NSMutableDictionary <NSString *, NSDictionary *> *_$viewHashesAndActions = nil;
 
 
-#pragma mark - WebView Payload
+#pragma mark - WebView JavaScript Payloads
 
 
 NS_INLINE NSString *ob_webViewPayloadJavaScript()
@@ -98,7 +98,7 @@ NS_INLINE NSString *ob_webViewPayloadJavaScript()
 }
 
 
-#pragma mark - WKWebView Methods
+#pragma mark - WKWebView Hooks
 
 
 NS_INLINE void modifyWKWebViewConfiguration(WKWebViewConfiguration *configuration)
@@ -171,7 +171,7 @@ static WKWebView *repl_WKWebView_initWithFrame_configuration_(WKWebView *self, S
 }
 
 
-#pragma mark - UIWebView Methods
+#pragma mark - UIWebView Hooks
 
 #if ENABLE_UIWEBVIEW
 
@@ -273,22 +273,18 @@ static void repl_UIWebViewDelegate_webViewDidFinishLoad_(id self, SEL _cmd, UIWe
 
 @implementation OBUIWebViewDelegateProxy
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
     repl_UIWebViewDelegate_webViewDidFinishLoad_(self, _cmd, webView);
 }
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
-{
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     return repl_UIWebViewDelegate_webView_shouldStartLoadWithRequest_navigationType_(self, _cmd, webView, request, navigationType);
 }
 
 @end
 
 
-NS_INLINE OBUIWebViewDelegateProxy *ob_uiWebViewDelegateProxy()
-{
-    
+NS_INLINE OBUIWebViewDelegateProxy *ob_uiWebViewDelegateProxy() {
     static OBUIWebViewDelegateProxy *proxy = nil;
     static dispatch_once_t onceToken;
     
@@ -297,7 +293,6 @@ NS_INLINE OBUIWebViewDelegateProxy *ob_uiWebViewDelegateProxy()
     });
     
     return proxy;
-    
 }
 
 
@@ -333,7 +328,7 @@ static UIWebView *repl_UIWebView_initWithCoder_(UIWebView *self, SEL _cmd, NSCod
 #endif  // ENABLE_UIWEBVIEW
 
 
-#pragma mark - Event Logging
+#pragma mark - Touch Events
 
 
 static void (*orig_UIApplication_sendEvent_)(UIApplication *, SEL, UIEvent *);
@@ -468,12 +463,20 @@ static void prepareOBClassRepresentation(OBClassRepresentation *clsRepr) {
 #pragma mark - View Processing
 
 
-static pthread_mutex_t _$serialActionLock = PTHREAD_MUTEX_INITIALIZER;
-static dispatch_queue_t _$serialActionQueue;
+// Setup constants.
+static NSArray <NSValue *> *    _$majorPoints       = nil;
+static CFTimeInterval           _$processInterval   = 0.5;
+static CFTimeInterval           _$processLastTick;
+static CFTimeInterval           _$coolDownInterval  = 15.0;
+static CFTimeInterval           _$coolDownLastTick;
+static dispatch_queue_t         _$serialActionQueue;
+static pthread_mutex_t          _$serialActionLock = PTHREAD_MUTEX_INITIALIZER;
 
+
+// Setup Declarations.
+static BOOL      serialProcessViewAtPoint         (CGPoint point);  // ->
+static BOOL      serialProcessView                (UIView *view);  // ->
 static UIWindow *applicationTopMostWindow         (void);
-static BOOL      serialProcessViewAtPoint         (CGPoint point);
-static BOOL      serialProcessView                (UIView *view);
 static NSString *computeHashOfViewHierarchyAtPoint(CGPoint point, UIWindow *refWindow);
 static NSString *computeHashOfViewHierarchy       (UIView *topView);
 
@@ -555,7 +558,7 @@ BOOL serialProcessView(UIView *view) {
             
             
             // Delay
-            [NSThread sleepForTimeInterval:actionDelay];
+            CFRunLoopRunInMode(kCFRunLoopDefaultMode, actionDelay, false);
             
             
             // Action TAP
@@ -794,9 +797,13 @@ static void __octobass_initialize()
 {
     
     
+    /* ---------------------- Configurations ---------------------- */
+    
     // Returns an array of all of the application’s bundles that represent frameworks.
     NSBundle *mainBundle = [NSBundle mainBundle];
+#if TARGET_OS_SIMULATOR
     NSString *mainParent = [mainBundle.bundlePath stringByDeletingLastPathComponent];
+#endif  // TARGET_OS_SIMULATOR
     
     NSMutableArray <NSBundle *> *allowedBundles = [NSMutableArray arrayWithObject:mainBundle];
     [allowedBundles addObjectsFromArray:[NSBundle allFrameworks]];
@@ -809,37 +816,32 @@ static void __octobass_initialize()
 #endif  // !TARGET_OS_SIMULATOR
     }]];
     
-    
     // New class hierarchy detector, which caches all objc classes.
     OBClassHierarchyDetector *clsDetector = [[OBClassHierarchyDetector alloc] initWithBundles:allowedBundles];
-    
     
     // Caches all UIView classes recursively.
     _$clsNames = [NSMutableSet set];
     prepareOBClassRepresentation([clsDetector representationOfClass:[UIView class]]);
     
-    
     // FIXME: Download hash table
     _$viewHashesAndActions = [NSMutableDictionary dictionary];
     
+    
+    /* ---------------------- Objective-C Method Hooks ---------------------- */
     
     // Hook instance methods.
     MyHookMessage([WKWebView class], @selector(initWithFrame:configuration:), (IMP)repl_WKWebView_initWithFrame_configuration_, (IMP *)&orig_WKWebView_initWithFrame_configuration_);
     MyHookMessage([WKWebView class], @selector(initWithCoder:), (IMP)repl_WKWebView_initWithCoder_, (IMP *)&orig_WKWebView_initWithCoder_);
     MyHookMessage([UIApplication class], @selector(sendEvent:), (IMP)repl_UIApplication_sendEvent_, (IMP *)&orig_UIApplication_sendEvent_);
     
-    
 #if ENABLE_UIWEBVIEW
-    
     
     // Prepare delegate method slots.
     _$originalDelegateMethods = [NSMutableDictionary dictionary];
     
-    
     // Hook instance methods.
     MyHookMessage([UIWebView class], @selector(initWithFrame:), (IMP)repl_UIWebView_initWithFrame_, (IMP *)&orig_UIWebView_initWithFrame_);
     MyHookMessage([UIWebView class], @selector(initWithCoder:), (IMP)repl_UIWebView_initWithCoder_, (IMP *)&orig_UIWebView_initWithCoder_);
-    
     
     // Hook or add delegate methods.
     int numClasses = 0;
@@ -902,9 +904,10 @@ static void __octobass_initialize()
     
     free(classes);
     
-    
 #endif  // ENABLE_UIWEBVIEW
     
+    
+    /* ---------------------- Global Notifications ---------------------- */
     
     // Setup global notification handlers.
     [[NSNotificationCenter defaultCenter] addObserverForName:_$OBNotificationNameMediaStatus object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
@@ -930,73 +933,83 @@ static void __octobass_initialize()
         
         [alertCtrl addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
         [topCtrl presentViewController:alertCtrl animated:YES completion:nil];
-        
 #endif
     }];
     
     
-    // Setup dispatch queue.
-    _$serialActionQueue = dispatch_queue_create("com.octobass.queue.serial-action", NULL);
+    /* ---------------------- Operation Queues ---------------------- */
     
-    
-    // Setup constants.
-#if DEBUG
-    static NSTimeInterval _$detectInterval = 0.5;
-    static NSTimeInterval _$coolDownInterval = 15.0;
-#else
-    static NSTimeInterval _$detectInterval = 0.5;
-    static NSTimeInterval _$coolDownInterval = 15.0;
-#endif  // DEBUG
+    // Setup cool-down interval.
+    _$processLastTick = CACurrentMediaTime();
+    _$coolDownLastTick = _$processLastTick;
     
     // Setup major points.
     CGRect screenBounds = [[UIScreen mainScreen] bounds];
-    static NSArray <NSValue *> *_$majorPoints = nil;
     _$majorPoints = @[
         [NSValue valueWithCGPoint:CGPointMake(CGRectGetMidX(screenBounds), CGRectGetMidY(screenBounds))],
         [NSValue valueWithCGPoint:CGPointMake(CGRectGetMidX(screenBounds), CGRectGetMaxY(screenBounds) - 64.0)],
         [NSValue valueWithCGPoint:CGPointMake(CGRectGetMidX(screenBounds), CGRectGetMinY(screenBounds) + 64.0)],
     ];
     
-    // Setup cool-down interval.
-    static struct timeval _$coolDownLastDetectedAt;
-    gettimeofday(&_$coolDownLastDetectedAt, NULL);
+    // Setup serial dispatch queue for action/process (background priority).
+    _$serialActionQueue = dispatch_queue_create("com.octobass.queue.serial-action", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_BACKGROUND, 0));
     
-    // Setup main timer source.
-    static dispatch_source_t source;
-    source = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
-    dispatch_source_set_timer(source, dispatch_walltime(NULL, 0), _$detectInterval * NSEC_PER_SEC, 0);
-    
-    // Setup main timer block.
-    dispatch_source_set_event_handler(source, ^{
-        
-        // Check cool-down interval.
-        struct timeval _$coolDownWillDetectAt;
-        gettimeofday(&_$coolDownWillDetectAt, NULL);
-        NSTimeInterval coolDownInterval = (1000000.0 * (_$coolDownWillDetectAt.tv_sec - _$coolDownLastDetectedAt.tv_sec) + _$coolDownWillDetectAt.tv_usec - _$coolDownLastDetectedAt.tv_usec) / 1000000.0;
-        if (coolDownInterval < _$coolDownInterval) {
-            return;
-        }
-        
-        // Begin serial process on major points.
-        BOOL detected = NO;
-        
-        for (NSValue *point in _$majorPoints) {
-            detected = serialProcessViewAtPoint([point CGPointValue]);
-            if (detected) {
+    // Setup idle handlers for main run loop.
+    id mainHandler = ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
+        switch (activity) {
+            case kCFRunLoopEntry:
+                // About to enter the processing loop. Happens
+                // once per `CFRunLoopRun` or `CFRunLoopRunInMode` call
+                break;
+            case kCFRunLoopBeforeTimers:
+            case kCFRunLoopBeforeSources:
+                // Happens before timers or sources are about to be handled
+                break;
+            case kCFRunLoopBeforeWaiting: {
+                // All timers and sources are handled and loop is about to go
+                // to sleep. This is most likely what you are looking for :)
+                
+                // i.e. mach_absolute_time().
+                CFTimeInterval currentTick = CACurrentMediaTime();
+                
+                // Check process interval.
+                CFTimeInterval processInterval = currentTick - _$processLastTick;
+                if (processInterval < _$processInterval) { break; }
+                
+                // Check cool-down interval.
+                CFTimeInterval coolDownInterval = currentTick - _$coolDownLastTick;
+                if (coolDownInterval < _$coolDownInterval) { break; }
+                
+                // Begin serial process on major points.
+                BOOL detected = NO;
+                for (NSValue *point in _$majorPoints) {
+                    detected = serialProcessViewAtPoint([point CGPointValue]);
+                    if (detected) {
+                        break;
+                    }
+                }
+                
+                // Record current ticks.
+                _$processLastTick = currentTick;
+                if (detected) {
+                    _$coolDownLastTick = currentTick;
+                }
+                
                 break;
             }
+            case kCFRunLoopAfterWaiting:
+                // About to process a timer or source
+                break;
+            case kCFRunLoopExit:
+                // The `CFRunLoopRun` or `CFRunLoopRunInMode` call is about to
+                // return
+                break;
+            default: break;
         }
-        
-        if (detected) {
-            _$coolDownLastDetectedAt = _$coolDownWillDetectAt;
-        }
-        
-    });
-    
-    // Fire main timer.
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(_$detectInterval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        dispatch_resume(source);
-    });
+    };
+    CFRunLoopObserverRef mainObserver = CFRunLoopObserverCreateWithHandler(kCFAllocatorDefault, kCFRunLoopBeforeWaiting /* kCFRunLoopAllActivities */, true, 0 /* order */, mainHandler);
+    CFRunLoopAddObserver([[NSRunLoop mainRunLoop] getCFRunLoop], mainObserver, kCFRunLoopCommonModes);
+    CFRelease(mainObserver);
     
     
 }

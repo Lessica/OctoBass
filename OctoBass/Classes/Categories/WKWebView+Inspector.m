@@ -13,9 +13,7 @@
 - (nullable NSString *)ob_getElementSelectorFromPoint:(CGPoint)point shouldHighlight:(BOOL)highlight
 {
     
-    if ([self isLoading]) {
-        return nil;
-    }
+    if ([self isLoading]) { return nil; }
     
     CGFloat zoomScale = self.scrollView.zoomScale;
     CGPoint viewPortPoint = CGPointMake(point.x / zoomScale, point.y / zoomScale);
@@ -35,9 +33,7 @@
 - (CGRect)ob_getViewPortRectByElementSelector:(NSString *)elementSelector shouldScrollTo:(BOOL)scrollTo
 {
     
-    if ([self isLoading]) {
-        return CGRectNull;
-    }
+    if ([self isLoading]) { return CGRectNull; }
     
     NSString *payload = [NSString stringWithFormat:@"var el = document.querySelector(\"%@\"); %@ var rect = window._$getElementRect(el); rect;", [elementSelector ob_javaScriptEscapedString], (scrollTo ? @"window._$scrollToElement(el);" : @"")];
     NSArray <NSNumber *> *result = [self ob_evaluateJavaScript:payload];

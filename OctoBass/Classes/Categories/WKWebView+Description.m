@@ -27,19 +27,11 @@
             ];
 }
 
-- (NSString *)ob_shortDescription {
-    return [NSString stringWithFormat:@"<%@; hash = %@>", NSStringFromClass([self class]), [self ob_inspectorHash]];
-}
-
 
 #pragma mark - Private
 
-- (nullable NSString *)ob_inspectorReportedHash {
-    return [self.configuration.userContentController ob_inspectorReportedHash];
-}
-
 - (nullable NSString *)ob_inspectorHash {
-    return [[self ob_inspectorReportedHash] ob_sha1];
+    return [[self.configuration.userContentController ob_inspectorReportedHash] ob_sha1];
 }
 
 

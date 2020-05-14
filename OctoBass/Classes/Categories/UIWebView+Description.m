@@ -16,7 +16,7 @@
 
 
 - (NSString *)ob_description {
-    return [NSString stringWithFormat:@"<%@: 0x%p; frame = (%d %d; %d %d); url = %@; media = %@>",
+    return [NSString stringWithFormat:@"<%@: 0x%p; frame = (%d %d; %d %d); url = %@; media = %@; hash = %@>",
             NSStringFromClass([self class]),
             self,
             (int)self.bounds.origin.x,
@@ -24,12 +24,9 @@
             (int)self.bounds.size.width,
             (int)self.bounds.size.height,
             self.request.URL,
-            [self ob_lastMediaStatusDictionary][@"src"]
+            [self ob_lastMediaStatusDictionary][@"src"],
+            [self ob_inspectorHash]
             ];
-}
-
-- (NSString *)ob_shortDescription {
-    return [NSString stringWithFormat:@"<%@; hash = %@>", NSStringFromClass([self class]), [self ob_inspectorHash]];
 }
 
 

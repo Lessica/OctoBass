@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18161D5E246D7AA300E2AED4 /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18161D5D246D7AA300E2AED4 /* AVKit.framework */; };
+		18161D60246D7AAD00E2AED4 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18161D5F246D7AAD00E2AED4 /* WebKit.framework */; };
+		18161D61246D7AB500E2AED4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
+		18161D63246D7AB900E2AED4 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18161D62246D7AB900E2AED4 /* CoreFoundation.framework */; };
+		18161D64246D7ABE00E2AED4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
+		18161D66246D7AC300E2AED4 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18161D65246D7AC300E2AED4 /* AVFoundation.framework */; };
+		18904C5C246D092E009FF292 /* NativeMPViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18904C5B246D092E009FF292 /* NativeMPViewController.m */; };
 		A1A2EE96EC1FB7D4A6053316 /* Pods_OctoBassTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269DFA39094EDC994465ECF4 /* Pods_OctoBassTests.framework */; };
 		D6E82449246944220029802B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E82448246944220029802B /* AppDelegate.m */; };
 		D6E8244F246944220029802B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E8244E246944220029802B /* ViewController.m */; };
@@ -20,6 +27,12 @@
 
 /* Begin PBXFileReference section */
 		0B3F0CC57E20B743177AF2FE /* Pods-OctoBassTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OctoBassTests.debug.xcconfig"; path = "Target Support Files/Pods-OctoBassTests/Pods-OctoBassTests.debug.xcconfig"; sourceTree = "<group>"; };
+		18161D5D246D7AA300E2AED4 /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = System/Library/Frameworks/AVKit.framework; sourceTree = SDKROOT; };
+		18161D5F246D7AAD00E2AED4 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		18161D62246D7AB900E2AED4 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		18161D65246D7AC300E2AED4 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		18904C5A246D092E009FF292 /* NativeMPViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NativeMPViewController.h; sourceTree = "<group>"; };
+		18904C5B246D092E009FF292 /* NativeMPViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NativeMPViewController.m; sourceTree = "<group>"; };
 		269DFA39094EDC994465ECF4 /* Pods_OctoBassTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OctoBassTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -49,7 +62,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18161D63246D7AB900E2AED4 /* CoreFoundation.framework in Frameworks */,
+				18161D64246D7ABE00E2AED4 /* Foundation.framework in Frameworks */,
+				18161D5E246D7AA300E2AED4 /* AVKit.framework in Frameworks */,
+				18161D61246D7AB500E2AED4 /* UIKit.framework in Frameworks */,
 				A1A2EE96EC1FB7D4A6053316 /* Pods_OctoBassTests.framework in Frameworks */,
+				18161D66246D7AC300E2AED4 /* AVFoundation.framework in Frameworks */,
+				18161D60246D7AAD00E2AED4 /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +97,10 @@
 		6003F58C195388D20070C39A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				18161D65246D7AC300E2AED4 /* AVFoundation.framework */,
+				18161D62246D7AB900E2AED4 /* CoreFoundation.framework */,
+				18161D5F246D7AAD00E2AED4 /* WebKit.framework */,
+				18161D5D246D7AA300E2AED4 /* AVKit.framework */,
 				6003F58D195388D20070C39A /* Foundation.framework */,
 				6003F58F195388D20070C39A /* CoreGraphics.framework */,
 				6003F591195388D20070C39A /* UIKit.framework */,
@@ -107,6 +130,8 @@
 				D6E8246D24696C080029802B /* WebViewController.m */,
 				D6E82473246BACA20029802B /* UIWebViewController.h */,
 				D6E82474246BACA20029802B /* UIWebViewController.m */,
+				18904C5A246D092E009FF292 /* NativeMPViewController.h */,
+				18904C5B246D092E009FF292 /* NativeMPViewController.m */,
 				D6E82450246944220029802B /* Main.storyboard */,
 				D6E82453246944230029802B /* Assets.xcassets */,
 				D6E82455246944230029802B /* LaunchScreen.storyboard */,
@@ -253,6 +278,7 @@
 				D6E8245A246944230029802B /* main.m in Sources */,
 				D6E82475246BACA20029802B /* UIWebViewController.m in Sources */,
 				D6E8246E24696C080029802B /* WebViewController.m in Sources */,
+				18904C5C246D092E009FF292 /* NativeMPViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -17,112 +17,190 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="ers-MI-VwK"/>
+                        <segue destination="ESm-oh-vbo" kind="relationship" relationship="rootViewController" id="lX6-Kr-33T"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Gfl-rp-Vni" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-986" y="138"/>
+            <point key="canvasLocation" x="-984" y="-601"/>
         </scene>
         <!--OctoBass Tests-->
-        <scene sceneID="tne-QT-ifu">
+        <scene sceneID="tkr-9Z-csm">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                <tableViewController id="ESm-oh-vbo" customClass="ViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="BMd-5K-3kd">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="uny-RZ-9l3">
-                                <rect key="frame" x="16" y="403" width="382" height="90"/>
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AKJ-h5-fxK">
-                                        <rect key="frame" x="0.0" y="0.0" width="382" height="30"/>
-                                        <state key="normal" title="Native Views"/>
-                                        <connections>
-                                            <segue destination="trR-mY-bth" kind="presentation" id="szh-Vw-Ntf"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EHg-rp-MND">
-                                        <rect key="frame" x="0.0" y="30" width="382" height="30"/>
-                                        <state key="normal" title="Show WKWebView"/>
-                                        <connections>
-                                            <segue destination="PQS-Jk-xl9" kind="presentation" id="pLg-0c-mQw"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kck-WG-SNj">
-                                        <rect key="frame" x="0.0" y="60" width="382" height="30"/>
-                                        <state key="normal" title="Show UIWebView (Deprecated)"/>
-                                        <connections>
-                                            <segue destination="RY2-GC-2rW" kind="presentation" id="l0Z-0i-eO5"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                            </stackView>
-                        </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <constraints>
-                            <constraint firstItem="uny-RZ-9l3" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="8kv-9Z-4EF"/>
-                            <constraint firstItem="uny-RZ-9l3" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="h4x-9f-k4g"/>
-                            <constraint firstItem="uny-RZ-9l3" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="lcp-7Z-UlL"/>
-                            <constraint firstItem="uny-RZ-9l3" firstAttribute="top" relation="greaterThanOrEqual" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="16" id="p91-DV-jvG"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                    </view>
-                    <navigationItem key="navigationItem" title="OctoBass Tests" id="jyT-hG-hrA"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                        <sections>
+                            <tableViewSection id="LzH-C8-ifD">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="lrU-Nl-vCq" style="IBUITableViewCellStyleDefault" id="SXd-oz-rla">
+                                        <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="SXd-oz-rla" id="ttU-H5-Vt1">
+                                            <rect key="frame" x="0.0" y="0.0" width="383" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="AVPlayerViewController" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="lrU-Nl-vCq">
+                                                    <rect key="frame" x="20" y="0.0" width="355" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="jbb-Io-soW" kind="presentation" id="d6t-gB-d3x"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="iBk-IN-icc" style="IBUITableViewCellStyleDefault" id="Q3K-fJ-9ff">
+                                        <rect key="frame" x="0.0" y="71.5" width="414" height="43.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Q3K-fJ-9ff" id="Vps-1V-fU3">
+                                            <rect key="frame" x="0.0" y="0.0" width="383" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="AVPlayerView" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="iBk-IN-icc">
+                                                    <rect key="frame" x="20" y="0.0" width="355" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="6NA-41-kHl" kind="show" id="GYI-m0-bqr"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="fqf-Sw-bJC" style="IBUITableViewCellStyleDefault" id="jgO-fm-EPO">
+                                        <rect key="frame" x="0.0" y="115" width="414" height="43.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="jgO-fm-EPO" id="S9v-rr-RlU">
+                                            <rect key="frame" x="0.0" y="0.0" width="383" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="MPMoviePlayerController (Deprecated)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="fqf-Sw-bJC">
+                                                    <rect key="frame" x="20" y="0.0" width="355" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="9ik-7U-VPE" kind="show" id="k65-J1-oMo"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="lDN-dz-dUE" style="IBUITableViewCellStyleDefault" id="WeK-w6-piJ">
+                                        <rect key="frame" x="0.0" y="158.5" width="414" height="43.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="WeK-w6-piJ" id="3cx-SG-Whf">
+                                            <rect key="frame" x="0.0" y="0.0" width="383" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="WKWebView" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="lDN-dz-dUE">
+                                                    <rect key="frame" x="20" y="0.0" width="355" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="31C-n1-y72" kind="show" id="G1g-Ly-vcK"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="PeY-UQ-zci" style="IBUITableViewCellStyleDefault" id="V23-gm-XHd">
+                                        <rect key="frame" x="0.0" y="202" width="414" height="43.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="V23-gm-XHd" id="nnl-UH-gaq">
+                                            <rect key="frame" x="0.0" y="0.0" width="383" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="UIWebView (Deprecated)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="PeY-UQ-zci">
+                                                    <rect key="frame" x="20" y="0.0" width="355" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="fGv-yj-huh" kind="show" id="xyv-HS-dks"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="ESm-oh-vbo" id="H85-tG-8xO"/>
+                            <outlet property="delegate" destination="ESm-oh-vbo" id="qYz-9t-cUz"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="OctoBass Tests" id="7pv-tm-ksd"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="J9q-IY-FTU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-130" y="138"/>
+            <point key="canvasLocation" x="-130" y="-601"/>
         </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="DQk-oT-bgL">
+        <!--AV Player View Controller-->
+        <scene sceneID="Rct-OS-Sht">
             <objects>
-                <navigationController id="trR-mY-bth" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="iZS-gH-rsb">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="56"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="9ik-7U-VPE" kind="relationship" relationship="rootViewController" id="6aL-lr-EMa"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="L34-tw-1bR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <avPlayerViewController videoGravity="AVLayerVideoGravityResizeAspect" id="jbb-Io-soW" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="Kmq-58-sJb"/>
+                </avPlayerViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3MF-0f-rGj" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="958" y="-613"/>
+            <point key="canvasLocation" x="958" y="-2065"/>
         </scene>
-        <!--Native Views-->
+        <!--AVPlayerView-->
+        <scene sceneID="yhL-XQ-JdH">
+            <objects>
+                <viewController id="6NA-41-kHl" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="0KG-2u-Mi3">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="187-Pq-RN5"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="AVPlayerView" id="NtR-N7-ZzP"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dLy-Xe-uck" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="958" y="-1338"/>
+        </scene>
+        <!--MPMoviePlayerController (Deprecated)-->
         <scene sceneID="f2q-P7-U51">
             <objects>
-                <viewController id="9ik-7U-VPE" sceneMemberID="viewController">
+                <viewController id="9ik-7U-VPE" customClass="NativeMPViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="1qA-Bw-hou">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <viewLayoutGuide key="safeArea" id="283-eG-hUx"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Native Views" id="MrN-2m-cgz">
-                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="INe-Xc-Yov">
-                            <connections>
-                                <segue destination="J6X-EE-Z6R" kind="unwind" unwindAction="myUnwindAction:" id="kfT-1H-4zi"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="MPMoviePlayerController (Deprecated)" id="MrN-2m-cgz"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9No-vR-B1c" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <exit id="J6X-EE-Z6R" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1742" y="-613"/>
+            <point key="canvasLocation" x="958" y="-601"/>
         </scene>
         <!--WKWebView-->
         <scene sceneID="osI-Of-CSk">
             <objects>
-                <viewController title="WKWebView" id="31C-n1-y72" customClass="WebViewController" sceneMemberID="viewController">
+                <viewController id="31C-n1-y72" customClass="WebViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="2BQ-7V-Vf8">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ed8-hQ-4Ay">
-                                <rect key="frame" x="0.0" y="56" width="414" height="752"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="774"/>
                                 <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <wkWebViewConfiguration key="configuration" allowsAirPlayForMediaPlayback="NO" allowsInlineMediaPlayback="YES" allowsPictureInPictureMediaPlayback="NO">
                                     <dataDetectorTypes key="dataDetectorTypes" none="YES"/>
@@ -141,52 +219,31 @@
                         <viewLayoutGuide key="safeArea" id="57M-NN-z55"/>
                     </view>
                     <navigationItem key="navigationItem" title="WKWebView" id="QF4-sC-uV7">
-                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="9f5-Dh-pse">
-                            <connections>
-                                <segue destination="Aot-kU-1mi" kind="unwind" unwindAction="myUnwindAction:" id="5ed-sz-xRd"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="MWM-6M-LtG">
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" systemItem="refresh" id="MWM-6M-LtG">
                             <connections>
                                 <action selector="reload" destination="1Dx-3l-N7s" id="wUG-mf-RIx"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="reloadItem" destination="MWM-6M-LtG" id="kEZ-xR-f99"/>
                         <outlet property="webView" destination="Ed8-hQ-4Ay" id="ODq-QZ-NzE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1Dx-3l-N7s" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <exit id="Aot-kU-1mi" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1743" y="138"/>
+            <point key="canvasLocation" x="958" y="137"/>
         </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="ZAJ-gM-1ef">
-            <objects>
-                <navigationController id="PQS-Jk-xl9" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="UMD-EJ-1y0">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="56"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="31C-n1-y72" kind="relationship" relationship="rootViewController" id="jSh-LS-J98"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="zGF-xK-ud9" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="958" y="138"/>
-        </scene>
-        <!--UIWebView-->
+        <!--UIWebView (Deprecated)-->
         <scene sceneID="bL6-2d-Bg8">
             <objects>
-                <viewController title="UIWebView" id="fGv-yj-huh" customClass="UIWebViewController" sceneMemberID="viewController">
+                <viewController id="fGv-yj-huh" customClass="UIWebViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="cK2-bD-r8N">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <webView contentMode="scaleToFill" mediaPlaybackAllowsAirPlay="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zCX-6h-P9R">
-                                <rect key="frame" x="0.0" y="56" width="414" height="752"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="774"/>
                                 <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <dataDetectorType key="dataDetectorTypes"/>
                                 <connections>
@@ -204,41 +261,20 @@
                         <viewLayoutGuide key="safeArea" id="8TF-SC-DaK"/>
                     </view>
                     <navigationItem key="navigationItem" title="UIWebView (Deprecated)" id="kX1-0h-Ifj">
-                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="4va-as-0YB">
-                            <connections>
-                                <segue destination="6Q9-SO-XsT" kind="unwind" unwindAction="myUnwindAction:" id="lTH-FY-8x1"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="O4v-Jv-f3M">
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" systemItem="refresh" id="O4v-Jv-f3M">
                             <connections>
                                 <action selector="reload" destination="zCX-6h-P9R" id="hPt-FR-VtK"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="reloadItem" destination="O4v-Jv-f3M" id="XHv-Lv-fAg"/>
                         <outlet property="webView" destination="zCX-6h-P9R" id="Kkd-WT-BFK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dJx-AB-mHd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <exit id="6Q9-SO-XsT" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1742" y="901"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="L0c-mn-W4E">
-            <objects>
-                <navigationController id="RY2-GC-2rW" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="NlG-mz-FOk">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="56"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="fGv-yj-huh" kind="relationship" relationship="rootViewController" id="nsO-Ei-UWq"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="PAc-2r-GBR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="958" y="902"/>
+            <point key="canvasLocation" x="958" y="860"/>
         </scene>
     </scenes>
 </document>
