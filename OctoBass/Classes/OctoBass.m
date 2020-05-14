@@ -11,6 +11,7 @@
 
 #import "MyCHHook.h"
 #import "LoadableCategory.h"
+#import "TargetConditionals.h"
 
 #import "OBViewEvents.h"
 #import "OBClassHierarchyDetector.h"
@@ -331,10 +332,17 @@ static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent
         // Get the only touch object.
         UITouch *touchObj = [event.allTouches anyObject];
         
-        // TAP: began -> ended, no movement.
+        // Private Ivar: no movement
         double *_movementMagnitudeSquared = CHIvarRef(touchObj, _movementMagnitudeSquared, double);
         double movementMagnitudeSquared = _movementMagnitudeSquared != NULL ? (*_movementMagnitudeSquared) : 0.0;
-        if (movementMagnitudeSquared < 0.01 && touchObj.phase == UITouchPhaseEnded)
+        
+        // Private Ivar: not long press
+        NSTimeInterval currentTimestamp = touchObj.timestamp;
+        NSTimeInterval *_initialTouchTimestamp = CHIvarRef(touchObj, _initialTouchTimestamp, NSTimeInterval);
+        NSTimeInterval initialTouchTimestamp = _initialTouchTimestamp != NULL ? (*_initialTouchTimestamp) : currentTimestamp;
+        
+        // TAP: phase ended
+        if (movementMagnitudeSquared < 0.01 && (currentTimestamp - initialTouchTimestamp) < 0.3 && touchObj.phase == UITouchPhaseEnded)
         {
             
             // Get location in its window coordinate.
@@ -370,7 +378,7 @@ static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent
                 do {
                     
                     // Coordinate -> DOM selector.
-                    NSString *elementSelector = [wkWebView ob_getElementSelectorByViewPortPoint:locInView shouldHighlight:YES];
+                    NSString *elementSelector = [wkWebView ob_getElementSelectorFromPoint:locInView shouldHighlight:YES];
                     if (!elementSelector) {
                         break;
                     }
@@ -393,7 +401,7 @@ static void repl_UIApplication_sendEvent_(UIApplication *self, SEL _cmd, UIEvent
                 do {
                     
                     // Coordinate -> DOM selector.
-                    NSString *elementSelector = [uiWebView ob_getElementSelectorByViewPortPoint:locInView shouldHighlight:YES];
+                    NSString *elementSelector = [uiWebView ob_getElementSelectorFromPoint:locInView shouldHighlight:YES];
                     if (!elementSelector) {
                         break;
                     }
@@ -771,11 +779,18 @@ static void __octobass_initialize()
     
     
     // Returns an array of all of the application’s bundles that represent frameworks.
-    NSMutableArray <NSBundle *> *allowedBundles = [NSMutableArray arrayWithObject:[NSBundle mainBundle]];
+    NSBundle *mainBundle = [NSBundle mainBundle];
+    NSString *mainParent = [mainBundle.bundlePath stringByDeletingLastPathComponent];
+    
+    NSMutableArray <NSBundle *> *allowedBundles = [NSMutableArray arrayWithObject:mainBundle];
     [allowedBundles addObjectsFromArray:[NSBundle allFrameworks]];
     [allowedBundles filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSBundle *evaluatedBundle, NSDictionary *bindings) {
         NSString *bundlePath = [evaluatedBundle bundlePath];
+#if TARGET_OS_SIMULATOR
+        return [bundlePath hasPrefix:mainParent];
+#else   // TARGET_OS_SIMULATOR
         return [bundlePath hasPrefix:@"/var/"] || [bundlePath hasPrefix:@"/private/var/"];
+#endif  // !TARGET_OS_SIMULATOR
     }]];
     
     

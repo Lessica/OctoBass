@@ -14,7 +14,7 @@
 
 
 - (NSString *)ob_description {
-    return [NSString stringWithFormat:@"<%@: 0x%p; frame = (%d %d; %d %d); url = %@; video = %@; hash = %@>",
+    return [NSString stringWithFormat:@"<%@: 0x%p; frame = (%d %d; %d %d); url = %@; media = %@; hash = %@>",
             NSStringFromClass([self class]),
             self,
             (int)self.bounds.origin.x,

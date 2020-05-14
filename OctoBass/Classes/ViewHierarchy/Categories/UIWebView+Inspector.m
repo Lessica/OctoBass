@@ -41,14 +41,17 @@ CHDeclareProperty(UIWebView, lastMediaStatusDictionary);
 #pragma mark - JavaScript Payloads
 
 
-- (nullable NSString *)ob_getElementSelectorByViewPortPoint:(CGPoint)point shouldHighlight:(BOOL)highlight
+- (nullable NSString *)ob_getElementSelectorFromPoint:(CGPoint)point shouldHighlight:(BOOL)highlight
 {
     
     if ([self isLoading]) {
         return nil;
     }
     
-    NSString *payload = [NSString stringWithFormat:@"var el = document.elementFromPoint(%f, %f); var sel = window._$getElementSelector(el); %@ sel;", point.x, point.y, (highlight ? @"window._$highlightElement(el);" : @"")];
+    CGFloat zoomScale = self.scrollView.zoomScale;
+    CGPoint viewPortPoint = CGPointMake(point.x / zoomScale, point.y / zoomScale);
+    
+    NSString *payload = [NSString stringWithFormat:@"var el = document.elementFromPoint(%f, %f); var sel = window._$getElementSelector(el); %@ sel;", viewPortPoint.x, viewPortPoint.y, (highlight ? @"window._$highlightElement(el);" : @"")];
     
     NSString *result = [self ob_evaluateJavaScript:payload shouldParseJSON:NO];
     if (![result isKindOfClass:[NSString class]] || !result.length) {

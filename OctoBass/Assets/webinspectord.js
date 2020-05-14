@@ -41,26 +41,30 @@
 
 
         /* The WebKit media notification function. */
-        function DoWebKitNotifyMediaStatus(status) {
-            window.webkit.messageHandlers._$webinspectord_notify_media_status.postMessage({
-                'type': this.tagName.toLowerCase(),
-                'src': this.currentSrc,
-                'paused': this.paused,
-                'ended': this.ended,
-                'currentTime': this.currentTime,
-                'duration': this.duration,
-            });
+        function DoWebKitNotifyMediaStatus(e) {
+            if (e.target) {
+                window.webkit.messageHandlers._$webinspectord_notify_media_status.postMessage({
+                    'type': e.target.tagName.toLowerCase(),
+                    'src': e.target.currentSrc,
+                    'paused': e.target.paused,
+                    'ended': e.target.ended,
+                    'currentTime': e.target.currentTime,
+                    'duration': e.target.duration,
+                });
+            }
         }
 
 
         /* Legacy media notification function. */
-        function DoLegacyNotifyMediaStatus() {
-            window.location.href = 'webinspectord://notify/media_status?type=' + this.tagName.toLowerCase()
-                + '&src=' + encodeURIComponent(this.currentSrc)
-                + '&paused=' + this.paused.toString()
-                + '&ended=' + this.ended.toString()
-                + '&currentTime=' + this.currentTime.toString()
-                + '&duration=' + this.duration.toString();
+        function DoLegacyNotifyMediaStatus(e) {
+            if (e.target) {
+                window.location.href = 'webinspectord://notify/media_status?type=' + e.target.tagName.toLowerCase()
+                    + '&src=' + encodeURIComponent(e.target.currentSrc)
+                    + '&paused=' + e.target.paused.toString()
+                    + '&ended=' + e.target.ended.toString()
+                    + '&currentTime=' + e.target.currentTime.toString()
+                    + '&duration=' + e.target.duration.toString();
+            }
         }
 
 
@@ -228,6 +232,11 @@
         theWindow._$getElementSelector = getElementSelector;
 
 
+        /* Media events */
+        // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
+        ['play', 'ended', 'pause'].forEach( (evt) => { document.addEventListener(evt, isWKWebView() ? DoWebKitNotifyMediaStatus : DoLegacyNotifyMediaStatus, true  /* Capture */); } );
+
+
         /* Performance begin */
         // https://developer.mozilla.org/en-US/docs/Web/API/Performance/now
         const t0 = performance.now();
@@ -280,19 +289,12 @@
         cnt++;
 
 
-        /* Video/Audio notification */
-        var notify_func = isWKWebView() ? DoWebKitNotifyMediaStatus : DoLegacyNotifyMediaStatus;
-
-
         /* Video detection */
         for (let video_DOM of video_DOMs) {
 
             /* Video attributes */
             video_DOM.setAttribute('autoplay', true);
             video_DOM.setAttribute('playsinline', true);
-
-            /* Video notifications */
-            ['play', 'ended'].forEach( (evt) => { video_DOM.addEventListener(evt, notify_func.bind(video_DOM)) } );
 
             /* Video report */
             report += DoJavaHash(
@@ -308,9 +310,6 @@
 
         /* Audio detection */
         for (let audio_DOM of audio_DOMs) {
-
-            /* Audio notifications */
-            ['play', 'ended'].forEach( (evt) => { audio_DOM.addEventListener(evt, notify_func.bind(audio_DOM)) } );
 
             /* Audio report */
             report += DoJavaHash(

@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param point A location where the element locates at.
  * @returns The DOM selector of the located element.
  */
-- (nullable NSString *)ob_getElementSelectorByViewPortPoint:(CGPoint)point shouldHighlight:(BOOL)highlight;
+- (nullable NSString *)ob_getElementSelectorFromPoint:(CGPoint)point shouldHighlight:(BOOL)highlight;
 
 
 /**
