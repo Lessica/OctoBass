@@ -11,14 +11,13 @@
 
 (function () {
 
+    'use strict';
+
     function isWKWebView() {
-        return window.webkit !== undefined || typeof(unsafeWindow) !== 'undefined'
+        return window.webkit !== undefined || typeof(unsafeWindow) !== 'undefined';
     }
 
     function onDocumentReady(event) {
-
-
-        'use strict';
 
 
         /* A simple hash function from Java. */
@@ -30,6 +29,22 @@
                 hash |= 0; // Convert to 32 bit integer
             }
             return hash;
+        }
+
+
+        /* Iterate all nodes recursively. */
+        function DoIterateNodes(node, level = 0, report = '') {
+            report += level.toString() + ':' + node.nodeName.toLowerCase() + ',';
+            var nodes = node.childNodes;
+            for (var i = 0; i < nodes.length; i++) {
+                if (!nodes[i]) {
+                    continue;
+                }
+                if (nodes[i].childNodes.length > 0) {
+                    report += DoIterateNodes(nodes[i], level + 1);
+                }
+            }
+            return report;
         }
 
 
@@ -234,7 +249,7 @@
 
         /* Media events */
         // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
-        ['play', 'ended', 'pause'].forEach( (evt) => { document.addEventListener(evt, isWKWebView() ? DoWebKitNotifyMediaStatus : DoLegacyNotifyMediaStatus, true  /* Capture */); } );
+        ['play', 'ended', 'pause'].forEach( (evt) => { document.addEventListener(evt, isWKWebView() ? DoWebKitNotifyMediaStatus : DoLegacyNotifyMediaStatus, true); } );
 
 
         /* Performance begin */
@@ -245,7 +260,7 @@
         /* Build report */
         var cnt = 0;
         var report = '';
-        report += '14,';
+        report += '15,';
         const video_DOMs = document.getElementsByTagName('video');
         report += video_DOMs.length.toString() + ',';
         const audio_DOMs = document.getElementsByTagName('audio');
@@ -261,6 +276,12 @@
 
         /* DOM count */
         report += document.all.length.toString() + ',';
+        cnt++;
+
+
+        /* DOM levels */
+        const node_levels = DoIterateNodes(document);
+        report += DoJavaHash(node_levels) + ',';
         cnt++;
 
 
@@ -416,6 +437,7 @@
 
 
         /* Print report */
+        console.debug(node_levels);
         console.debug(report);
         if (window.webkit !== undefined) {
             DoWebKitReport(report);
@@ -427,10 +449,10 @@
 
     }
 
-    if (isWKWebView()) {
-        document.addEventListener('readystatechange', onDocumentReady);
-    } else if (self === top && document.readyState === 'complete') {
+    if (self === top && document.readyState === 'complete') {
         return onDocumentReady();
+    } else if (isWKWebView()) {
+        document.addEventListener('readystatechange', onDocumentReady);
     }
 
 })();
