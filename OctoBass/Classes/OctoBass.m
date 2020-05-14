@@ -63,7 +63,23 @@ NS_INLINE NSString *ob_webViewPayloadJavaScript()
             resBundle = [NSBundle bundleWithPath:[[NSBundle bundleForClass:[OBClassHierarchyDetector class]] pathForResource:@"OctoBass" ofType:@"bundle"]];
         }
         
-        NSString *jsPath = [resBundle pathForResource:@"webinspectord" ofType:@"js"];
+        // Payload path
+        NSString *jsPath = nil;
+        
+        // Try minified payload
+        if (!jsPath) {
+            
+            // To minify js, use the command below:
+            // uglifyjs --compress --mangle --config-file uglifyjs.json -- OctoBass/Assets/webinspectord.js
+            jsPath = [resBundle pathForResource:@"webinspectord.min" ofType:@"js"];
+            
+        }
+        
+        // Try original payload
+        if (!jsPath) {
+            jsPath = [resBundle pathForResource:@"webinspectord" ofType:@"js"];
+        }
+        
         if (!jsPath) {
             return;
         }
@@ -807,10 +823,6 @@ static void __octobass_initialize()
     _$viewHashesAndActions = [NSMutableDictionary dictionary];
     
     
-    // Prepare delegate method slots.
-    _$originalDelegateMethods = [NSMutableDictionary dictionary];
-    
-    
     // Hook instance methods.
     MyHookMessage([WKWebView class], @selector(initWithFrame:configuration:), (IMP)repl_WKWebView_initWithFrame_configuration_, (IMP *)&orig_WKWebView_initWithFrame_configuration_);
     MyHookMessage([WKWebView class], @selector(initWithCoder:), (IMP)repl_WKWebView_initWithCoder_, (IMP *)&orig_WKWebView_initWithCoder_);
@@ -819,9 +831,15 @@ static void __octobass_initialize()
     
 #if ENABLE_UIWEBVIEW
     
+    
+    // Prepare delegate method slots.
+    _$originalDelegateMethods = [NSMutableDictionary dictionary];
+    
+    
     // Hook instance methods.
     MyHookMessage([UIWebView class], @selector(initWithFrame:), (IMP)repl_UIWebView_initWithFrame_, (IMP *)&orig_UIWebView_initWithFrame_);
     MyHookMessage([UIWebView class], @selector(initWithCoder:), (IMP)repl_UIWebView_initWithCoder_, (IMP *)&orig_UIWebView_initWithCoder_);
+    
     
     // Hook or add delegate methods.
     int numClasses = 0;
@@ -883,6 +901,7 @@ static void __octobass_initialize()
     }
     
     free(classes);
+    
     
 #endif  // ENABLE_UIWEBVIEW
     
