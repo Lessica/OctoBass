@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="uSB-cV-OUr">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="uSB-cV-OUr">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15509"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -35,28 +35,8 @@
                         <sections>
                             <tableViewSection id="LzH-C8-ifD">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="lrU-Nl-vCq" style="IBUITableViewCellStyleDefault" id="SXd-oz-rla">
-                                        <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="SXd-oz-rla" id="ttU-H5-Vt1">
-                                            <rect key="frame" x="0.0" y="0.0" width="383" height="43.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="AVPlayerViewController" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="lrU-Nl-vCq">
-                                                    <rect key="frame" x="20" y="0.0" width="355" height="43.5"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                        </tableViewCellContentView>
-                                        <connections>
-                                            <segue destination="jbb-Io-soW" kind="presentation" id="d6t-gB-d3x"/>
-                                        </connections>
-                                    </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="iBk-IN-icc" style="IBUITableViewCellStyleDefault" id="Q3K-fJ-9ff">
-                                        <rect key="frame" x="0.0" y="71.5" width="414" height="43.5"/>
+                                        <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Q3K-fJ-9ff" id="Vps-1V-fU3">
                                             <rect key="frame" x="0.0" y="0.0" width="383" height="43.5"/>
@@ -76,13 +56,13 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="fqf-Sw-bJC" style="IBUITableViewCellStyleDefault" id="jgO-fm-EPO">
-                                        <rect key="frame" x="0.0" y="115" width="414" height="43.5"/>
+                                        <rect key="frame" x="0.0" y="71.5" width="414" height="43.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="jgO-fm-EPO" id="S9v-rr-RlU">
                                             <rect key="frame" x="0.0" y="0.0" width="383" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="MPMoviePlayerController (Deprecated)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="fqf-Sw-bJC">
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="MPMoviePlayer (Deprecated)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="fqf-Sw-bJC">
                                                     <rect key="frame" x="20" y="0.0" width="355" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -96,7 +76,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="lDN-dz-dUE" style="IBUITableViewCellStyleDefault" id="WeK-w6-piJ">
-                                        <rect key="frame" x="0.0" y="158.5" width="414" height="43.5"/>
+                                        <rect key="frame" x="0.0" y="115" width="414" height="43.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="WeK-w6-piJ" id="3cx-SG-Whf">
                                             <rect key="frame" x="0.0" y="0.0" width="383" height="43.5"/>
@@ -116,7 +96,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="PeY-UQ-zci" style="IBUITableViewCellStyleDefault" id="V23-gm-XHd">
-                                        <rect key="frame" x="0.0" y="202" width="414" height="43.5"/>
+                                        <rect key="frame" x="0.0" y="158.5" width="414" height="43.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="V23-gm-XHd" id="nnl-UH-gaq">
                                             <rect key="frame" x="0.0" y="0.0" width="383" height="43.5"/>
@@ -157,35 +137,116 @@
                 </avPlayerViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3MF-0f-rGj" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="958" y="-2065"/>
+            <point key="canvasLocation" x="1759" y="-1339"/>
         </scene>
         <!--AVPlayerView-->
         <scene sceneID="yhL-XQ-JdH">
             <objects>
-                <viewController id="6NA-41-kHl" sceneMemberID="viewController">
+                <viewController id="6NA-41-kHl" customClass="NativeAVViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="0KG-2u-Mi3">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SER-ig-cqO" customClass="NativeAVView">
+                                <rect key="frame" x="0.0" y="334" width="414" height="228"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="SER-ig-cqO" secondAttribute="height" multiplier="600:330" id="aKJ-DH-YQS"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap video to Play/Pause" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bRx-rJ-EqR">
+                                <rect key="frame" x="131" y="570" width="152.5" height="17"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RKa-Vb-uyI">
+                                <rect key="frame" x="327" y="108" width="67" height="33"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="Skip Ads"/>
+                                <connections>
+                                    <segue destination="0cJ-AD-dgi" kind="unwind" unwindAction="myUnwindAction:" id="WXH-QS-Cz1"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7x8-wt-WSE">
+                                <rect key="frame" x="118.5" y="812" width="177" height="30"/>
+                                <state key="normal" title="Download from App Store"/>
+                                <connections>
+                                    <action selector="downloadFromAppStore:" destination="6NA-41-kHl" eventType="touchUpInside" id="Mxh-eK-OLr"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="bRx-rJ-EqR" firstAttribute="centerX" secondItem="0KG-2u-Mi3" secondAttribute="centerX" id="Als-7v-TNV"/>
+                            <constraint firstItem="SER-ig-cqO" firstAttribute="centerX" secondItem="0KG-2u-Mi3" secondAttribute="centerX" id="BKi-a9-RRD"/>
+                            <constraint firstItem="187-Pq-RN5" firstAttribute="trailing" secondItem="RKa-Vb-uyI" secondAttribute="trailing" constant="20" id="N3O-YI-566"/>
+                            <constraint firstItem="7x8-wt-WSE" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="187-Pq-RN5" secondAttribute="leading" constant="20" id="Za7-ia-9PA"/>
+                            <constraint firstItem="bRx-rJ-EqR" firstAttribute="top" secondItem="SER-ig-cqO" secondAttribute="bottom" constant="8" id="bl3-da-Z1s"/>
+                            <constraint firstItem="SER-ig-cqO" firstAttribute="centerY" secondItem="0KG-2u-Mi3" secondAttribute="centerY" id="d9P-Ro-CEb"/>
+                            <constraint firstItem="SER-ig-cqO" firstAttribute="leading" secondItem="187-Pq-RN5" secondAttribute="leading" id="daj-6V-A1o"/>
+                            <constraint firstItem="RKa-Vb-uyI" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="187-Pq-RN5" secondAttribute="leading" constant="20" id="egM-cN-8el"/>
+                            <constraint firstItem="SER-ig-cqO" firstAttribute="trailing" secondItem="187-Pq-RN5" secondAttribute="trailing" id="gzD-Hk-fqf"/>
+                            <constraint firstItem="7x8-wt-WSE" firstAttribute="centerX" secondItem="0KG-2u-Mi3" secondAttribute="centerX" id="mdV-MU-sYg"/>
+                            <constraint firstItem="RKa-Vb-uyI" firstAttribute="top" secondItem="187-Pq-RN5" secondAttribute="top" constant="20" id="pqF-mM-rdd"/>
+                            <constraint firstItem="bRx-rJ-EqR" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="187-Pq-RN5" secondAttribute="leading" constant="8" id="s6Q-Ud-Yev"/>
+                            <constraint firstItem="187-Pq-RN5" firstAttribute="bottom" secondItem="7x8-wt-WSE" secondAttribute="bottom" constant="20" id="stC-bY-LlE"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="187-Pq-RN5"/>
                     </view>
-                    <navigationItem key="navigationItem" title="AVPlayerView" id="NtR-N7-ZzP"/>
+                    <navigationItem key="navigationItem" title="AVPlayerView" id="NtR-N7-ZzP">
+                        <barButtonItem key="rightBarButtonItem" systemItem="action" id="YRk-E5-Otq">
+                            <connections>
+                                <segue destination="jbb-Io-soW" kind="presentation" id="4mN-VE-4Zv"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="avPlayerView" destination="SER-ig-cqO" id="Ees-QJ-yxw"/>
+                        <outlet property="extraHint" destination="bRx-rJ-EqR" id="SpD-sf-20I"/>
+                        <outlet property="extraItem" destination="YRk-E5-Otq" id="prW-Vx-nqB"/>
+                        <outlet property="skipButton" destination="RKa-Vb-uyI" id="s55-e9-hmk"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dLy-Xe-uck" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="0cJ-AD-dgi" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="958" y="-1338"/>
         </scene>
-        <!--MPMoviePlayerController (Deprecated)-->
+        <!--MPMoviePlayer (Deprecated)-->
         <scene sceneID="f2q-P7-U51">
             <objects>
                 <viewController id="9ik-7U-VPE" customClass="NativeMPViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="1qA-Bw-hou">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="OctoBass does not support MPMoviePlayer, which is no longer available since iOS 13, use AVPlayerView instead." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="weQ-JC-3Ga">
+                                <rect key="frame" x="16" y="417.5" width="382" height="61"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="weQ-JC-3Ga" firstAttribute="centerX" secondItem="1qA-Bw-hou" secondAttribute="centerX" id="N4w-rb-2v0"/>
+                            <constraint firstItem="weQ-JC-3Ga" firstAttribute="centerY" secondItem="1qA-Bw-hou" secondAttribute="centerY" id="wKv-eL-GOs"/>
+                            <constraint firstItem="weQ-JC-3Ga" firstAttribute="leading" secondItem="283-eG-hUx" secondAttribute="leading" constant="16" id="zsc-QI-35c"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="283-eG-hUx"/>
                     </view>
-                    <navigationItem key="navigationItem" title="MPMoviePlayerController (Deprecated)" id="MrN-2m-cgz"/>
+                    <navigationItem key="navigationItem" title="MPMoviePlayer (Deprecated)" id="MrN-2m-cgz">
+                        <barButtonItem key="rightBarButtonItem" systemItem="action" id="yxz-Tf-sz2">
+                            <connections>
+                                <action selector="showInController:" destination="9ik-7U-VPE" id="6ya-o9-lKI"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="extraHint" destination="weQ-JC-3Ga" id="8vJ-3z-ZAh"/>
+                        <outlet property="extraItem" destination="yxz-Tf-sz2" id="90a-WA-XJe"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9No-vR-B1c" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

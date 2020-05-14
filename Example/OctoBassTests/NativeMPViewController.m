@@ -4,8 +4,12 @@
 //
 
 #import "NativeMPViewController.h"
+#import <MediaPlayer/MediaPlayer.h>
 
 @interface NativeMPViewController ()
+@property (nonatomic, strong) MPMoviePlayerViewController *movieController;
+@property (nonatomic, weak) IBOutlet UILabel *extraHint;
+@property (nonatomic, weak) IBOutlet UIBarButtonItem *extraItem;
 
 @end
 
@@ -13,17 +17,18 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    if (@available(iOS 13.0, *)) {
+        [self.extraHint setHidden:NO];
+        [self.extraItem setEnabled:NO];
+    }
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (IBAction)showInController:(UIBarButtonItem *)sender {
+    NSURL *movieURL = [NSURL URLWithString:@"https://www.w3schools.com/html/mov_bbb.mp4"];
+    self.movieController = [[MPMoviePlayerViewController alloc] initWithContentURL:movieURL];
+    [self presentMoviePlayerViewControllerAnimated:self.movieController];
+    [self.movieController.moviePlayer play];
 }
-*/
 
 @end
