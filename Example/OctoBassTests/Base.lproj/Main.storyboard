@@ -33,7 +33,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <sections>
-                            <tableViewSection id="LzH-C8-ifD">
+                            <tableViewSection headerTitle="Video Ads" id="LzH-C8-ifD">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="iBk-IN-icc" style="IBUITableViewCellStyleDefault" id="Q3K-fJ-9ff">
                                         <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
