@@ -17,6 +17,8 @@
 #import "OBClassHierarchyDetector.h"
 #import "OBTouchRocket.h"
 #import "OBWKWebViewMsgProxy.h"
+#import "OBAVPlayerObserver.h"
+#import "OBMPMoviePlayerObserver.h"
 
 #import "UIView+Hierarchy.h"
 #import "UIWindow+Hierarchy.h"
@@ -464,13 +466,14 @@ static void prepareOBClassRepresentation(OBClassRepresentation *clsRepr) {
 
 
 // Setup constants.
-static NSArray <NSValue *> *    _$majorPoints       = nil;
-static CFTimeInterval           _$processInterval   = 0.5;
+static NSArray <NSValue *> *    _$majorPoints        = nil;
+static CFTimeInterval           _$processInterval    = 0.5;
 static CFTimeInterval           _$processLastTick;
-static CFTimeInterval           _$coolDownInterval  = 15.0;
+static CFTimeInterval           _$coolDownInterval   = 15.0;
 static CFTimeInterval           _$coolDownLastTick;
 static dispatch_queue_t         _$serialActionQueue;
-static pthread_mutex_t          _$serialActionLock = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t          _$serialActionLock   = PTHREAD_MUTEX_INITIALIZER;
+static NSDictionary *           _$currentMediaStatus = nil;
 
 
 // Setup Declarations.
@@ -909,11 +912,26 @@ static void __octobass_initialize()
     
     /* ---------------------- Global Notifications ---------------------- */
     
+    // Setup KVO observation handlers for AVPlayerItem.
+    [OBAVPlayerObserver sharedObserver];
+    
+    
+#if ENABLE_MPMOVIEPLAYER
+    
+    // Setup notification handlers for MPMoviePlayer.
+    [OBMPMoviePlayerObserver sharedObserver];
+    
+#endif  // ENABLE_MPMOVIEPLAYER
+    
+    
     // Setup global notification handlers.
     [[NSNotificationCenter defaultCenter] addObserverForName:_$OBNotificationNameMediaStatus object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-#if DEBUG
-        NSLog(@"%@", note.userInfo);
         
+        // Update current media status in main queue.
+        NSLog(@"%@", note.userInfo);
+        _$currentMediaStatus = note.userInfo;
+        
+#if DEBUG
         // Find the top-most view controller.
         UIViewController *topCtrl = [[[UIApplication sharedApplication] keyWindow] rootViewController];
         while (topCtrl.presentedViewController) {
@@ -934,6 +952,7 @@ static void __octobass_initialize()
         [alertCtrl addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
         [topCtrl presentViewController:alertCtrl animated:YES completion:nil];
 #endif
+        
     }];
     
     

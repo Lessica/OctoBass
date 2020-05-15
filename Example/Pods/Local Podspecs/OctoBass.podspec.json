@@ -28,7 +28,10 @@
   "private_header_files": "OctoBass/Classes/**/*.h",
   "frameworks": [
     "UIKit",
-    "WebKit"
+    "WebKit",
+    "AVFoundation",
+    "AVKit",
+    "MediaPlayer"
   ],
   "dependencies": {
     "Protobuf": [

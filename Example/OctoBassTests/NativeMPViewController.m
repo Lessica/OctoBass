@@ -164,15 +164,9 @@
 - (void)loadStateDidChange:(NSNotification *)aNotification {
     MPMoviePlayerController *playerCtrl = (MPMoviePlayerController *)aNotification.object;
     switch (playerCtrl.loadState) {
-        case MPMovieLoadStatePlayable:
-            
-            break;
-        case MPMovieLoadStatePlaythroughOK:
-        
-            break;
-        case MPMovieLoadStateStalled:
-            
-            break;
+        case MPMovieLoadStatePlayable: break;
+        case MPMovieLoadStatePlaythroughOK: break;
+        case MPMovieLoadStateStalled: break;
         default: break;
     }
 }
@@ -180,15 +174,9 @@
 - (void)playbackStateDidChange:(NSNotification *)aNotification {
     MPMoviePlayerController *playerCtrl = (MPMoviePlayerController *)aNotification.object;
     switch (playerCtrl.playbackState) {
-        case MPMoviePlaybackStatePlaying:
-            
-            break;
-        case MPMoviePlaybackStateStopped:
-        
-            break;
-        case MPMoviePlaybackStatePaused:
-        
-            break;
+        case MPMoviePlaybackStatePlaying: break;
+        case MPMoviePlaybackStateStopped: break;
+        case MPMoviePlaybackStatePaused: break;
         default: break;
     }
 }

@@ -21,6 +21,7 @@
 @property (nonatomic, strong) AVPlayerLayer *avPlayerLayer;
 @property (nonatomic, weak)   AVPlayer      *extraAVPlayer;
 @property (nonatomic, strong) id             avPlayerMonitoringObserver;
+@property (nonatomic, strong) id             extraAVPlayerMonitoringObserver;
 
 @property (nonatomic, assign) CFTimeInterval totalTime;
 @property (nonatomic, assign) CFTimeInterval extraTotalTime;
@@ -44,13 +45,8 @@
     [self.avPlayerLayer setVideoGravity:AVLayerVideoGravityResizeAspect];
     [self.avPlayerLayer setContentsScale:[UIScreen mainScreen].scale];
     
-    [self.avPlayerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
-    [self.avPlayerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
-    
     [self.avPlayerView.layer addSublayer:self.avPlayerLayer];
     [self.avPlayerView setPlayerLayer:self.avPlayerLayer];
-    
-    [self monitoringPlayback:self.avPlayer];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerItemDidPlayToEndTime:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
     
@@ -61,14 +57,46 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    
+    [self.avPlayerItem removeObserver:self forKeyPath:@"status"];
+    [self.avPlayerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
+    [self stopMonitoringPlayback:self.avPlayer];
+    
     [self.avPlayer pause];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    if (self.presentedViewController) {
+        AVPlayerItem *playerItem = self.extraAVPlayer.currentItem;
+        [playerItem removeObserver:self forKeyPath:@"status"];
+        [playerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
+        [self stopMonitoringPlayback:self.extraAVPlayer];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+    [self.avPlayerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
+    [self.avPlayerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
+    [self beginMonitoringPlayback:self.avPlayer];
+    
     // Play only if needed.
     if (!self.presentedViewController) {
         [self.avPlayer play];
+    }
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    
+    if (self.presentedViewController) {
+        AVPlayerItem *playerItem = self.extraAVPlayer.currentItem;
+        [playerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
+        [playerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
+        [self beginMonitoringPlayback:self.extraAVPlayer];
     }
 }
 
@@ -114,11 +142,11 @@
 
 #pragma mark - Playback Observer
 
-- (void)monitoringPlayback:(AVPlayer *)player {
+- (void)beginMonitoringPlayback:(AVPlayer *)player {
     
     AVPlayerItem *playerItem = player.currentItem;
     
-    self.avPlayerMonitoringObserver = [player addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:NULL usingBlock:^(CMTime time) {
+    id observer = [player addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:NULL usingBlock:^(CMTime time) {
         
         BOOL isInline      = playerItem == self.avPlayerItem;
         int currentSeconds = (int)(playerItem.currentTime.value / playerItem.currentTime.timescale);
@@ -141,6 +169,25 @@
         }
         
     }];
+    
+    if (playerItem == self.avPlayerItem) {
+        self.avPlayerMonitoringObserver = observer;
+    } else {
+        self.extraAVPlayerMonitoringObserver = observer;
+    }
+    
+}
+
+- (void)stopMonitoringPlayback:(AVPlayer *)player {
+    
+    if (player == self.avPlayer && self.avPlayerMonitoringObserver != nil) {
+        [player removeTimeObserver:self.avPlayerMonitoringObserver];
+        self.avPlayerMonitoringObserver = nil;
+    }
+    else if (player != self.avPlayer && self.extraAVPlayerMonitoringObserver != nil) {
+        [player removeTimeObserver:self.extraAVPlayerMonitoringObserver];
+        self.extraAVPlayerMonitoringObserver = nil;
+    }
     
 }
 
@@ -195,15 +242,10 @@
         
         NSURL *videoURL = [NSURL URLWithString:VIDEO_URL];
         AVPlayer *player = [AVPlayer playerWithURL:videoURL];
-        AVPlayerItem *playerItem = player.currentItem;
-        [playerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
-        [playerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
         
         ctrl.player = player;
         ctrl.delegate = self;
         self.extraAVPlayer = player;
-        
-        [self monitoringPlayback:player];
         
     }
 }

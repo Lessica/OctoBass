@@ -35,7 +35,7 @@ DESC
     'OctoBass' => ['OctoBass/Assets/*.js']
   }
   s.private_header_files = 'OctoBass/Classes/**/*.h'
-  s.frameworks = 'UIKit', 'WebKit'
+  s.frameworks = 'UIKit', 'WebKit', 'AVFoundation', 'AVKit', 'MediaPlayer'
 
   s.dependency 'Protobuf', '>= 3.11.1'
   s.dependency 'FMDB', '~> 2.7.5'
