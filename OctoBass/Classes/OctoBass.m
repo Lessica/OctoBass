@@ -330,6 +330,35 @@ static UIWebView *repl_UIWebView_initWithCoder_(UIWebView *self, SEL _cmd, NSCod
 #endif  // ENABLE_UIWEBVIEW
 
 
+#pragma mark - AVKit Hooks
+
+
+static AVPlayer *(*orig_AVPlayer_initWithURL_)(AVPlayer *, SEL, NSURL *);
+static AVPlayer *repl_AVPlayer_initWithURL_(AVPlayer *self, SEL _cmd, NSURL *url)
+{
+    AVPlayer *obj = orig_AVPlayer_initWithURL_(self, _cmd, url);
+    [[OBAVPlayerObserver sharedObserver] addObservablePlayer:obj];
+    return obj;
+}
+
+
+static AVPlayer *(*orig_AVPlayer_initWithPlayerItem_)(AVPlayer *, SEL, AVPlayerItem *);
+static AVPlayer *repl_AVPlayer_initWithPlayerItem_(AVPlayer *self, SEL _cmd, AVPlayerItem *item)
+{
+    AVPlayer *obj = orig_AVPlayer_initWithPlayerItem_(self, _cmd, item);
+    [[OBAVPlayerObserver sharedObserver] addObservablePlayer:obj];
+    return obj;
+}
+
+
+static void (*orig_AVPlayer_dealloc)(AVPlayer *, SEL);
+static void repl_AVPlayer_dealloc(AVPlayer *self, SEL _cmd)
+{
+    [[OBAVPlayerObserver sharedObserver] removeObservablePlayer:self];
+    //orig_AVPlayer_dealloc(self, _cmd);
+}
+
+
 #pragma mark - Touch Events
 
 
@@ -835,6 +864,9 @@ static void __octobass_initialize()
     // Hook instance methods.
     MyHookMessage([WKWebView class], @selector(initWithFrame:configuration:), (IMP)repl_WKWebView_initWithFrame_configuration_, (IMP *)&orig_WKWebView_initWithFrame_configuration_);
     MyHookMessage([WKWebView class], @selector(initWithCoder:), (IMP)repl_WKWebView_initWithCoder_, (IMP *)&orig_WKWebView_initWithCoder_);
+    MyHookMessage([AVPlayer class], @selector(initWithURL:), (IMP)repl_AVPlayer_initWithURL_, (IMP *)&orig_AVPlayer_initWithURL_);
+    MyHookMessage([AVPlayer class], @selector(initWithPlayerItem:), (IMP)repl_AVPlayer_initWithPlayerItem_, (IMP *)&orig_AVPlayer_initWithPlayerItem_);
+    MyHookMessage([AVPlayer class], NSSelectorFromString(@"dealloc"), (IMP)repl_AVPlayer_dealloc, (IMP *)&orig_AVPlayer_dealloc);
     MyHookMessage([UIApplication class], @selector(sendEvent:), (IMP)repl_UIApplication_sendEvent_, (IMP *)&orig_UIApplication_sendEvent_);
     
 #if ENABLE_UIWEBVIEW
@@ -939,7 +971,7 @@ static void __octobass_initialize()
         }
         
         // Build an alert for test.
-        UIAlertController *alertCtrl = [UIAlertController alertControllerWithTitle:@"Media Status" message:nil preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alertCtrl = [UIAlertController alertControllerWithTitle:@"OctoBass Media Observer" message:nil preferredStyle:UIAlertControllerStyleAlert];
         
         NSMutableParagraphStyle *paraStyle = [NSMutableParagraphStyle new];
         paraStyle.alignment = NSTextAlignmentLeft;

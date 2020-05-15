@@ -9,19 +9,33 @@
 
 #define VIDEO_URL @"https://www.w3schools.com/html/mov_bbb.mp4"
 
+
+@interface NativeAVPlayer : AVPlayer
+
+@end
+
+@implementation NativeAVPlayer
+
+- (void)dealloc {
+    
+}
+
+@end
+
+
 @interface NativeAVViewController ()
 
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *extraItem;
 @property (nonatomic, weak) IBOutlet NativeAVView *avPlayerView;
-@property (nonatomic, weak) IBOutlet UILabel *extraHint;
-@property (nonatomic, weak) IBOutlet UIButton *skipButton;
+@property (nonatomic, weak) IBOutlet UILabel      *extraHint;
+@property (nonatomic, weak) IBOutlet UIButton     *skipButton;
 
-@property (nonatomic, strong) AVPlayer      *avPlayer;
-@property (nonatomic, strong) AVPlayerItem  *avPlayerItem;
-@property (nonatomic, strong) AVPlayerLayer *avPlayerLayer;
-@property (nonatomic, weak)   AVPlayer      *extraAVPlayer;
-@property (nonatomic, strong) id             avPlayerMonitoringObserver;
-@property (nonatomic, strong) id             extraAVPlayerMonitoringObserver;
+@property (nonatomic, strong) NativeAVPlayer      *avPlayer;
+@property (nonatomic, strong) AVPlayerItem        *avPlayerItem;
+@property (nonatomic, strong) AVPlayerLayer       *avPlayerLayer;
+@property (nonatomic, weak)   NativeAVPlayer      *extraAVPlayer;
+@property (nonatomic, strong) id                   avPlayerMonitoringObserver;
+@property (nonatomic, strong) id                   extraAVPlayerMonitoringObserver;
 
 @property (nonatomic, assign) CFTimeInterval totalTime;
 @property (nonatomic, assign) CFTimeInterval extraTotalTime;
@@ -38,7 +52,7 @@
     
     NSURL *videoURL = [NSURL URLWithString:VIDEO_URL];
     self.avPlayerItem  = [AVPlayerItem playerItemWithURL:videoURL];
-    self.avPlayer      = [AVPlayer playerWithPlayerItem:self.avPlayerItem];
+    self.avPlayer      = [NativeAVPlayer playerWithPlayerItem:self.avPlayerItem];
     self.avPlayerLayer = [AVPlayerLayer playerLayerWithPlayer:self.avPlayer];
     
     [self.avPlayerLayer setBackgroundColor:[UIColor blackColor].CGColor];
@@ -241,7 +255,7 @@
         AVPlayerViewController *ctrl = (AVPlayerViewController *)destCtrl;
         
         NSURL *videoURL = [NSURL URLWithString:VIDEO_URL];
-        AVPlayer *player = [AVPlayer playerWithURL:videoURL];
+        NativeAVPlayer *player = [NativeAVPlayer playerWithURL:videoURL];
         
         ctrl.player = player;
         ctrl.delegate = self;

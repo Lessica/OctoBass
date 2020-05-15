@@ -29,6 +29,7 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
+        // There's no need to unregister these observers above iOS 9.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayerPlaybackStateDidChange:) name:MPMoviePlayerPlaybackStateDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(movieDurationAvailable:) name:MPMovieDurationAvailableNotification object:nil];
     }

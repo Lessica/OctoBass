@@ -4,6 +4,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AVKit/AVKit.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -14,6 +15,21 @@ NS_ASSUME_NONNULL_BEGIN
 @interface OBAVPlayerObserver : NSObject
 
 + (instancetype)sharedObserver;
+
+
+/**
+ * Track specified AVPlayer instance.
+ * @param player An AVPlayer instance.
+ */
+- (void)addObservablePlayer:(AVPlayer *)player;
+
+
+/**
+ * Stop tracking specified AVPlayer instance.
+ * @param player The AVPlayer instance.
+ */
+- (void)removeObservablePlayer:(AVPlayer *)player;
+
 
 @end
 
