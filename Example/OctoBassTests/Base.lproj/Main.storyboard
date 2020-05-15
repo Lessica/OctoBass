@@ -3,7 +3,7 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -227,10 +227,57 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iZw-aj-6DN" customClass="NativeMPView">
+                                <rect key="frame" x="0.0" y="334" width="414" height="228"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="iZw-aj-6DN" secondAttribute="height" multiplier="600:330" id="oi4-83-j1c"/>
+                                </constraints>
+                            </view>
+                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bgJ-aT-5xZ">
+                                <rect key="frame" x="0.0" y="334" width="414" height="228"/>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eJE-zH-lmu">
+                                <rect key="frame" x="118.5" y="812" width="177" height="30"/>
+                                <state key="normal" title="Download from App Store"/>
+                                <connections>
+                                    <action selector="downloadFromAppStore:" destination="9ik-7U-VPE" eventType="touchUpInside" id="V6n-Ki-bHn"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bdO-kX-2Sg">
+                                <rect key="frame" x="327" y="108" width="67" height="33"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="Skip Ads"/>
+                                <connections>
+                                    <segue destination="94p-3k-ZZd" kind="unwind" unwindAction="myUnwindAction:" id="4gD-1v-Ti1"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap video to Play/Pause" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aWP-Sj-T9V">
+                                <rect key="frame" x="131" y="570" width="152.5" height="17"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
+                            <constraint firstItem="eJE-zH-lmu" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="283-eG-hUx" secondAttribute="leading" constant="20" id="0iQ-5f-x3r"/>
+                            <constraint firstItem="283-eG-hUx" firstAttribute="bottom" secondItem="eJE-zH-lmu" secondAttribute="bottom" constant="20" id="4I4-DK-WU1"/>
+                            <constraint firstItem="iZw-aj-6DN" firstAttribute="centerY" secondItem="1qA-Bw-hou" secondAttribute="centerY" id="72o-4n-vGt"/>
+                            <constraint firstItem="bgJ-aT-5xZ" firstAttribute="bottom" secondItem="iZw-aj-6DN" secondAttribute="bottom" id="9P2-kH-hgY"/>
+                            <constraint firstItem="eJE-zH-lmu" firstAttribute="centerX" secondItem="1qA-Bw-hou" secondAttribute="centerX" id="Aja-fB-wr1"/>
+                            <constraint firstItem="aWP-Sj-T9V" firstAttribute="top" secondItem="iZw-aj-6DN" secondAttribute="bottom" constant="8" id="DxP-hk-FRE"/>
+                            <constraint firstItem="aWP-Sj-T9V" firstAttribute="centerX" secondItem="1qA-Bw-hou" secondAttribute="centerX" id="EVf-F5-Tt4"/>
+                            <constraint firstItem="iZw-aj-6DN" firstAttribute="centerX" secondItem="1qA-Bw-hou" secondAttribute="centerX" id="HuN-pM-CxN"/>
                             <constraint firstItem="weQ-JC-3Ga" firstAttribute="centerX" secondItem="1qA-Bw-hou" secondAttribute="centerX" id="N4w-rb-2v0"/>
+                            <constraint firstItem="aWP-Sj-T9V" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="283-eG-hUx" secondAttribute="leading" constant="8" id="PXg-Cg-431"/>
+                            <constraint firstItem="bgJ-aT-5xZ" firstAttribute="leading" secondItem="iZw-aj-6DN" secondAttribute="leading" id="WTj-fg-M8J"/>
+                            <constraint firstItem="bdO-kX-2Sg" firstAttribute="top" secondItem="283-eG-hUx" secondAttribute="top" constant="20" id="dAv-os-T7I"/>
+                            <constraint firstItem="iZw-aj-6DN" firstAttribute="leading" secondItem="283-eG-hUx" secondAttribute="leading" id="e7K-q8-bV8"/>
+                            <constraint firstItem="bgJ-aT-5xZ" firstAttribute="top" secondItem="iZw-aj-6DN" secondAttribute="top" id="j0F-2t-IsF"/>
+                            <constraint firstItem="283-eG-hUx" firstAttribute="trailing" secondItem="bdO-kX-2Sg" secondAttribute="trailing" constant="20" id="oU5-Pn-dG1"/>
+                            <constraint firstItem="bgJ-aT-5xZ" firstAttribute="trailing" secondItem="iZw-aj-6DN" secondAttribute="trailing" id="ql6-fJ-uGW"/>
+                            <constraint firstItem="bdO-kX-2Sg" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="283-eG-hUx" secondAttribute="leading" constant="20" id="wGI-nX-EDJ"/>
                             <constraint firstItem="weQ-JC-3Ga" firstAttribute="centerY" secondItem="1qA-Bw-hou" secondAttribute="centerY" id="wKv-eL-GOs"/>
                             <constraint firstItem="weQ-JC-3Ga" firstAttribute="leading" secondItem="283-eG-hUx" secondAttribute="leading" constant="16" id="zsc-QI-35c"/>
                         </constraints>
@@ -244,11 +291,16 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="extraHint" destination="weQ-JC-3Ga" id="8vJ-3z-ZAh"/>
+                        <outlet property="extraHint" destination="aWP-Sj-T9V" id="LG8-qa-CjY"/>
                         <outlet property="extraItem" destination="yxz-Tf-sz2" id="90a-WA-XJe"/>
+                        <outlet property="mpCoverView" destination="bgJ-aT-5xZ" id="vVO-zv-nJh"/>
+                        <outlet property="mpPlayerView" destination="iZw-aj-6DN" id="cIj-Eb-6xd"/>
+                        <outlet property="skipButton" destination="bdO-kX-2Sg" id="v7n-0e-rmZ"/>
+                        <outlet property="unsupportedHint" destination="weQ-JC-3Ga" id="8vJ-3z-ZAh"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9No-vR-B1c" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="94p-3k-ZZd" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="958" y="-601"/>
         </scene>

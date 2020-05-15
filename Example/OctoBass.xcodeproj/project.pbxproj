@@ -18,6 +18,7 @@
 		18161D6E246D983F00E2AED4 /* NativeAVView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18161D6D246D983F00E2AED4 /* NativeAVView.m */; };
 		18904C5C246D092E009FF292 /* NativeMPViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18904C5B246D092E009FF292 /* NativeMPViewController.m */; settings = {COMPILER_FLAGS = "-Wno-deprecated-declarations"; }; };
 		A1A2EE96EC1FB7D4A6053316 /* Pods_OctoBassTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269DFA39094EDC994465ECF4 /* Pods_OctoBassTests.framework */; };
+		D60F065F246E58A900BF6C1B /* NativeMPView.m in Sources */ = {isa = PBXBuildFile; fileRef = D60F065E246E58A900BF6C1B /* NativeMPView.m */; };
 		D6E82449246944220029802B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E82448246944220029802B /* AppDelegate.m */; };
 		D6E8244F246944220029802B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D6E8244E246944220029802B /* ViewController.m */; };
 		D6E82452246944220029802B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D6E82450246944220029802B /* Main.storyboard */; };
@@ -48,6 +49,8 @@
 		90A57C9366C3F32EA4377B84 /* Pods-OctoBassTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OctoBassTests.release.xcconfig"; path = "Target Support Files/Pods-OctoBassTests/Pods-OctoBassTests.release.xcconfig"; sourceTree = "<group>"; };
 		915A33AAB5B152738426E070 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		94BDADC4E66BE5E0C0BB4431 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		D60F065D246E58A900BF6C1B /* NativeMPView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NativeMPView.h; sourceTree = "<group>"; };
+		D60F065E246E58A900BF6C1B /* NativeMPView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NativeMPView.m; sourceTree = "<group>"; };
 		D6E82445246944220029802B /* OctoBassTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OctoBassTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6E82447246944220029802B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		D6E82448246944220029802B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -144,6 +147,8 @@
 				18161D6D246D983F00E2AED4 /* NativeAVView.m */,
 				18161D69246D92A500E2AED4 /* NativeAVViewController.h */,
 				18161D6A246D92A500E2AED4 /* NativeAVViewController.m */,
+				D60F065D246E58A900BF6C1B /* NativeMPView.h */,
+				D60F065E246E58A900BF6C1B /* NativeMPView.m */,
 				18904C5A246D092E009FF292 /* NativeMPViewController.h */,
 				18904C5B246D092E009FF292 /* NativeMPViewController.m */,
 				D6E82450246944220029802B /* Main.storyboard */,
@@ -287,6 +292,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D60F065F246E58A900BF6C1B /* NativeMPView.m in Sources */,
 				D6E8244F246944220029802B /* ViewController.m in Sources */,
 				D6E82449246944220029802B /* AppDelegate.m in Sources */,
 				18161D6E246D983F00E2AED4 /* NativeAVView.m in Sources */,
