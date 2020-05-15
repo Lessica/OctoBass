@@ -52,18 +52,19 @@
 
 @interface NativeMPViewController ()
 
-@property (nonatomic, strong) MPMoviePlayerController *movieController;
+@property (nonatomic, strong) MPMoviePlayerController *    movieController;
 @property (nonatomic, strong) MPMoviePlayerViewController *extraMovieViewController;
 
-@property (nonatomic, weak) IBOutlet UIBarButtonItem *extraItem;
-@property (nonatomic, weak) IBOutlet NativeMPView *mpPlayerView;
-@property (nonatomic, weak) IBOutlet UIView *mpCoverView;
-@property (nonatomic, weak) IBOutlet UILabel *extraHint;
-@property (nonatomic, weak) IBOutlet UILabel *unsupportedHint;
-@property (nonatomic, weak) IBOutlet UIButton *skipButton;
+@property (nonatomic, weak) IBOutlet UIBarButtonItem *     extraItem;
+@property (nonatomic, weak) IBOutlet NativeMPView *        mpPlayerView;
+@property (nonatomic, weak) IBOutlet UIView *              mpCoverView;
+@property (nonatomic, weak) IBOutlet UILabel *             extraHint;
+@property (nonatomic, weak) IBOutlet UILabel *             unsupportedHint;
+@property (nonatomic, weak) IBOutlet UIButton *            skipButton;
+@property (nonatomic, weak) IBOutlet UIButton *            downloadButton;
 
 @property (nonatomic, strong) NativeMPViewControllerProxy *playbackObserver;
-@property (nonatomic, assign) NSTimeInterval totalTime;
+@property (nonatomic, assign) NSTimeInterval               totalTime;
 
 @end
 
@@ -74,9 +75,21 @@
     [super viewDidLoad];
     
     if (@available(iOS 13.0, *)) {
-        [self.unsupportedHint setHidden:NO];
         [self.extraItem setEnabled:NO];
+        [self.mpCoverView setHidden:YES];
+        [self.mpPlayerView setHidden:YES];
+        [self.unsupportedHint setHidden:NO];
+        [self.extraHint setHidden:YES];
+        [self.skipButton setHidden:YES];
+        [self.downloadButton setHidden:YES];
     } else {
+        [self.extraItem setEnabled:YES];
+        [self.mpCoverView setHidden:NO];
+        [self.mpPlayerView setHidden:NO];
+        [self.unsupportedHint setHidden:YES];
+        [self.extraHint setHidden:NO];
+        [self.skipButton setHidden:NO];
+        [self.downloadButton setHidden:NO];
         
         NSURL *movieURL = [NSURL URLWithString:VIDEO_URL];
         self.movieController = [[MPMoviePlayerController alloc] initWithContentURL:movieURL];

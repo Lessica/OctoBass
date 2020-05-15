@@ -333,19 +333,10 @@ static UIWebView *repl_UIWebView_initWithCoder_(UIWebView *self, SEL _cmd, NSCod
 #pragma mark - AVKit Hooks
 
 
-static AVPlayer *(*orig_AVPlayer_initWithURL_)(AVPlayer *, SEL, NSURL *);
-static AVPlayer *repl_AVPlayer_initWithURL_(AVPlayer *self, SEL _cmd, NSURL *url)
+static AVPlayer *(*orig_AVPlayer_init)(AVPlayer *, SEL);
+static AVPlayer *repl_AVPlayer_init(AVPlayer *self, SEL _cmd)
 {
-    AVPlayer *obj = orig_AVPlayer_initWithURL_(self, _cmd, url);
-    [[OBAVPlayerObserver sharedObserver] addObservablePlayer:obj];
-    return obj;
-}
-
-
-static AVPlayer *(*orig_AVPlayer_initWithPlayerItem_)(AVPlayer *, SEL, AVPlayerItem *);
-static AVPlayer *repl_AVPlayer_initWithPlayerItem_(AVPlayer *self, SEL _cmd, AVPlayerItem *item)
-{
-    AVPlayer *obj = orig_AVPlayer_initWithPlayerItem_(self, _cmd, item);
+    AVPlayer *obj = orig_AVPlayer_init(self, _cmd);
     [[OBAVPlayerObserver sharedObserver] addObservablePlayer:obj];
     return obj;
 }
@@ -864,8 +855,7 @@ static void __octobass_initialize()
     // Hook instance methods.
     MyHookMessage([WKWebView class], @selector(initWithFrame:configuration:), (IMP)repl_WKWebView_initWithFrame_configuration_, (IMP *)&orig_WKWebView_initWithFrame_configuration_);
     MyHookMessage([WKWebView class], @selector(initWithCoder:), (IMP)repl_WKWebView_initWithCoder_, (IMP *)&orig_WKWebView_initWithCoder_);
-    MyHookMessage([AVPlayer class], @selector(initWithURL:), (IMP)repl_AVPlayer_initWithURL_, (IMP *)&orig_AVPlayer_initWithURL_);
-    MyHookMessage([AVPlayer class], @selector(initWithPlayerItem:), (IMP)repl_AVPlayer_initWithPlayerItem_, (IMP *)&orig_AVPlayer_initWithPlayerItem_);
+    MyHookMessage([AVPlayer class], @selector(init), (IMP)repl_AVPlayer_init, (IMP *)&orig_AVPlayer_init);
     MyHookMessage([AVPlayer class], NSSelectorFromString(@"dealloc"), (IMP)repl_AVPlayer_dealloc, (IMP *)&orig_AVPlayer_dealloc);
     MyHookMessage([UIApplication class], @selector(sendEvent:), (IMP)repl_UIApplication_sendEvent_, (IMP *)&orig_UIApplication_sendEvent_);
     
@@ -964,25 +954,27 @@ static void __octobass_initialize()
         _$currentMediaStatus = note.userInfo;
         
 #if DEBUG
-        // Find the top-most view controller.
-        UIViewController *topCtrl = [[[UIApplication sharedApplication] keyWindow] rootViewController];
-        while (topCtrl.presentedViewController) {
-            topCtrl = topCtrl.presentedViewController;
-        }
-        
-        // Build an alert for test.
-        UIAlertController *alertCtrl = [UIAlertController alertControllerWithTitle:@"OctoBass Media Observer" message:nil preferredStyle:UIAlertControllerStyleAlert];
-        
-        NSMutableParagraphStyle *paraStyle = [NSMutableParagraphStyle new];
-        paraStyle.alignment = NSTextAlignmentLeft;
-        NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", note.userInfo] attributes:@{
-            NSParagraphStyleAttributeName: paraStyle,
-            NSFontAttributeName: [UIFont systemFontOfSize:13.0],
-        }];
-        [alertCtrl setValue:attrStr forKey:@"attributedMessage"];
-        
-        [alertCtrl addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
-        [topCtrl presentViewController:alertCtrl animated:YES completion:nil];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            // Find the top-most view controller.
+            UIViewController *topCtrl = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+            while (topCtrl.presentedViewController) {
+                topCtrl = topCtrl.presentedViewController;
+            }
+            
+            // Build an alert for test.
+            UIAlertController *alertCtrl = [UIAlertController alertControllerWithTitle:@"OctoBass Media Observer" message:nil preferredStyle:UIAlertControllerStyleAlert];
+            
+            NSMutableParagraphStyle *paraStyle = [NSMutableParagraphStyle new];
+            paraStyle.alignment = NSTextAlignmentLeft;
+            NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", note.userInfo] attributes:@{
+                NSParagraphStyleAttributeName: paraStyle,
+                NSFontAttributeName: [UIFont systemFontOfSize:13.0],
+            }];
+            [alertCtrl setValue:attrStr forKey:@"attributedMessage"];
+            
+            [alertCtrl addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
+            [topCtrl presentViewController:alertCtrl animated:YES completion:nil];
+        });
 #endif
         
     }];

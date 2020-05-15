@@ -8,6 +8,7 @@
 #import "OBAVPlayerObserver.h"
 #import <AVFoundation/AVFoundation.h>
 #import "OBViewEvents.h"
+#import <math.h>
 
 
 @implementation OBAVPlayerObserver
@@ -101,7 +102,7 @@
             @"type": type,
             @"paused": @(paused),
             @"ended": @(ended),
-            @"duration": @(duration),
+            @"duration": @(duration),  // isnan(duration)
             @"currentTime": @(currentTime),
         }];
         if (src) { [userInfo setObject:src forKey:@"src"]; }

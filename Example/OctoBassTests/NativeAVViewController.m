@@ -26,19 +26,20 @@
 @interface NativeAVViewController ()
 
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *extraItem;
-@property (nonatomic, weak) IBOutlet NativeAVView *avPlayerView;
-@property (nonatomic, weak) IBOutlet UILabel      *extraHint;
-@property (nonatomic, weak) IBOutlet UIButton     *skipButton;
+@property (nonatomic, weak) IBOutlet NativeAVView *   avPlayerView;
+@property (nonatomic, weak) IBOutlet UILabel *        extraHint;
+@property (nonatomic, weak) IBOutlet UIButton *       skipButton;
+@property (nonatomic, weak) IBOutlet UIButton *       downloadButton;
 
-@property (nonatomic, strong) NativeAVPlayer      *avPlayer;
-@property (nonatomic, strong) AVPlayerItem        *avPlayerItem;
-@property (nonatomic, strong) AVPlayerLayer       *avPlayerLayer;
-@property (nonatomic, weak)   NativeAVPlayer      *extraAVPlayer;
-@property (nonatomic, strong) id                   avPlayerMonitoringObserver;
-@property (nonatomic, strong) id                   extraAVPlayerMonitoringObserver;
+@property (nonatomic, strong) NativeAVPlayer *        avPlayer;
+@property (nonatomic, strong) AVPlayerItem *          avPlayerItem;
+@property (nonatomic, strong) AVPlayerLayer *         avPlayerLayer;
+@property (nonatomic, weak)   NativeAVPlayer *        extraAVPlayer;
+@property (nonatomic, strong) id                      avPlayerMonitoringObserver;
+@property (nonatomic, strong) id                      extraAVPlayerMonitoringObserver;
 
-@property (nonatomic, assign) CFTimeInterval totalTime;
-@property (nonatomic, assign) CFTimeInterval extraTotalTime;
+@property (nonatomic, assign) CFTimeInterval          totalTime;
+@property (nonatomic, assign) CFTimeInterval          extraTotalTime;
 
 @end
 

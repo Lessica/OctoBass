@@ -203,6 +203,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="avPlayerView" destination="SER-ig-cqO" id="Ees-QJ-yxw"/>
+                        <outlet property="downloadButton" destination="7x8-wt-WSE" id="cl6-4j-gGz"/>
                         <outlet property="extraHint" destination="bRx-rJ-EqR" id="SpD-sf-20I"/>
                         <outlet property="extraItem" destination="YRk-E5-Otq" id="prW-Vx-nqB"/>
                         <outlet property="skipButton" destination="RKa-Vb-uyI" id="s55-e9-hmk"/>
@@ -227,24 +228,24 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iZw-aj-6DN" customClass="NativeMPView">
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iZw-aj-6DN" customClass="NativeMPView">
                                 <rect key="frame" x="0.0" y="334" width="414" height="228"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="iZw-aj-6DN" secondAttribute="height" multiplier="600:330" id="oi4-83-j1c"/>
                                 </constraints>
                             </view>
-                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bgJ-aT-5xZ">
+                            <view hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bgJ-aT-5xZ">
                                 <rect key="frame" x="0.0" y="334" width="414" height="228"/>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eJE-zH-lmu">
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eJE-zH-lmu">
                                 <rect key="frame" x="118.5" y="812" width="177" height="30"/>
                                 <state key="normal" title="Download from App Store"/>
                                 <connections>
                                     <action selector="downloadFromAppStore:" destination="9ik-7U-VPE" eventType="touchUpInside" id="V6n-Ki-bHn"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bdO-kX-2Sg">
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bdO-kX-2Sg">
                                 <rect key="frame" x="327" y="108" width="67" height="33"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Skip Ads"/>
@@ -252,7 +253,7 @@
                                     <segue destination="94p-3k-ZZd" kind="unwind" unwindAction="myUnwindAction:" id="4gD-1v-Ti1"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap video to Play/Pause" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aWP-Sj-T9V">
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap video to Play/Pause" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aWP-Sj-T9V">
                                 <rect key="frame" x="131" y="570" width="152.5" height="17"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <nil key="textColor"/>
@@ -291,6 +292,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="downloadButton" destination="eJE-zH-lmu" id="Hfx-5m-ebg"/>
                         <outlet property="extraHint" destination="aWP-Sj-T9V" id="LG8-qa-CjY"/>
                         <outlet property="extraItem" destination="yxz-Tf-sz2" id="90a-WA-XJe"/>
                         <outlet property="mpCoverView" destination="bgJ-aT-5xZ" id="vVO-zv-nJh"/>
