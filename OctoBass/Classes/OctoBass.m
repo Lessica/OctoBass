@@ -139,7 +139,7 @@ NS_INLINE void modifyWKWebViewConfiguration(WKWebViewConfiguration *configuratio
     
     // Inject if needed.
     if (!alreadyInjected) {
-        WKUserScript *userScript = [[WKUserScript alloc] initWithSource:payload injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
+        WKUserScript *userScript = [[WKUserScript alloc] initWithSource:payload injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO];
         [userContentController addUserScript:userScript];
     }
     

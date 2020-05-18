@@ -267,7 +267,7 @@
         /* Media events */
         // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
         if (isWKWebView()) {
-            ['play', 'ended', 'pause'].forEach( (evt) => { document.addEventListener(evt, DoWebKitNotifyMediaStatus, true); } );
+            ['play', 'ended', 'pause', 'durationchange'].forEach( (evt) => { document.addEventListener(evt, DoWebKitNotifyMediaStatus, true); } );
         }
 
 

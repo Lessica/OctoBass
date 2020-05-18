@@ -10,6 +10,6 @@
 #endif
 #endif
 
-#define ENABLE_UIWEBVIEW     1
+#define ENABLE_UIWEBVIEW     0
 #define ENABLE_MPMOVIEPLAYER 0
 

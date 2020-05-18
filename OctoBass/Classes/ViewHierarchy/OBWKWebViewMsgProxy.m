@@ -21,10 +21,22 @@
         if ([evaluatedReport isKindOfClass:[NSString class]] && evaluatedReport.length) {
             
             // Save reported hash to user content controller.
-            [userContentController ob_setInspectorReportedHash:evaluatedReport];
+            NSMutableString *reportedHash = [[userContentController ob_inspectorReportedHash] mutableCopy];
+            if (!reportedHash) {
+                reportedHash = [NSMutableString stringWithString:evaluatedReport];
+            } else {
+                if (message.frameInfo.isMainFrame) {
+                    [reportedHash insertString:@"," atIndex:0];
+                    [reportedHash insertString:evaluatedReport atIndex:0];
+                } else {
+                    [reportedHash appendString:@","];
+                    [reportedHash appendString:evaluatedReport];
+                }
+            }
+            [userContentController ob_setInspectorReportedHash:[reportedHash copy]];
             
 #if DEBUG
-            NSLog(@"%@", evaluatedReport);
+            NSLog(@"%@", reportedHash);
 #endif  // DEBUG
             
         }

@@ -22,7 +22,7 @@
     // Setup navigation delegate.
     self.webView.navigationDelegate = self;
     
-    NSURLRequest *req = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://thepaciellogroup.github.io/AT-browser-tests/test-files/video.html"]];
+    NSURLRequest *req = [NSURLRequest requestWithURL:self.url];
     [self.webView loadRequest:req];
     
     [self.webView becomeFirstResponder];
