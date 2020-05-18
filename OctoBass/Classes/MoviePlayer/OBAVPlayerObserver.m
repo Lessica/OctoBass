@@ -34,12 +34,16 @@
     return self;
 }
 
+- (void)dealloc {
+    //[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 
 #pragma mark - Notifications
 
-- (void)playerItemDidPlayToEndTime:(NSNotification *)aNotification {
-    
-}
+//- (void)playerItemDidPlayToEndTime:(NSNotification *)aNotification {
+//
+//}
 
 
 #pragma mark - KVO
@@ -55,15 +59,19 @@
     [player removeObserver:self forKeyPath:@"timeControlStatus"];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary <NSKeyValueChangeKey, id> *)change context:(void *)context {
     
     AVPlayer *player = (AVPlayer *)object;
     
-    if ([keyPath isEqualToString:@"status"]) {
-        //AVPlayerStatus status = player.status;
-    }
+    //if ([keyPath isEqualToString:@"status"]) {
+    //    AVPlayerStatus status = player.status;
+    //} else
     
-    else if ([keyPath isEqualToString:@"timeControlStatus"]) {
+    if ([keyPath isEqualToString:@"timeControlStatus"]) {
+        
+        if (!player.currentItem) {
+            return;
+        }
         
         NSString *type = @"AVPlayer";
         
@@ -92,20 +100,27 @@
         }
         
         NSTimeInterval duration = CMTimeGetSeconds(player.currentItem.duration);
+        if (isnan(duration)) {
+            return;
+        }
+        
         NSTimeInterval currentTime = CMTimeGetSeconds(player.currentItem.currentTime);
         NSString *src = nil;
         if ([player.currentItem.asset isKindOfClass:[AVURLAsset class]]) {
             src = [[(AVURLAsset *)player.currentItem.asset URL] absoluteString];
         }
+        if (!src.length) {
+            return;
+        }
         
         NSMutableDictionary <NSString *, id> *userInfo = [NSMutableDictionary dictionaryWithDictionary:@{
             @"type": type,
+            @"src": src,
             @"paused": @(paused),
             @"ended": @(ended),
-            @"duration": @(duration),  // isnan(duration)
+            @"duration": @(duration),
             @"currentTime": @(currentTime),
         }];
-        if (src) { [userInfo setObject:src forKey:@"src"]; }
         
         // Post internal notification.
         [[NSNotificationCenter defaultCenter] postNotificationName:_$OBNotificationNameMediaStatus object:self userInfo:userInfo];

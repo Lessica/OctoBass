@@ -214,7 +214,7 @@
     AVPlayerItem *playerItem = (AVPlayerItem *)object;
     
     if ([keyPath isEqualToString:@"loadedTimeRanges"]) {
-        //CFTimeInterval loadedTime = [self availableDurationWithplayerItem:playerItem];
+        //CFTimeInterval loadedTime = [self availableDurationWithPlayerItem:playerItem];
         CFTimeInterval totalTime = CMTimeGetSeconds(playerItem.duration);
         // Video loaded
         if (playerItem == self.avPlayerItem) {
@@ -268,7 +268,7 @@
 
 #pragma mark - Private
 
-- (NSTimeInterval)availableDurationWithplayerItem:(AVPlayerItem *)playerItem {
+- (NSTimeInterval)availableDurationWithPlayerItem:(AVPlayerItem *)playerItem {
     NSArray *loadedTimeRanges = [playerItem loadedTimeRanges];
     CMTimeRange timeRange = [loadedTimeRanges.firstObject CMTimeRangeValue];
     NSTimeInterval startSeconds = CMTimeGetSeconds(timeRange.start);

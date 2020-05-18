@@ -124,6 +124,8 @@
 		D60F0668246E84A300BF6C1B /* OBAVPlayerObserver.h in Headers */ = {isa = PBXBuildFile; fileRef = D60F0666246E84A300BF6C1B /* OBAVPlayerObserver.h */; };
 		D60F0669246E84A300BF6C1B /* OBAVPlayerObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = D60F0667246E84A300BF6C1B /* OBAVPlayerObserver.m */; };
 		D61629C5D062C2214E8CA161A9375523 /* GPBDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F85DA07319C99BBB0366A89B5F83478 /* GPBDictionary.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		D6FDA5F0247255E600782DDD /* OBMediaStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = D6FDA5EE247255E600782DDD /* OBMediaStatus.h */; };
+		D6FDA5F1247255E600782DDD /* OBMediaStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FDA5EF247255E600782DDD /* OBMediaStatus.m */; };
 		D7BFB473DE3BACBB4B6976D2CA035150 /* GPBCodedOutputStream_PackagePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = AA4D8B64336159A803746014D5608C5D /* GPBCodedOutputStream_PackagePrivate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DB6BA943B875F0021D363DD075DE818A /* Empty.pbobjc.m in Sources */ = {isa = PBXBuildFile; fileRef = F90C52BA799F26990328C0035E9C50EE /* Empty.pbobjc.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E114C2FF857BBB43361ABB316F46FD17 /* GPBRootObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E359A388EA92D3BD053B931F7F36E47 /* GPBRootObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -334,6 +336,8 @@
 		D5B2A7098EE7B5AB55A396B8C6FB105A /* GPBBootstrap.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = GPBBootstrap.h; path = objectivec/GPBBootstrap.h; sourceTree = "<group>"; };
 		D60F0666246E84A300BF6C1B /* OBAVPlayerObserver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OBAVPlayerObserver.h; sourceTree = "<group>"; };
 		D60F0667246E84A300BF6C1B /* OBAVPlayerObserver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OBAVPlayerObserver.m; sourceTree = "<group>"; };
+		D6FDA5EE247255E600782DDD /* OBMediaStatus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OBMediaStatus.h; sourceTree = "<group>"; };
+		D6FDA5EF247255E600782DDD /* OBMediaStatus.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OBMediaStatus.m; sourceTree = "<group>"; };
 		D8FFDB98C6B25D795309FBCF8E5B549D /* Duration.pbobjc.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = Duration.pbobjc.m; path = objectivec/google/protobuf/Duration.pbobjc.m; sourceTree = "<group>"; };
 		D944A16E8D2B646B3D264EFA2694B7D0 /* CaptainHook.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = CaptainHook.h; sourceTree = "<group>"; };
 		DB0F2DFF94584C930A4D3D044B3168EA /* FMResultSet.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FMResultSet.h; path = src/fmdb/FMResultSet.h; sourceTree = "<group>"; };
@@ -416,6 +420,8 @@
 		02663450AE5C4BD04167F135966C6FDB /* MoviePlayer */ = {
 			isa = PBXGroup;
 			children = (
+				D6FDA5EE247255E600782DDD /* OBMediaStatus.h */,
+				D6FDA5EF247255E600782DDD /* OBMediaStatus.m */,
 				D60F0666246E84A300BF6C1B /* OBAVPlayerObserver.h */,
 				D60F0667246E84A300BF6C1B /* OBAVPlayerObserver.m */,
 				376393FC1252846D28B0FD6D620637D0 /* OBMPMoviePlayerObserver.h */,
@@ -786,6 +792,7 @@
 				2C9278E6FB54E46B7816F8C61217F24D /* NSString+Hashes.h in Headers */,
 				F9027AB1F82BDFE7BFFB7F6056F508F4 /* NSString+JavaScriptEscape.h in Headers */,
 				91A397DF26B8358799928B2CFC9723A9 /* NSURL+QueryDictionary.h in Headers */,
+				D6FDA5F0247255E600782DDD /* OBMediaStatus.h in Headers */,
 				FFC4641A0CECD09022B86B727CF24502 /* ob_private.h in Headers */,
 				3ECDB5877FE854DEE639FBDEF90DFF63 /* OBClassHierarchyDetector.h in Headers */,
 				0026673778A505C30551AA1E3CA3E881 /* OBMPMoviePlayerObserver.h in Headers */,
@@ -1072,6 +1079,7 @@
 				326B441D2D5CCB3E9EB329A6BAC9E216 /* WKUserContentController+Inspector.m in Sources */,
 				0831808D08A4C182A36DD4027D365FBE /* WKWebView+Description.m in Sources */,
 				C7CB3236FACB83679191B61C03610255 /* WKWebView+Inspector.m in Sources */,
+				D6FDA5F1247255E600782DDD /* OBMediaStatus.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

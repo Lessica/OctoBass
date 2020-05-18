@@ -36,6 +36,10 @@
     return self;
 }
 
+- (void)dealloc {
+    //[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 
 #pragma mark - Notification Dispatchers
 
@@ -78,15 +82,18 @@
     NSTimeInterval duration = playerCtrl.duration;
     NSTimeInterval currentTime = playerCtrl.currentPlaybackTime;
     NSString *src = [playerCtrl.contentURL absoluteString];
+    if (!src.length) {
+        return;
+    }
     
     NSMutableDictionary <NSString *, id> *userInfo = [NSMutableDictionary dictionaryWithDictionary:@{
         @"type": type,
+        @"src": src,
         @"paused": @(paused),
         @"ended": @(ended),
         @"duration": @(duration),
         @"currentTime": @(currentTime),
     }];
-    if (src) { [userInfo setObject:src forKey:@"src"]; }
     
     // Post internal notification.
     [[NSNotificationCenter defaultCenter] postNotificationName:_$OBNotificationNameMediaStatus object:self userInfo:userInfo];

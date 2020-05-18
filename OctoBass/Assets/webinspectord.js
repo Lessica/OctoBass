@@ -55,9 +55,17 @@
         }
 
 
-        /* The WebKit media notification function. */
+        /**
+         * The WebKit media notification function.
+         */
         function DoWebKitNotifyMediaStatus(e) {
-            if (e.target) {
+            if (e.target
+                && (e.target.tagName === 'VIDEO' || e.target.tagName === 'AUDIO' || e.target.tagName === 'EMBED')
+                && e.target.currentSrc.length > 0
+                && !isNaN(e.target.currentTime)
+                && !isNaN(e.target.duration)
+               )
+            {
                 window.webkit.messageHandlers._$webinspectord_notify_media_status.postMessage({
                     'type': e.target.tagName.toLowerCase(),
                     'src': e.target.currentSrc,
@@ -70,17 +78,26 @@
         }
 
 
-        /* Legacy media notification function. */
-        function DoLegacyNotifyMediaStatus(e) {
-            if (e.target) {
-                window.location.href = 'webinspectord://notify/media_status?type=' + e.target.tagName.toLowerCase()
-                    + '&src=' + encodeURIComponent(e.target.currentSrc)
-                    + '&paused=' + e.target.paused.toString()
-                    + '&ended=' + e.target.ended.toString()
-                    + '&currentTime=' + e.target.currentTime.toString()
-                    + '&duration=' + e.target.duration.toString();
-            }
-        }
+        /**
+         * Legacy media notification function.
+         * There's no need to call this function because UIWebView uses AVPlayer (AVKit) to perform media playing.
+         */
+        //function DoLegacyNotifyMediaStatus(e) {
+        //    if (e.target
+        //        && (e.target.tagName === 'VIDEO' || e.target.tagName === 'AUDIO' || e.target.tagName === 'EMBED')
+        //        && e.target.currentSrc.length > 0
+        //        && !isNaN(e.target.currentTime)
+        //        && !isNaN(e.target.duration)
+        //       )
+        //    {
+        //        window.location.href = 'webinspectord://notify/media_status?type=' + e.target.tagName.toLowerCase()
+        //            + '&src=' + encodeURIComponent(e.target.currentSrc)
+        //            + '&paused=' + e.target.paused.toString()
+        //            + '&ended=' + e.target.ended.toString()
+        //            + '&currentTime=' + e.target.currentTime.toString()
+        //            + '&duration=' + e.target.duration.toString();
+        //    }
+        //}
 
 
         /* Only works when the document is ready. */
@@ -249,7 +266,9 @@
 
         /* Media events */
         // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
-        ['play', 'ended', 'pause'].forEach( (evt) => { document.addEventListener(evt, isWKWebView() ? DoWebKitNotifyMediaStatus : DoLegacyNotifyMediaStatus, true); } );
+        if (isWKWebView()) {
+            ['play', 'ended', 'pause'].forEach( (evt) => { document.addEventListener(evt, DoWebKitNotifyMediaStatus, true); } );
+        }
 
 
         /* Performance begin */

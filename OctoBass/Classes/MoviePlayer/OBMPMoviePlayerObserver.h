@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  * A global playback status observer for deprecated MPMoviePlayer.
+ * Actually, MPMoviePlayer uses AVPlayer on newer iOS versions.
  */
 @interface OBMPMoviePlayerObserver : NSObject
 

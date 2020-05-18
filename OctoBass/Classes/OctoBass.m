@@ -17,6 +17,7 @@
 #import "OBClassHierarchyDetector.h"
 #import "OBTouchRocket.h"
 #import "OBWKWebViewMsgProxy.h"
+#import "OBMediaStatus.h"
 #import "OBAVPlayerObserver.h"
 #import "OBMPMoviePlayerObserver.h"
 
@@ -493,7 +494,7 @@ static CFTimeInterval           _$coolDownInterval   = 15.0;
 static CFTimeInterval           _$coolDownLastTick;
 static dispatch_queue_t         _$serialActionQueue;
 static pthread_mutex_t          _$serialActionLock   = PTHREAD_MUTEX_INITIALIZER;
-static NSDictionary *           _$currentMediaStatus = nil;
+static OBMediaStatus *          _$currentMediaStatus = nil;
 
 
 // Setup Declarations.
@@ -950,15 +951,22 @@ static void __octobass_initialize()
     [[NSNotificationCenter defaultCenter] addObserverForName:_$OBNotificationNameMediaStatus object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
         
         // Update current media status in main queue.
-        NSLog(@"%@", note.userInfo);
-        _$currentMediaStatus = note.userInfo;
+        NSDictionary *rawMediaStatus = note.userInfo;
+        _$currentMediaStatus = [OBMediaStatus statusWithDictionary:rawMediaStatus];
         
 #if DEBUG
+        
+        NSLog(@"%@", _$currentMediaStatus);
+        
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            
             // Find the top-most view controller.
             UIViewController *topCtrl = [[[UIApplication sharedApplication] keyWindow] rootViewController];
             while (topCtrl.presentedViewController) {
                 topCtrl = topCtrl.presentedViewController;
+            }
+            if ([topCtrl isKindOfClass:[UIAlertController class]]) {
+                return;
             }
             
             // Build an alert for test.
@@ -966,7 +974,7 @@ static void __octobass_initialize()
             
             NSMutableParagraphStyle *paraStyle = [NSMutableParagraphStyle new];
             paraStyle.alignment = NSTextAlignmentLeft;
-            NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", note.userInfo] attributes:@{
+            NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:[_$currentMediaStatus description] attributes:@{
                 NSParagraphStyleAttributeName: paraStyle,
                 NSFontAttributeName: [UIFont systemFontOfSize:13.0],
             }];
@@ -974,7 +982,9 @@ static void __octobass_initialize()
             
             [alertCtrl addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
             [topCtrl presentViewController:alertCtrl animated:YES completion:nil];
+            
         });
+        
 #endif
         
     }];
