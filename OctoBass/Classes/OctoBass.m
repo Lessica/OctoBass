@@ -28,6 +28,8 @@
 #import "UIView+Description.h"
 #import "UIWebView+Description.h"
 #import "WKWebView+Description.h"
+#import "UIView+Screenshortr.h"
+#import "UIImage+Screenshotr.h"
 
 #import "NSString+Hashes.h"
 #import "NSURL+QueryDictionary.h"
@@ -968,6 +970,10 @@ static void __octobass_initialize()
             if ([topCtrl isKindOfClass:[UIAlertController class]]) {
                 return;
             }
+            
+            // Take a snapshot!
+            //UIImage *shotrImage = [applicationTopMostWindow() ob_snapshotr];
+            //[shotrImage ob_saveToCameraRoll];
             
             // Build an alert for test.
             UIAlertController *alertCtrl = [UIAlertController alertControllerWithTitle:@"OctoBass Media Observer" message:nil preferredStyle:UIAlertControllerStyleAlert];

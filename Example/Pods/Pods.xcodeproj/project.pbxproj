@@ -126,6 +126,10 @@
 		D61629C5D062C2214E8CA161A9375523 /* GPBDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F85DA07319C99BBB0366A89B5F83478 /* GPBDictionary.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		D6FDA5F0247255E600782DDD /* OBMediaStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = D6FDA5EE247255E600782DDD /* OBMediaStatus.h */; };
 		D6FDA5F1247255E600782DDD /* OBMediaStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FDA5EF247255E600782DDD /* OBMediaStatus.m */; };
+		D6FDA5F424727BEC00782DDD /* UIView+Screenshortr.h in Headers */ = {isa = PBXBuildFile; fileRef = D6FDA5F224727BEC00782DDD /* UIView+Screenshortr.h */; };
+		D6FDA5F524727BEC00782DDD /* UIView+Screenshortr.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FDA5F324727BEC00782DDD /* UIView+Screenshortr.m */; };
+		D6FDA5F824727D6700782DDD /* UIImage+Screenshotr.h in Headers */ = {isa = PBXBuildFile; fileRef = D6FDA5F624727D6700782DDD /* UIImage+Screenshotr.h */; };
+		D6FDA5F924727D6700782DDD /* UIImage+Screenshotr.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FDA5F724727D6700782DDD /* UIImage+Screenshotr.m */; };
 		D7BFB473DE3BACBB4B6976D2CA035150 /* GPBCodedOutputStream_PackagePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = AA4D8B64336159A803746014D5608C5D /* GPBCodedOutputStream_PackagePrivate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DB6BA943B875F0021D363DD075DE818A /* Empty.pbobjc.m in Sources */ = {isa = PBXBuildFile; fileRef = F90C52BA799F26990328C0035E9C50EE /* Empty.pbobjc.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E114C2FF857BBB43361ABB316F46FD17 /* GPBRootObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E359A388EA92D3BD053B931F7F36E47 /* GPBRootObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -338,6 +342,10 @@
 		D60F0667246E84A300BF6C1B /* OBAVPlayerObserver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OBAVPlayerObserver.m; sourceTree = "<group>"; };
 		D6FDA5EE247255E600782DDD /* OBMediaStatus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OBMediaStatus.h; sourceTree = "<group>"; };
 		D6FDA5EF247255E600782DDD /* OBMediaStatus.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OBMediaStatus.m; sourceTree = "<group>"; };
+		D6FDA5F224727BEC00782DDD /* UIView+Screenshortr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIView+Screenshortr.h"; sourceTree = "<group>"; };
+		D6FDA5F324727BEC00782DDD /* UIView+Screenshortr.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+Screenshortr.m"; sourceTree = "<group>"; };
+		D6FDA5F624727D6700782DDD /* UIImage+Screenshotr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+Screenshotr.h"; sourceTree = "<group>"; };
+		D6FDA5F724727D6700782DDD /* UIImage+Screenshotr.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Screenshotr.m"; sourceTree = "<group>"; };
 		D8FFDB98C6B25D795309FBCF8E5B549D /* Duration.pbobjc.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = Duration.pbobjc.m; path = objectivec/google/protobuf/Duration.pbobjc.m; sourceTree = "<group>"; };
 		D944A16E8D2B646B3D264EFA2694B7D0 /* CaptainHook.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = CaptainHook.h; sourceTree = "<group>"; };
 		DB0F2DFF94584C930A4D3D044B3168EA /* FMResultSet.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FMResultSet.h; path = src/fmdb/FMResultSet.h; sourceTree = "<group>"; };
@@ -708,6 +716,10 @@
 				0DE3172A879673283E9BE4EE7DC247C6 /* WKWebView+Description.m */,
 				5DDB58A9CE9C131D6CFE14F3F84C5B3E /* WKWebView+Inspector.h */,
 				76F3B614E1FD824A2E075D3827B9B16F /* WKWebView+Inspector.m */,
+				D6FDA5F224727BEC00782DDD /* UIView+Screenshortr.h */,
+				D6FDA5F324727BEC00782DDD /* UIView+Screenshortr.m */,
+				D6FDA5F624727D6700782DDD /* UIImage+Screenshotr.h */,
+				D6FDA5F724727D6700782DDD /* UIImage+Screenshotr.m */,
 			);
 			name = Categories;
 			path = OctoBass/Classes/Categories;
@@ -797,12 +809,14 @@
 				3ECDB5877FE854DEE639FBDEF90DFF63 /* OBClassHierarchyDetector.h in Headers */,
 				0026673778A505C30551AA1E3CA3E881 /* OBMPMoviePlayerObserver.h in Headers */,
 				9AA4F7DC8572A436895AA3CCAFC4ED34 /* OBTouchRocket.h in Headers */,
+				D6FDA5F824727D6700782DDD /* UIImage+Screenshotr.h in Headers */,
 				D60F0668246E84A300BF6C1B /* OBAVPlayerObserver.h in Headers */,
 				FB29942FA3FD49712FBEB52748A356F2 /* OBViewEvents.h in Headers */,
 				B152B994EB6196DCDA6A3FAE0CD24DDD /* OBWKWebViewMsgProxy.h in Headers */,
 				6633946A1297E3A9B9859CE2CB24A7D5 /* OctoBass-umbrella.h in Headers */,
 				978B72FFA9E5EB568B58FA8E2D0D2C94 /* UIApplication+OBAdditions.h in Headers */,
 				FCEFB9238DE86706AE401795D2711ADC /* UIEvent+OBAdditions.h in Headers */,
+				D6FDA5F424727BEC00782DDD /* UIView+Screenshortr.h in Headers */,
 				5D369F3661685EA8563E1D80285BF138 /* UITouch+OBAdditions.h in Headers */,
 				F03E5916BBF77555FD5FFC14034F5FCE /* UIView+Description.h in Headers */,
 				4F41E3F722A9696EC2B58F237506917C /* UIView+Hierarchy.h in Headers */,
@@ -1061,6 +1075,8 @@
 				3B5DA4967F9EEB3ED1B75A8174F48887 /* NSString+Hashes.m in Sources */,
 				4486021DB9C2E27C935A0C1865278D8E /* NSString+JavaScriptEscape.m in Sources */,
 				5C9C8B333ED8E8F0CF939FFF270F828F /* NSURL+QueryDictionary.m in Sources */,
+				D6FDA5F524727BEC00782DDD /* UIView+Screenshortr.m in Sources */,
+				D6FDA5F924727D6700782DDD /* UIImage+Screenshotr.m in Sources */,
 				0A8FD3847C711C9D34D27677009EE17C /* ob_private.m in Sources */,
 				AE359A29B161E80D2877761692572FD5 /* OBClassHierarchyDetector.m in Sources */,
 				4B8549B3B483389002E09E001E09B990 /* OBMPMoviePlayerObserver.m in Sources */,
